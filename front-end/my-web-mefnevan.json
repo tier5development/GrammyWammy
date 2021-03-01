@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "my-web-staysensei",
+            "script": "npm",
+            "args" : "start"
+        }
+    ]
+}

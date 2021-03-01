@@ -1,0 +1,49 @@
+{
+  "name": "Grammy Wammy",
+  "version": "1.0.1",
+  "manifest_version": 2,
+  "description": "Grammy Wammy",
+  "icons": {
+      "48": "48X48.png",
+      "128": "128X128.png"
+  },
+  "browser_action": {
+      "default_icon": "128X128.png",
+      "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": ["jquery-3.5.1.min.js", "background.js"],
+    "persistent": false
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "clipboardRead",
+    "https://www.messenger.com/*",
+    "https://*.facebook.com/*",
+    "https://mbasic.facebook.com/",
+    "https://www.instagram.com/direct/*",
+    "notifications",
+    "https://api.mefnevan.com/api/*"
+],
+"content_scripts": [
+    {
+        "all_frames": true,
+        "css": ["inject-helper/css/emoji.css", "inject-helper/css/common.css"],
+        "js": [
+            "inject-helper/js/jquery-3.1.0.min.js",
+            "inject-helper/js/arrive.js",
+            "inject-helper/js/lazyload.min.js",
+            "inject-helper/js/config.js",
+            "inject-helper/js/util.js",
+            "inject-helper/js/jquery.emojiarea.js",
+            "inject-helper/js/emoji-picker.js",
+            "content.js"
+        ],
+        "matches": [
+           "https://www.instagram.com/direct/inbox/*"
+        ],
+        "run_at": "document_start"
+    }
+]
+}
