@@ -1,0 +1,13 @@
+{
+    "apps": [
+      {
+        "name": "my-api-app",
+        "script": "app.js",
+        
+        "env": {
+          "PORT": "8008"
+         }
+      }
+    ]
+  }
+  
