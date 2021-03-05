@@ -132,6 +132,9 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                 ).then(async response =>  {
                     let responsenewvalue = await response.json();
                     console.log(responsenewvalue);
+                    UserInstagramUsername    =   responsenewvalue.payload.UserInfo.instagram_profile_name;
+                    UserInstagramName    = responsenewvalue.payload.UserInfo.instagram_name;
+                    UserInstagramImage   =   responsenewvalue.payload.UserInfo.instagram_image;
                     // UserFacebookid  =   responsenewvalue.payload.UserInfo.facebook_fbid;
                     // UserFacebookUsername    =   responsenewvalue.payload.UserInfo.facebook_name;
                     // UserFacebookName    = responsenewvalue.payload.UserInfo.facebook_profile_name;
@@ -143,6 +146,8 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                     // AutoResponderKeywords    =   JSON.stringify(responsenewvalue.payload.AutoResponderKeywords);
                     // BackGroundFetchingStatus    =   false;
                     // MfenevanUserId  =   responsenewvalue.payload.UserInfo.user_id;
+                    BackGroundFetchingStatus    =   false;
+                    GrammyWammyUserId  =   responsenewvalue.payload.UserInfo.user_id;
                 });
         }
         localStorage.setItem('kyubi_user_token', UserKyubiToken);

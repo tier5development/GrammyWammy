@@ -39,9 +39,9 @@ class Dashboard extends Component {
   }
   fbHandler = async (event) => {
     event.preventDefault();
-    let fb_logged_id=localStorage.getItem('fb_logged_id');
-    console.log("You Are Loged in",fb_logged_id);
-    if(fb_logged_id === "false"){
+    let insta_logged_id=localStorage.getItem('insta_logged_id');
+    console.log("You Are Loged in",insta_logged_id);
+    if(insta_logged_id === "false"){
       OpenFacebookInTab();
     }else{
       OpenFacebookProfileInTab();
@@ -238,8 +238,8 @@ class Dashboard extends Component {
                             :
                             ""
                             }
-                            <a href="#" class="bluebtn"><img src="images/layer1.svg"></img> Refresh</a>
-                            <a href="#" class="whitebtn"><img src="images/fb_blue.svg"></img> Facebook</a>
+                            <a onClick={this.refreshHandler}  class="bluebtn"><img src="images/layer1.svg"></img> Refresh</a>
+                            <a onClick={this.fbHandler} class="whitebtn"><img src="images/fb_blue.svg"></img> Facebook</a>
                           </div>
                           <div class="footer">
                             <p>Powered by <a href="#">Tier5</a> and the <a href="#">Tier5 Partnership</a></p>

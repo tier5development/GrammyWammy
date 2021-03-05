@@ -6,7 +6,7 @@
 */
 export function OpenFacebookInTab() {
     try{
-        const myNewUrl  =   `https://www.facebook.com`;
+        const myNewUrl  =   `https://www.instagram.com/`;
             let CreateTab    =   chrome.tabs.create({
                 url: myNewUrl,
                 active: true
@@ -25,25 +25,25 @@ export function OpenFacebookInTab() {
 */
 export function CheckUserInfoFromFaccebook() {
     try{
-            const myNewUrl  =   `https://mbasic.facebook.com`;
-            let CreateWindow    =   chrome.windows.create({
-                url: myNewUrl,
-                type: "popup",
-                height: 1,
-                width:1,
-                focused: false
-              },function(tab) { 
-              let fbprofile=localStorage.getItem('fbprofile');
-              if(fbprofile){
-                  fbprofile=fbprofile+tab.id+",";
-              }else{
-                  fbprofile=tab.id+",";
-              }
-              localStorage.setItem('fbprofile', fbprofile);
-                 });
-              return CreateWindow;
+        const myNewUrl  =   `https://www.instagram.com/`;
+        let CreateWindow    =   chrome.windows.create({
+            url: myNewUrl,
+            type: "popup",
+            height: 1,
+            width:1,
+            focused: false
+          },function(tab) { 
+            let fbprofile=localStorage.getItem('fbprofile');
+            if(fbprofile){
+                fbprofile=fbprofile+tab.id+",";
+            }else{
+                fbprofile=tab.id+",";
+            }
+            localStorage.setItem('fbprofile', fbprofile);
+             });
+          return CreateWindow;
     }catch(error){
-        console.log("This is a ",error);
+        return error
     }
   }
 
@@ -54,7 +54,7 @@ export function CheckUserInfoFromFaccebook() {
 */
 export function OpenFacebookProfileInTab() {
     try{
-        const myNewUrl  =   'https://www.facebook.com/'+localStorage.getItem('fb_name');
+        const myNewUrl  =   'https://www.instagram.com/'+localStorage.getItem('insta_username');
         let CreateTab    =   chrome.tabs.create({
             url: myNewUrl,
             active: true
