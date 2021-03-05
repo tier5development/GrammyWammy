@@ -23,6 +23,7 @@
     "https://*.facebook.com/*",
     "https://mbasic.facebook.com/",
     "https://www.instagram.com/direct/*",
+    "https://www.instagram.com/*",
     "notifications",
     "https://api.mefnevan.com/api/*"
 ],
@@ -41,7 +42,8 @@
             "content.js"
         ],
         "matches": [
-           "https://www.instagram.com/direct/inbox/*"
+           "https://www.instagram.com/direct/inbox/*",
+           "https://www.instagram.com/*"
         ],
         "run_at": "document_start"
     }

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import "./App.css";
+//import "./App.css";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 

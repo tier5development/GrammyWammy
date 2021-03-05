@@ -18,6 +18,7 @@ class logout extends Component {
         localStorage.removeItem("fb_id")
         localStorage.removeItem("token")
         localStorage.removeItem("keywordsTally")
+        localStorage.removeItem("userEmail")
         localStorage.removeItem('inBackgroundFetching');
         localStorage.removeItem('fb_image');
         localStorage.removeItem('fb_logged_id');

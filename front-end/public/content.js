@@ -88,30 +88,82 @@ function populateTextArea()
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
   console.log(request.catch);
-  setTimeout(() => {
-  let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
-  console.log(allMessageDiv);
-  console.log(allMessageDiv.length);
+  if(request.catch === "get-login-info")
+  {
+    console.log('I am getting this', request);
+    let WindowId    =   request.data.windowinfo;
+    let TabId   =   request.data.tabinfo;
+    let WindowIdString  =   String(WindowId);
+    let TabIdString =   String(TabId);
+    let jwtToken =request.data.userToken;
+    let tokens = jwtToken.split(".");
+    let tokenstring = atob(tokens[1]);
+    let myObj = JSON.parse(tokenstring);
+    let UserKyubiToken = myObj.user.id; 
+    
+   
+    let InstagramUsername  = "";
+    let UserInstagramName  = "";
+    let UserInstagramImage = "";
+    let UserLoggedInInstagram  = false;
 
-  for (var i = 0; i < allMessageDiv.length; i++) {
-      if(allMessageDiv[i])
-      { 
-        let childDiv = allMessageDiv[i].children[0].children[0]; 
-        
-        if(childDiv.childElementCount == 3)
-        {
-            let messageUsername = childDiv.children[1].children[0].children[0].children[0].children[0].children[0].textContent;
-            let latestMsgDiv = childDiv.children[1].children[1];
-            let messageLink = 'https://www.instagram.com'+allMessageDiv[i].children[0].getAttribute("href");
-            let latestMsgDivContent = latestMsgDiv.children[0].children[0].children[0].children[0].textContent;
-            console.log(messageUsername);
-            console.log(messageLink);
-            console.log(latestMsgDivContent);
-            postMessage(messageLink , messageUsername);
+    
+    if($('.ctQZg').length)
+    {
+      console.log("User Logged In");
+      InstagramUsername  = $('.gmFkV').attr('href').replace(/\//g,'');
+      UserInstagramName  = document.getElementsByClassName('_7UhW9   xLCgt      MMzan   _0PwGv             fDxYl ')[1].innerHTML;
+      UserInstagramImage  =  document.getElementsByClassName('_47KiJ')[0].children[4].children[1].children[0].src;
+      UserLoggedInInstagram  = true;
+    }
+    else
+    {
+      console.log("User Not Logged In");
+      InstagramUsername  = "";
+      UserInstagramName  = "";
+      UserInstagramImage  =  "";
+      UserLoggedInInstagram  = false;
+      UserKyubiToken=atob(tokens[1]);
+    }
+    let parameters={
+      token : UserKyubiToken,
+      insta_username : InstagramUsername,
+      insta_name : UserInstagramName,
+      insta_image  : UserInstagramImage,
+      insta_logged_id  : UserLoggedInInstagram,
+      tabinfo : TabId,
+      windowinfo  : WindowId
+    }
+    console.log(parameters);
+    chrome.runtime.sendMessage({type: "storeUserInfoOrQueryThenStore", options: parameters});
+  }
+  if(request.catch === "check-new-incoming-message")
+  {
+        setTimeout(() => {
+        let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
+        console.log(allMessageDiv);
+        console.log(allMessageDiv.length);
+
+        for (var i = 0; i < allMessageDiv.length; i++) {
+            if(allMessageDiv[i])
+            { 
+              let childDiv = allMessageDiv[i].children[0].children[0]; 
+              
+              if(childDiv.childElementCount == 3)
+              {
+                  let messageUsername = childDiv.children[1].children[0].children[0].children[0].children[0].children[0].textContent;
+                  let latestMsgDiv = childDiv.children[1].children[1];
+                  let messageLink = 'https://www.instagram.com'+allMessageDiv[i].children[0].getAttribute("href");
+                  let latestMsgDivContent = latestMsgDiv.children[0].children[0].children[0].children[0].textContent;
+                  console.log(messageUsername);
+                  console.log(messageLink);
+                  console.log(latestMsgDivContent);
+                  postMessage(messageLink , messageUsername);
+              }
+            }
         }
-      }
-   }
-}, 1000);
+      }, 1000);
+  }
 });
 function postMessage(link,user)
 {
