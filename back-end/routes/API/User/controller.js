@@ -1,7 +1,7 @@
 const UsersRepo = require('../../../models/repositories/user.repository');
 const AutoResponderRepo =   require('../../../models/repositories/autoresponder.repository');
 
-module.exports.userFacebook = async (req, res) => {
+module.exports.userInstagram = async (req, res) => {
     try {
         console.log("This is my sent",req.body);
         
@@ -10,19 +10,18 @@ module.exports.userFacebook = async (req, res) => {
         console.log("This is my Respo",getUserInfo);
         if(getUserInfo){
             
-            let UpdateUserInfo=await UsersRepo.UpdateUser(req.body.user_rec,req.body.fb_id,req.body.fb_name,req.body.fb_username,req.body.fb_image);
+            let UpdateUserInfo=await UsersRepo.UpdateUser(req.body.user_rec,req.body.insta_name,req.body.insta_username,req.body.insta_image);
             let userInfoArray = {};
             let userSettingsArray = {};
             await UsersRepo.GetUserDetailsInfo(req.body.user_rec).then(async results=>{
                 if(results.length>0){
-                    console.log("This is my userInfoArray",results);
+                    console.log("This is my userInfoArray1",results);
                     userInfoArray={
                     user_id:results[0]._id,
                     kyubi_user_token: results[0].kyubi_user_token,
-                    facebook_id: results[0].facebook_id,
-                    facebook_name: results[0].facebook_name,
-                    facebook_profile_name: results[0].facebook_profile_name,
-                    facebook_image: results[0].facebook_image,
+                    instagram_name: results[0].instagram_name,
+                    instagram_profile_name: results[0].instagram_profile_name,
+                    instagram_image: results[0].instagram_image,
                     image_url: results[0].image_url,
                     status: results[0].status};
                     if(results[0].usersettings){
@@ -53,10 +52,9 @@ module.exports.userFacebook = async (req, res) => {
             let UsersDetailinfo= {
                 user_id:req.body._id,
                 kyubi_user_token: req.body.user_rec,
-                facebook_id: req.body.facebook_id,
-                facebook_name: req.body.fb_name,
-                facebook_profile_name:req.body.fb_username,
-                facebook_image:req.body.fb_image,
+                instagram_name: req.body.insta_name,
+                instagram_profile_name:req.body.insta_username,
+                instagram_image:req.body.insta_image,
                 status: 0
             };
             let saveUesr=await UsersRepo.saveUserDetails(UsersDetailinfo);
@@ -67,11 +65,11 @@ module.exports.userFacebook = async (req, res) => {
                 if(results.length>0){
                     console.log("This is my userInfoArray",results);
                     userInfoArray={
+                    user_id:results[0]._id,
                     kyubi_user_token: results[0].kyubi_user_token,
-                    facebook_fbid: results[0].facebook_id,
-                    facebook_name: results[0].facebook_name,
-                    facebook_profile_name: results[0].facebook_profile_name,
-                    facebook_image: results[0].facebook_image,
+                    instagram_name: results[0].instagram_name,
+                    instagram_profile_name: results[0].instagram_profile_name,
+                    instagram_image: results[0].instagram_image,
                     image_url: results[0].image_url,
                     status: results[0].status};
                     if(results[0].usersettings){

@@ -326,8 +326,9 @@ module.exports.getSetting   =   async   (req,   res)    =>  {
 }
 module.exports.getUserDetails   =   async   (req,   res)    =>  {
     try{
+        console.log(req.body.user_email);
         let  userInfo= UserHelper.UserdetailsInfo(req.body.user_id).then(result=>{
-            console.log("yo yo +++++++++++++++++",result);
+            console.log("yo yo",result);
                 res.send({
                     code: 1,
                     message: "Successfull",

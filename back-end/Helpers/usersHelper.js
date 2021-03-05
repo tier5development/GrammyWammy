@@ -8,14 +8,13 @@ module.exports.UserdetailsInfo =  async(user_id) =>{
                 if(results.length>0){
                     console.log("This is my userInfoArray",results);
                     userInfoArray={
-                    user_id:results[0]._id,
-                    kyubi_user_token: results[0].kyubi_user_token,
-                    facebook_id: results[0].facebook_id,
-                    facebook_name: results[0].facebook_name,
-                    facebook_profile_name: results[0].facebook_profile_name,
-                    facebook_image: results[0].facebook_image,
-                    image_url: results[0].image_url,
-                    status: results[0].status};
+                        user_id:results[0]._id,
+                        kyubi_user_token: results[0].kyubi_user_token,
+                        instagram_name: results[0].instagram_name,
+                        instagram_profile_name: results[0].instagram_profile_name,
+                        instagram_image: results[0].instagram_image,
+                        image_url: results[0].image_url,
+                        status: results[0].status};
                     if(results[0].usersettings){
                         userSettingsArray={
                             default_message: results[0].usersettings.default_message,
