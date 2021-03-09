@@ -69,14 +69,6 @@ class sidebar extends Component {
                                       Setting
                                     </p>
                                   </NavLink>
-                              </li> 
-                              <li className="nav-item">
-                                  <NavLink  to="/messageGroup" className="nav-link">
-                                    <i className="nav-icon fas fa-cogs"></i>
-                                    <p>
-                                      Message Group
-                                    </p>
-                                  </NavLink>
                               </li>  
                               <li className="nav-item">
                                   <NavLink  to="/autoresponder" className="nav-link">

@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { host,kyubi } from '../config';
 
-const settingService = {
-    setSetting: function (payload) {
+const segmentServices = {
+    createSegment: function (payload) {
         return new Promise((resolve, reject) => {
             let options = {
                 method: 'POST',
-                url: host + '/api/setting/setsetting',
+                url: host + '/api/segment/create',
                 headers: {  'Accept': 'application/json', 'Content-Type': 'application/json' },
                 data: payload
             }
@@ -21,11 +21,11 @@ const settingService = {
                 })
         })
     },
-    getSetting: function (payload) {
+    getSegment: function (payload) {
         return new Promise((resolve, reject) => {
             let options = {
                 method: 'POST',
-                url: host + '/api/setting/getSetting',
+                url: host + '/api/segment/list',
                 headers: {  'Accept': 'application/json', 'Content-Type': 'application/json' },
                 data: payload
             }
@@ -40,11 +40,11 @@ const settingService = {
                 })
         })
     },
-    updateAutoresponderSetting: function (payload) {
+    editSegment: function (payload) {
         return new Promise((resolve, reject) => {
             let options = {
                 method: 'POST',
-                url: host + '/api/setting/updateautoresponder',
+                url: host + '/api/segment/edit',
                 headers: {  'Accept': 'application/json', 'Content-Type': 'application/json' },
                 data: payload
             }
@@ -59,11 +59,11 @@ const settingService = {
                 })
         })
     },
-    getUserDetails: function    (payload)   {
+    UpdateSegment: function (payload) {
         return new Promise((resolve, reject) => {
             let options = {
                 method: 'POST',
-                url: host + '/api/setting/getUserDetails',
+                url: host + '/api/segment/update',
                 headers: {  'Accept': 'application/json', 'Content-Type': 'application/json' },
                 data: payload
             }
@@ -78,26 +78,5 @@ const settingService = {
                 })
         })
     },
-    updateLoadStatus: function   (payload)   {
-        return new Promise((resolve, reject) => {
-            let options = {
-                method: 'POST',
-                url: host + '/api/setting/updateLoadStatus',
-                headers: {  'Accept': 'application/json', 'Content-Type': 'application/json' },
-                data: payload
-            }
-            axios(options)
-                .then(res => {
-                    console.log("In Success");
-                    resolve(res)
-                })
-                .catch(err => {
-                    console.log("In Error");
-                    reject(err)
-                })
-        })
-    }
-    
 }
-
-export default settingService;
+export default segmentServices;

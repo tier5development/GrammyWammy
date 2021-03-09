@@ -215,7 +215,14 @@ class Dashboard extends Component {
                                         </div>
                                         <ul className="menunav">
                                             <li><a href="#"><img src="images/menuicon4.svg"></img> Dashboard</a></li>
-                                            <li><a href="#"><img src="images/menuicon3.svg"></img> Settings</a></li>
+                                            <li>
+                                            <NavLink  to="/setting" className="nav-link">
+                                              <i className="nav-icon fas fa-cogs"></i>
+                                              <p>
+                                                Setting
+                                              </p>
+                                            </NavLink>
+                                            </li>
                                             <li><a href="#"><img src="images/menuicon2.svg"></img> Friends</a></li>
                                             <li><NavLink  to="/logout" className="nav-link"><img src="images/menuicon1.svg"></img> Logout</NavLink></li>
                                           </ul>

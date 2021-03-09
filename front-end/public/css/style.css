@@ -1093,6 +1093,12 @@ input[type="checkbox"].switch_2{
 	/* margin: 0 40px 10px;  */
 	box-shadow: 0 1px 8px 2px rgba(0,0,0,0.3);
 }
+.grammy_screen_width{
+	width: 396px; 
+	height: 581px; 
+	/* margin: 0 40px 10px;  */
+	box-shadow: 0 1px 8px 2px rgba(0,0,0,0.3);
+}
 .text-danger {
     color: #dc3545 !important;
   }
