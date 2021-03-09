@@ -141,65 +141,65 @@ class defaultMessage extends Component {
           user_rec    :   localStorage.getItem('kyubi_user_token')
         };
         let GPDID="";
-        // AuthServices.userRetrive(params).then(async result=>{
-        //   console.log("This I got From backGround SUSSSSS Default",result);
-        //   let opt={}
-        //   if(result.data.payload.UserSettings.default_message_type ===1){
-        //     opt={value:1,label:"Message Group"}
-        //   }else{
-        //     opt={value:0,label:"Text  Message"}
-        //   }
-        //   if(result.data.payload.UserSettings.default_message_group){
-        //     this.setState({
-        //       default_message_group:result.data.payload.UserSettings.default_message_group
-        //     });
-        //     GPDID=result.data.payload.UserSettings.default_message_group;
-        //   }
-        //   this.setState({
-        //     default_message_type:result.data.payload.UserSettings.default_message_type,
-        //     selectedOption:opt,
-        //     default_message_text:result.data.payload.UserSettings.default_message_text,
-        //     default_time_delay:result.data.payload.UserSettings.default_time_delay,
-        //   })
+        AuthServices.userRetrive(params).then(async result=>{
+          console.log("This I got From backGround SUSSSSS Default",result);
+          let opt={}
+          if(result.data.payload.UserSettings.default_message_type ===1){
+            opt={value:1,label:"Message Group"}
+          }else{
+            opt={value:0,label:"Text  Message"}
+          }
+          if(result.data.payload.UserSettings.default_message_group){
+            this.setState({
+              default_message_group:result.data.payload.UserSettings.default_message_group
+            });
+            GPDID=result.data.payload.UserSettings.default_message_group;
+          }
+          this.setState({
+            default_message_type:result.data.payload.UserSettings.default_message_type,
+            selectedOption:opt,
+            default_message_text:result.data.payload.UserSettings.default_message_text,
+            default_time_delay:result.data.payload.UserSettings.default_time_delay,
+          })
 
 
-        //   let GroupParams = {
-        //     user_id    :   localStorage.getItem('user_id')
-        //   }
-        //   GroupServices.getGroup(GroupParams).then(async result=>{
-        //     if(result.data.code == 1){
-        //         let resultGroupList =  [];
+          let GroupParams = {
+            user_id    :   localStorage.getItem('user_id')
+          }
+          GroupServices.getGroup(GroupParams).then(async result=>{
+            if(result.data.code == 1){
+                let resultGroupList =  [];
                 
-        //         result.data.payload.map(data=>{
+                result.data.payload.map(data=>{
                   
-        //           resultGroupList.push({value:data._id,label:data.title})
-        //           console.log("This MGP",this.state.default_message_group);
-        //           console.log("This GAP",data._id);
-        //           console.log("This GAP!",GPDID);
-        //           if(GPDID != "" && GPDID==data._id){
+                  resultGroupList.push({value:data._id,label:data.title})
+                  console.log("This MGP",this.state.default_message_group);
+                  console.log("This GAP",data._id);
+                  console.log("This GAP!",GPDID);
+                  if(GPDID != "" && GPDID==data._id){
   
-        //             this.setState({
-        //               selectedGPL:{value:data._id,label:data.title}
-        //             });
-        //           }
-        //         });
-        //         this.setState({
-        //           MessageGroupList:result.data.payload,
-        //           GPL:resultGroupList
-        //         })
+                    this.setState({
+                      selectedGPL:{value:data._id,label:data.title}
+                    });
+                  }
+                });
+                this.setState({
+                  MessageGroupList:result.data.payload,
+                  GPL:resultGroupList
+                })
                 
                 
-        //     }
-        //   }).catch(error=>{
-        //     console.log("This I got From DDDDBBBBBB EROOOOOO",error);
-        //   })
+            }
+          }).catch(error=>{
+            console.log("This I got From DDDDBBBBBB EROOOOOO",error);
+          })
 
 
 
 
-        // }).catch(error=>{
-        //   console.log("This I got From backGround EROOOOOO Default",error);
-        // })
+        }).catch(error=>{
+          console.log("This I got From backGround EROOOOOO Default",error);
+        })
         
 
         
