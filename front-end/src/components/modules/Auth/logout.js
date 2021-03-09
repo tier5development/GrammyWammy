@@ -42,7 +42,7 @@ class logout extends Component {
     render() {
         return (
 
-          <div className="wrapper">
+          <div className="wrapper login_screen_width">
             
             
 

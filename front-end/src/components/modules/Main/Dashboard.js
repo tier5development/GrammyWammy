@@ -162,19 +162,18 @@ class Dashboard extends Component {
       }
       }).catch(error=>{
 
-        let fb_image=localStorage.getItem('fb_image');
-        let fb_username=localStorage.getItem('fb_username');
-        let fb_name=localStorage.getItem('fb_name');
-        let fb_id=localStorage.getItem('fb_id');
-        let fb_logged_id=localStorage.getItem('fb_logged_id');
+        let insta_image=localStorage.getItem('insta_image');
+        let insta_username=localStorage.getItem('insta_username');
+        let insta_name=localStorage.getItem('insta_name');
+        
+        let insta_logged_id=localStorage.getItem('insta_logged_id');
         let autoresponder=localStorage.getItem('autoresponder');
-        console.log("Yo Are Loged in",fb_logged_id);
+        console.log("Yo Are Loged in",insta_logged_id);
         this.setState({
-        fb_image:fb_image,
-        fb_username:fb_username,
-        fb_name:fb_name,
-        fb_id:fb_id,
-        fb_logged_id:fb_logged_id,
+        insta_image:insta_image,
+        insta_username:insta_username,
+        insta_name:insta_name,
+        insta_logged_id:insta_logged_id,
         autoresponder:autoresponder,
         loader:false
         })
@@ -233,10 +232,10 @@ class Dashboard extends Component {
                               <h3>{this.state.insta_name}</h3>
                           </div>
                           <div className="fb_login_request">
-                            {!this.state.insta_logged_id ?
-                            <p>Please log-in to your Instagram profile</p>
-                            :
+                            {this.state.insta_logged_id ?
                             ""
+                            :
+                            <p>Please log-in to your Instagram profile</p>
                             }
                             <a onClick={this.refreshHandler}  class="bluebtn"><img src="images/layer1.svg"></img> Refresh</a>
                             <a onClick={this.fbHandler} class="whitebtn"><img src="images/fb_blue.svg"></img> Facebook</a>

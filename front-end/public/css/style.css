@@ -1083,14 +1083,14 @@ input[type="checkbox"].switch_2{
 }
 .login_screen_width{
 	width: 367px; 
-	height: 600px; 
-	margin: 0 40px 10px; 
+	height: 581px; 
+	/* margin: 0 40px 10px;  */
 	box-shadow: 0 1px 8px 2px rgba(0,0,0,0.3);
 }
 .dashboard_screen_width{
 	width: 396px; 
-	height: 600px; 
-	margin: 0 40px 10px; 
+	height: 581px; 
+	/* margin: 0 40px 10px;  */
 	box-shadow: 0 1px 8px 2px rgba(0,0,0,0.3);
 }
 .text-danger {
