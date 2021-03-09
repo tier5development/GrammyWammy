@@ -233,6 +233,19 @@ GetAutoResponderKeywords: async (autoUserId) => {
     throw e;
   }
 },
+  /**
+    * @DeleteAutoResponder
+    * DiAssociate user from facebook pages
+  */
+ DeleteAutoResponder: async (AutoResponderId, UserId) => {
+  try {
+    // console.log("Let Me Delete All The Notificationnnnnnn");
+    let AutoResponderDelete = await AutoResponder.deleteMany({ user_id: mongoose.Types.ObjectId(UserId), _id: mongoose.Types.ObjectId(AutoResponderId) });
+    return AutoResponderDelete;
+  } catch (e) {
+    throw e;
+  }
+},
 
 
 

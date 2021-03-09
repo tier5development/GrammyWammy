@@ -17,4 +17,12 @@ router.post('/update',
 controller.AutoResponderUpdate  
 )
 
+router.post('/updateStatus',
+controller.AutoResponderUpdateStatus  
+)
+
+router.post('/delete',
+controller.AutoResponderDelete  
+)
+
 module.exports = router
