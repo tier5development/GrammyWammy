@@ -25,4 +25,12 @@ const router = require('express').Router()
   require('./Friend/router')
   )
 
+  router.use('/segment',
+  require('./Segment/router')
+  )
+
+  router.use('/group',
+  require('./Group/router')
+  )
+
 module.exports = router

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const MessageGroupsSchema = new Schema({
+const MessageSegmentsSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
         ref: 'Users',
@@ -12,7 +12,10 @@ const MessageGroupsSchema = new Schema({
         default: null,
         required: true,
     },
-    associate_blocks: [[]],
+    message_blocks: [{
+        type: String,
+        default: []
+    }],
     is_active: {
          type: Boolean,
          default: true 
@@ -26,5 +29,5 @@ const MessageGroupsSchema = new Schema({
       default: Date.now(),
     }
 });
-// create the model for MessageGroup and expose it to our app
-module.exports = mongoose.model('MessageGroups', MessageGroupsSchema);
+// create the model for MessageSegments and expose it to our app
+module.exports = mongoose.model('MessageSegments', MessageSegmentsSchema);
