@@ -93,6 +93,14 @@ class segment extends Component {
             console.log("This I have to save in DB as Segments",payload);
             SegmentServices.createSegment(payload).then(result=>{
                 console.log("this is more SUUUUUUCCEEEEESSSS",result);
+                if(result.data.code == 1){
+                    this.setState({
+                        message_block_List:result.data.payload,
+                        segmentList:1,
+                        segmentCreate:0,
+                        segmentEdit:0
+                    })
+              }
             }).catch(error=>{
                 console.log("this is more ERRRRROOOOOORRRRRR",error);
             })
@@ -107,7 +115,16 @@ class segment extends Component {
             }
             console.log("This I have to save in DB as Segments",payload);
             SegmentServices.UpdateSegment(payload).then(result=>{
-                console.log("this is more SUUUUUUCCEEEEESSSS",result);
+                console.log("this is more SUUUUUUCCEEEEESSSS EDIT",result);
+                if(result.data.code == 1){
+                    console.log('Edited');
+                    this.setState({
+                        message_block_List:result.data.payload,
+                        segmentList:1,
+                        segmentCreate:0,
+                        segmentEdit:0
+                    })
+              }
             }).catch(error=>{
                 console.log("this is more ERRRRROOOOOORRRRRR",error);
             })
@@ -334,7 +351,7 @@ class segment extends Component {
                 {this.state.segmentEdit ?
                     <div className="subtabcontent">
                         <div className="headding gap1">
-                            <span className="big">Create a Message Segments</span> 
+                            <span className="big">Edit Message Segments</span> 
                             <a  onClick={this.listSegmentHandler} href="#" className="roundarrow"><img src={backArrowLogo}/></a>
                         </div>
                         <form>

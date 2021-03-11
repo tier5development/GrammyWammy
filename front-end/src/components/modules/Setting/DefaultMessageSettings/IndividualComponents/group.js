@@ -191,6 +191,26 @@ class group extends Component {
             console.log("this is more ERRRRROOOOOORRRRRR",error);
         })
     }
+    editMessageGroups(group_id,event){
+        event.preventDefault();
+        let  params ={
+            group_id    :   group_id
+        };
+        // GroupServices.editGroup(params).then(result  =>{
+            // console.log(result);
+            // if(result.data.code == 1){
+                this.setState({
+                    groupList:0,
+                    groupCreate:0,
+                    groupEdit:1,
+                    openCreateOption:0,
+                    openCreateOptionKeyWord:0,
+                    openCreateOptionStaticText:0,
+                    openCreateOptionSegment:0
+                })
+        //   }
+        // })
+    }
     componentDidMount(){
         let  params ={
             user_id    :   localStorage.getItem('user_id')
@@ -233,7 +253,7 @@ class group extends Component {
                         <div className="segmentlist">
                             <span className="txt">{data.title}</span>
                             <div className="action">
-                            <a href="#" onClick={(event) => this.editMessageSegments(data._id,event)} ><img src={editLogo} alt=""/></a>
+                            <a href="#" onClick={(event) => this.editMessageGroups(data._id,event)} ><img src={editLogo} alt=""/>aa</a>
                             </div>
                         </div>
                     )}
@@ -331,10 +351,93 @@ class group extends Component {
             </div>
             :
             ""
+           }
+            {this.state.groupEdit ?
+            <div className="subtabcontent">
+                <div class="headding gap1">
+                    <span class="big">Edit a Message Group</span> <a href="#" class="roundarrow"><img src={backArrowLogo}/></a>
+                </div>
+                <form>
+                    <label>Title</label>
+                        <input type="text" name="group_name" value={this.state.group_name} onChange={this.inputChangeHandller}  placeholder="Enter your message group title" className="otherstyle" />
+                    <label>Build message set</label>
+                    {this.state.BlockStorage && this.state.BlockStorage.map((data, index) =>
+                                    <span className="selectedBlock">{ data.map((newdata) =>
+                                        newdata.contents
+                                    )}<a href="#" onClick={(event) => this.RemoveMessageSegmentsBlockAdd(index,event)} className="cross">X</a></span>
+                    )}
+                    <div class="insert_msg">
+                        {this.state.TemporaryBlockStorage && this.state.TemporaryBlockStorage.map((data, index) =>
+
+                        <div class="addedinsert">{data.contents}<a href="#"   onClick={(event) => this.RemoveMessageBlockAdd(index,event)} ><img   src={blackCrossLogo}/></a> </div>
+                        
+                        )}
+                        
+                        <div class="insert">
+                            <a href="" onClick={this.addOpenOptions} ><span ><img src={smallPlusLogo}/></span> Insert {this.state.TemporaryBlockStorage.length > 0 ?" Another" : ""  }</a>
+                            {this.state.openCreateOption ? 
+                                <div class="insertdropdown">
+                                    <ul>
+                                        <li><a onClick={this.addOpenOptionsSegment} href="#">Message Segment</a>
+                                        {this.state.openCreateOptionSegment ?
+                                            <div  class="insertdropdown inserone">
+                                                <ul>
+                                                    {this.state.DefaultSegments && this.state.DefaultSegments.map((data, index) =>
+                                                        <li><a onClick={(event) => this.insertBlockIntoTempStore(1,data._id,data.title,event)}  href="#">{data.title}</a></li>                                                
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        :
+                                        ""
+                                        }
+                                        </li>                                  
+                                        <li><a onClick={this.addOpenOptionsText} href="#">Static Text</a>
+                                            {this.state.openCreateOptionStaticText ?
+                                                <div class="insertdropdown insertwo">
+                                                    <label>Title</label>
+                                                    <textarea name="default_message_text_add" value={this.state.default_message_text_add} onChange={this.inputChangeHandller} id="default_message_text_add" className="withtag otherstyle" placeholder="Please Provide Your Static Text"></textarea>
+                                                    <button  onClick={(event) => this.insertBlockIntoTempStore(2,"",this.state.default_message_text_add,event)} class="blue_btn" type="submit">Done</button> 
+                                                </div>
+                                            :
+                                            ""
+                                            }
+                                        </li>
+                                        <li><a onClick={this.addOpenOptionsKeyword} href="#">Keywords</a>
+                                        {this.state.openCreateOptionKeyWord ?
+                                            <div class="insertdropdown inserthree">
+                                                <ul>
+                                                    <li><a onClick={(event) => this.insertBlockIntoTempStore(3,"","{first_name}",event)} href="#">[ First Name ]</a></li>
+                                                    <li><a onClick={(event) => this.insertBlockIntoTempStore(3,"","{last_name}",event)} href="#">[ Last Name ]</a></li>
+                                                    <li><a onClick={(event) => this.insertBlockIntoTempStore(3,"","{Date}",event)} href="#">[ Todays Date ]</a></li>
+                                                </ul>
+                                            </div>
+                                        :
+                                        ""
+                                        }
+                                        </li>
+                                    </ul>
+                                </div>
+                            : 
+                            ""
+                            }    
+                        </div>
+                        {this.state.showAddButton
+                            ?
+                                <a href="#" onClick={this.storeInMessageBlock} className="add">Add</a>
+                            :
+                                ""
+                        }
+                    </div>
+                <button onClick={this.submitAddGroup} class="blue_btn" type="submit">Save Message Group</button>
+                </form>
+            </div>
+            :
+            ""
       }
 
         </div>
         )
       }
+      
 }
 export default  group;
