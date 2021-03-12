@@ -12,5 +12,8 @@ controller.listGroup
 router.post('/edit',
 controller.editGroup  
 )
+router.post('/update',
+controller.updateGroup  
+)
 
 module.exports = router

@@ -36,6 +36,21 @@ GetAllMessageGroup: async (id) => {
       } catch (e) {
         throw e;
       }
+    },
+    /**
+    * @updateMessageGroupById
+    * update MessageGroup BY Id
+    */
+    updateMessageGroupById: async (data, id) => {
+      try {
+        let updateMessageGroup = await MessageGroup.findByIdAndUpdate(id, data, {
+          new: true,
+          upsert: true
+        }).exec();
+        return updateMessageGroup;
+      } catch (e) {
+        throw e;
+      }
     }
 }
 
