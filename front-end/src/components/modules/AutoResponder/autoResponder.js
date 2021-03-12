@@ -12,46 +12,60 @@ class autoResponnder extends Component {
       }
     }
     componentDidMount(){
-        let Token=localStorage.getItem("kyubi_user_token");
+        let UserToken=localStorage.getItem("kyubi_user_token");
+        //this.setState({autoresponderList:autoresponderList})
         let payload ={
-            user_id:Token
+            user_id:UserToken
         }
         AutoResponderService.listAutoResponder(payload).then(async response =>{
-          
-            if(response.data.payload.autokey)
-            this.setState({autoresponderList:response.data.payload.autokey})
-            
-
-            let user_id=localStorage.getItem('user_id');
-            let payload   ={user_id:user_id }
-            await settingService.getUserDetails(payload).then(result  =>{
-
-            if(result.data.code==1){
-            let responsenewvalue =result.data;
-            console.log( responsenewvalue.payload.UserInfo.user_id);
-            localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
-            localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
-            localStorage.setItem('fb_id', responsenewvalue.payload.UserInfo.facebook_id);
-            localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_name);
-            localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_profile_name);
-            localStorage.setItem('fb_image', responsenewvalue.payload.UserInfo.facebook_image);
-            localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
-            localStorage.setItem('default_message_text', responsenewvalue.payload.UserSettings.default_message_text);
-            localStorage.setItem('autoresponder', responsenewvalue.payload.UserSettings.autoresponder);
-            localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
-            localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
-
-
+          console.log("This is what i Got",response);
+          if(response.data.payload !=  "" ){
+            console.log("This is what i Got",response.data.payload);
+            if(response.data.payload.autokey.length>0){
+                console.log("This is what i Got",response.data.payload.autokey);
+                this.setState({autoresponderList:response.data.payload.autokey})
             }
-            }).catch(error=>{
-
-
-            })
+            
+          }
+          
             this.setState({loader:false});
+        }).catch(error=>{
+            this.setState({loader:false});
+        });
+
+    
+    
+          let user_id=localStorage.getItem('user_id');
+          let Newpayload   ={user_id:user_id }
+          settingService.getUserDetails(Newpayload).then(result  =>{
+            console.log("This is what i111 Got",result);
+            localStorage.setItem('kyubi_user_token', result.data.payload.UserInfo.kyubi_user_token);
+                      localStorage.setItem('user_id', result.data.payload.UserInfo.user_id);
+                      localStorage.setItem('fb_id', result.data.payload.UserInfo.facebook_id);
+                      localStorage.setItem('fb_username', result.data.payload.UserInfo.facebook_name);
+                      localStorage.setItem('fb_name', result.data.payload.UserInfo.facebook_profile_name);
+                      localStorage.setItem('fb_image', result.data.payload.UserInfo.facebook_image);
+                      
+
+                      if(result.data.payload.UserSettings.default_message){
+                        localStorage.setItem('default_message', result.data.payload.UserSettings.default_message);
+                      }
+                      if(result.data.payload.UserSettings.default_message_text){
+                        localStorage.setItem('default_message_text', result.data.payload.UserSettings.default_message_text);
+                      }
+                      if(result.data.payload.UserSettings.autoresponder){
+                        localStorage.setItem('autoresponder', result.data.payload.UserSettings.autoresponder);
+                      }
+                      if(result.data.payload.UserSettings.default_time_delay){
+                        localStorage.setItem('default_time_delay', result.data.payload.UserSettings.default_time_delay);
+                      }
+                      
+                      localStorage.setItem('keywordsTally', JSON.stringify(result.data.payload.AutoResponderKeywords));
           }).catch(error=>{
-            this.setState({loader:false});
-          });
+            console.log("This is what i222 Got",error);
+          })
 
+    
     }
     render() {
         return (

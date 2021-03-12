@@ -32,7 +32,7 @@ class setting extends Component {
       }
       render() {
         return (
-            <div className="grammy_screen_width">
+            <div>
                 {this.state.loader && (   
                     <div className="after_login_refresh"><img src={biglogo} alt=""/></div>
                 )}

@@ -2,17 +2,37 @@ import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import AutoResponderService from  "../../../services/autoResponderServices"
 import Sidebar from "../Common/sidebar"
+import ReactDOM from 'react-dom';
+import { WithContext as ReactTags } from 'react-tag-input';
+const KeyCodes = {
+    comma: 188,
+    enter: 13,
+  };
+  
+const delimiters = [KeyCodes.comma, KeyCodes.enter];
 class autoResponderEdit extends Component {
     constructor(props) {
       super(props)
       this.state = {
         auto_responder_id:"",
         auto_responder_name:"",
-        auto_responder_keywords:"",
+        auto_responder_keywords: [],
         auto_responder_message:"",
         auto_responder_status:0,
         loader:false
-      }
+      };
+      this.handleDelete = this.handleDelete.bind(this);
+        this.handleAddition = this.handleAddition.bind(this);
+    }
+    handleDelete(i) {
+        const { auto_responder_keywords } = this.state;
+        this.setState({
+            auto_responder_keywords: auto_responder_keywords.filter((auto_responder_keyword, index) => index !== i),
+        });
+    }
+
+    handleAddition(auto_responder_keyword) {
+        this.setState(state => ({ auto_responder_keywords: [...state.auto_responder_keywords, auto_responder_keyword] }));
     }
     /**
         * @inputChangeHandller 
@@ -41,6 +61,7 @@ class autoResponderEdit extends Component {
             auto_responder_message:this.state.auto_responder_message,
             auto_responder_status:this.state.auto_responder_status
         }
+        console.log("This I am Getting",payload)
         
         AutoResponderService.updateAutoResponder(payload).then(response =>{
           
@@ -60,16 +81,10 @@ class autoResponderEdit extends Component {
         AutoResponderService.editAutoResponder(payload).then(async response=>{
             console.log(response);
             if(response.data.code === 1){
-                let newKey="";
+                let newKey=[];
                 await response.data.payload[0].autoresponderkeywords.map(async (result, i) => {
                     console.log(result.keywords);
-                    if(newKey===""){
-                        //console.log(result);
-                        newKey=result.keywords
-                    }else{
-                        newKey=newKey+","+result.keywords;
-                        
-                    }
+                    newKey.push({"id":result.keywords,"text":result.keywords})
                 });
                 this.setState({
                     auto_responder_id:response.data.payload[0]._id,
@@ -85,6 +100,7 @@ class autoResponderEdit extends Component {
         })
       }
     render() {
+        const { auto_responder_keywords } = this.state;
         return (
             <div className="wrapper">
                 {this.state.loader && (   
@@ -129,14 +145,13 @@ class autoResponderEdit extends Component {
                                     
                                     <div className="form-group">
                                         <label for="exampleInputEmail1">Auto-Responder Keywords</label>
-                                        <textarea 
-                                        name="auto_responder_keywords" 
-                                        className="form-control" 
-                                        rows="3"
-                                        placeholder="Auto-Responder Keywords  Seperated with coma Like hello,Hi,How are you"
-                                        value={this.state.auto_responder_keywords}
-                                        onChange={this.inputChangeHandller}
-                                        ></textarea>
+                                        <ReactTags 
+                                        placeholder="Press enter Or Press , to Create Autoresponder Keywords"
+                                        tags={auto_responder_keywords}
+                                        handleDelete={this.handleDelete}
+                                        handleAddition={this.handleAddition}
+                                        allowUnique={true}
+                                        delimiters={delimiters} />
                                     </div>
                                     <div className="form-group">
                                         <label for="exampleInputEmail1">Auto-Responder Response Message</label>

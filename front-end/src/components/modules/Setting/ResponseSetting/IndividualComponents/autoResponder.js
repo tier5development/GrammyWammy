@@ -3,6 +3,8 @@ import plusLogo from  "../../../../../images/plus.svg";
 import editLogo from  "../../../../../images/edit.svg";
 import deleteLogo from  "../../../../../images/delete.svg";
 import EmptyFileLogo from "../../../../../images/empty_file.svg";
+import LoaderLogo from "../../../../../images/Loader.gif"
+import backArrowLogo from "../../../../../images/arrow2.svg";
 import AutoResponderService from  "../../../../../services/autoResponderServices";
 import { WithContext as ReactTags } from 'react-tag-input';
 const KeyCodes = {
@@ -23,7 +25,7 @@ class responseSetting extends Component {
           auto_responder_keywords: [],
           auto_responder_message:"",
           auto_responder_status:1,
-
+            loader:false,
             auto_responder_id_edit:"",
             auto_responder_name_edit:"",
             auto_responder_message_edit:"",
@@ -72,13 +74,23 @@ class responseSetting extends Component {
         this.setState(state => ({ auto_responder_keywords_edits: [...state.auto_responder_keywords_edits, auto_responder_keywords_edit] }));
     }
     addAutoResponderHandler  = async (event) =>  {
+        this.setState({loader:true});
     event.preventDefault();
     this.setState({
         autoResponsederList:0,
         autoResponsederCreate:1,
-        autoResponsederEdit:0
+        autoResponsederEdit:0,
+        loader:false
     })
     
+    }
+    listAutoResponderHandler  = async (event) =>  {
+        event.preventDefault();
+        this.setState({
+            autoResponsederList:1,
+            autoResponsederCreate:0,
+            autoResponsederEdit:0,
+        })
     }
     /**
      * @insertTagAtMessageSegments
@@ -184,6 +196,7 @@ class responseSetting extends Component {
     }
     createAutoResponderGroupHandlerEdit =  (event) =>{
         event.preventDefault();
+        this.setState({loader:true})
         let Token=localStorage.getItem("kyubi_user_token");
         let payload = {
             user_id:Token,
@@ -216,7 +229,8 @@ class responseSetting extends Component {
                                         auto_responder_name_edit:"",
                                         auto_responder_keywords_edits:[],
                                         auto_responder_message_edit:"",
-                                        auto_responder_status_edit:1
+                                        auto_responder_status_edit:1,
+                                        loader:false
                         })
                     }
                   }
@@ -226,6 +240,7 @@ class responseSetting extends Component {
         });
     }
     editAutoResponder(autoresponder_id,event){
+        this.setState({loader:true})
         event.preventDefault();
         let payload = { 
             Id: autoresponder_id 
@@ -246,7 +261,8 @@ class responseSetting extends Component {
                     auto_responder_keywords_edits:newKey,
                     autoResponsederList:0,
                     autoResponsederCreate:0,
-                    autoResponsederEdit:1
+                    autoResponsederEdit:1,
+                    loader:false
                   })
             }
         }).catch(error=>{
@@ -254,6 +270,7 @@ class responseSetting extends Component {
         })
     }
     editAutoResponderStatus(autoresponder_id,prestatus){
+        this.setState({loader:true})
         let status =1;
         if(prestatus == 1){
             status=0;
@@ -282,6 +299,7 @@ class responseSetting extends Component {
                                         autoResponsederList:1,
                                         autoResponsederCreate:0,
                                         autoResponsederEdit:0,
+                                        loader:false
                                         
                         })
                     }
@@ -292,6 +310,7 @@ class responseSetting extends Component {
         });
     }
     deleteAutoResponder(autoresponder_id,event){
+        this.setState({loader:true})
         event.preventDefault();
         let user_id=localStorage.getItem("user_id");
         let payload = { 
@@ -313,6 +332,7 @@ class responseSetting extends Component {
                                         autoResponsederList:1,
                                         autoResponsederCreate:0,
                                         autoResponsederEdit:0,
+                                        loader:false
                                         
                         })
                   }
@@ -322,6 +342,7 @@ class responseSetting extends Component {
         });
     }
     componentDidMount(){
+        this.setState({loader:true});
         let UserToken=localStorage.getItem("kyubi_user_token");
         //this.setState({autoresponderList:autoresponderList})
         let payload ={
@@ -334,13 +355,14 @@ class responseSetting extends Component {
             console.log("This is what i Got",response.data.payload);
             if(response.data.payload.autokey.length>0){
                 console.log("This is what i Got",response.data.payload.autokey);
-                this.setState({autoresponderListValue:response.data.payload.autokey})
+                this.setState({autoresponderListValue:response.data.payload.autokey,loader:false})
             }
             
           }
+          this.setState({loader:false});
         }).catch(error=>{
-            //this.setState({loader:false});
-            this.setState({autoresponderListValue:[]})
+            this.setState({loader:false});
+            this.setState({autoresponderListValue:[],loader:false})
         });
     }
       render() {
@@ -350,14 +372,20 @@ class responseSetting extends Component {
                 {this.state.autoResponsederList ?
                 
                 <div id="tabautoResponder" className="subtabcontent">
+                    {this.state.loader && (   
+                                <div className="after_login_refresh"><img src={LoaderLogo} alt=""/></div>
+                    )}
                     { this.state.autoresponderListValue.length != 0 ?
 
                         <div>
                             <div className="headding">
                                 <span>Auto Responder Lists</span> <a href="" onClick={this.addAutoResponderHandler} className="createbtn"><img alt="" src={plusLogo}/> Create New</a>
                             </div>
+                            <div className="listingholder">
+
                             {this.state.autoresponderListValue.map((data, i) => {
                                 return(
+                                    
                                     <div className={data.status === 1  ?  "listing_card" :"listing_card inactive"}>
                                         <div className="head">
                                             <div className="txt">{data.auto_responder_name}</div>
@@ -384,9 +412,12 @@ class responseSetting extends Component {
                                             </div>
                                         </div>
                                         
-                                    </div>
+                                    </div>                                  
+
                                 )
                             })}
+                            </div>
+
                         </div>
                             
                     :
@@ -402,6 +433,13 @@ class responseSetting extends Component {
                 }
                 {this.state.autoResponsederCreate ?
                 <div id="tabautoResponder" className="subtabcontent">
+                    {this.state.loader && (   
+                                <div className="after_login_refresh"><img src={LoaderLogo} alt=""/></div>
+                    )}
+                    <div className="headding gap1">
+                            <span className="big">Create a Auto Responder</span> 
+                            <a  onClick={this.listAutoResponderHandler} href="#" className="roundarrow"><img src={backArrowLogo}/></a>
+                        </div>
                     <form>
                         <label>
                             Auto Responder Name
@@ -455,6 +493,13 @@ class responseSetting extends Component {
                 }
                 {this.state.autoResponsederEdit?
                 <div id="tabautoResponder" className="subtabcontent">
+                    {this.state.loader && (   
+                                <div className="after_login_refresh"><img src={LoaderLogo} alt=""/></div>
+                    )}
+                    <div className="headding gap1">
+                            <span className="big">Edit a Auto Responder</span> 
+                            <a  onClick={this.listAutoResponderHandler} href="#" className="roundarrow"><img src={backArrowLogo}/></a>
+                        </div>
                     <form>
                         <label>
                             Auto Responder Name

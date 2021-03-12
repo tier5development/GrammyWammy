@@ -1,6 +1,6 @@
 import React, { Component} from "react";
 import { Redirect, withRouter } from 'react-router-dom';
-
+import loginHelper from "../../../helper/loginHelper";
 import {kyubiExtensionId}  from "../../../config";
 import "./login.css";
 
@@ -14,11 +14,10 @@ class logout extends Component {
 
       }
       componentDidMount(){
-        
+        let LO = loginHelper.logout();
         localStorage.removeItem("fb_id")
         localStorage.removeItem("token")
         localStorage.removeItem("keywordsTally")
-        localStorage.removeItem("userEmail")
         localStorage.removeItem('inBackgroundFetching');
         localStorage.removeItem('fb_image');
         localStorage.removeItem('fb_logged_id');
@@ -35,14 +34,17 @@ class logout extends Component {
         localStorage.removeItem('fbthread');
         localStorage.removeItem('fbmunread');
         localStorage.removeItem('fbprofile');
-        setTimeout(() => {
-            this.props.history.push('/');
-          }, 3000);
+        localStorage.removeItem('profileFetch');
+        localStorage.removeItem('messageListFetch');
+        localStorage.removeItem('individualMessageFetch');
+        
+        this.props.history.push('/');
+         
       }
     render() {
         return (
 
-          <div className="wrapper login_screen_width">
+          <div className="wrapper">
             
             
 

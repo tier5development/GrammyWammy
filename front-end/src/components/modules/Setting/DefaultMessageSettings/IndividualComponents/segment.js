@@ -5,6 +5,7 @@ import deleteLogo from  "../../../../../images/delete1.svg";
 import viewLogo from  "../../../../../images/view.svg";
 import backArrowLogo from "../../../../../images/arrow2.svg";
 import SegmentServices from "../../../../../services/segmentServices.js";
+import biglogo from "../../../../../images/Loader.gif"
 class segment extends Component {
     constructor(props) {
         super(props)
@@ -21,7 +22,10 @@ class segment extends Component {
             message_block_edit:[],
             sagment_id_edit:"",
             hideTextboxEdit:false,
-            default_message_text_edit:""
+            default_message_text_edit:"",
+            loader:true,
+            csn:false,
+            esn:false
         }
       }
         /**
@@ -67,7 +71,8 @@ class segment extends Component {
             this.setState({
                 message_block:Old_message_block,
                 default_message_text:"",
-                hideTextbox:true
+                hideTextbox:true,
+                cmb:false
             });
             console.log("This are the Message Blocks",this.state.message_block)
         }
@@ -84,29 +89,84 @@ class segment extends Component {
             console.log("This are the Message Blocks",this.state.message_block_edit)
         }
         submitAddSegment   =    async   (event) =>  {
+            this.setState({loader:true})
             event.preventDefault();
-            let payload =   {
-                message_segments_block:this.state.message_block,
-                message_segment_name:this.state.sagment_name,
-                user_id:localStorage.getItem("user_id")
+            if(this.state.sagment_name == ""){
+                this.setState({csn:true,loader:false})
+            }else{
+                this.setState({csn:false})
             }
-            console.log("This I have to save in DB as Segments",payload);
-            SegmentServices.createSegment(payload).then(result=>{
-                console.log("this is more SUUUUUUCCEEEEESSSS",result);
-                if(result.data.code == 1){
-                    this.setState({
-                        message_block_List:result.data.payload,
-                        segmentList:1,
-                        segmentCreate:0,
-                        segmentEdit:0
+            
+            if(this.state.sagment_name !="" ){
+                let payload =   {
+                    message_segments_block:this.state.message_block,
+                    message_segment_name:this.state.sagment_name,
+                    user_id:localStorage.getItem("user_id")
+                }
+                console.log("This I have to save in DB as Segments",payload);
+                SegmentServices.createSegment(payload).then(result=>{
+                    
+                    let  params ={
+                        user_id    :   localStorage.getItem('user_id')
+                    };
+                    SegmentServices.getSegment(params).then(result=>{
+                        if(result.data.code == 1){
+                            this.setState({
+                            message_block_List:result.data.payload,
+                            loader:false,
+                            segmentList:1,
+                            segmentCreate:0,
+                            segmentEdit:0,
+                            message_block:[],
+                            sagment_name:""
+
+                            })  
+                        }else{
+                            this.setState({
+                                loader:false,
+                                segmentList:1,
+                                segmentCreate:0,
+                                segmentEdit:0,
+                                message_block:[],
+                                sagment_name:""
+                                })
+                        }
+                    }).catch(error=>{
+                        console.log("This I got From DDDDBBBBBB EROOOOOO",error);
                     })
-              }
-            }).catch(error=>{
-                console.log("this is more ERRRRROOOOOORRRRRR",error);
-            })
+    
+                }).catch(error=>{
+                    let  params ={
+                        user_id    :   localStorage.getItem('user_id')
+                    };
+                    SegmentServices.getSegment(params).then(result=>{
+                        if(result.data.code == 1){
+                            this.setState({
+                            message_block_List:result.data.payload,
+                            loader:false
+                            })  
+                        }else{
+                            this.setState({
+                                loader:false
+                                })
+                        }
+                    }).catch(error=>{
+                        console.log("This I got From DDDDBBBBBB EROOOOOO",error);
+                    })
+    
+                })
+            }
+            
         }
         submitAddSegmentEdit   =    async   (event) =>  {
+            this.setState({loader:true})
             event.preventDefault();
+            if(this.state.sagment_name_edit == ""){
+                this.setState({esn:true,loader:false})
+            }else{
+                this.setState({esn:false})
+            }
+            if(this.state.sagment_name_edit !="" ){
             let payload =   {
                 message_segments_block:this.state.message_block_edit,
                 message_segment_name:this.state.sagment_name_edit,
@@ -115,19 +175,33 @@ class segment extends Component {
             }
             console.log("This I have to save in DB as Segments",payload);
             SegmentServices.UpdateSegment(payload).then(result=>{
-                console.log("this is more SUUUUUUCCEEEEESSSS EDIT",result);
+                console.log("this is more SUUUUUUCCEEEEESSSS",result);
                 if(result.data.code == 1){
-                    console.log('Edited');
                     this.setState({
-                        message_block_List:result.data.payload,
+                    message_block_List:result.data.payload,
+                    loader:false,
+                    segmentList:1,
+                    segmentCreate:0,
+                    segmentEdit:0,
+                    message_block_edit:[],
+                    sagment_name_edit:"",
+                    sagment_id_edit:""
+                    })  
+                }else{
+                    this.setState({
+                        loader:false,
                         segmentList:1,
                         segmentCreate:0,
-                        segmentEdit:0
-                    })
-              }
+                        segmentEdit:0,
+                        message_block_edit:[],
+                        sagment_name_edit:"",
+                        sagment_id_edit:""
+                        })
+                }
             }).catch(error=>{
                 console.log("this is more ERRRRROOOOOORRRRRR",error);
             })
+            }
         }
         /**
          * @insertTagAtMessageSegments
@@ -258,10 +332,18 @@ class segment extends Component {
                 
                 if(result.data.code == 1){
                       this.setState({
-                        message_block_List:result.data.payload
+                        message_block_List:result.data.payload,
+                        loader:false
+                      })
+                }else{
+                    this.setState({
+                        loader:false
                       })
                 }
                 }).catch(error=>{
+                    this.setState({
+                        loader:false
+                      })
                   console.log("This I got From DDDDBBBBBB EROOOOOO",error);
                 })
         }
@@ -271,6 +353,9 @@ class segment extends Component {
                 {this.state.segmentList ?
 
                     <div className="subtabcontent">
+                            {this.state.loader && (   
+                                <div className="after_login_refresh"><img src={biglogo} alt=""/></div>
+                            )}
                         { this.state.message_block_List.length != 0 ?
                             <div>
                                 <div className="headding">
@@ -304,6 +389,9 @@ class segment extends Component {
                 }
                 {this.state.segmentCreate ?
                     <div className="subtabcontent">
+                        {this.state.loader && (   
+                                <div className="after_login_refresh"><img src={biglogo} alt=""/></div>
+                        )}
                         <div className="headding gap1">
                             <span className="big">Create a Message Segments</span> 
                             <a  onClick={this.listSegmentHandler} href="#" className="roundarrow"><img src={backArrowLogo}/></a>
@@ -311,7 +399,9 @@ class segment extends Component {
                         <form>
                             <label>Title</label>
                             <input type="text" name="sagment_name" value={this.state.sagment_name} onChange={this.inputChangeHandller}  placeholder="Enter your message segment title" className="otherstyle" />
-                            
+                            {this.state.csn && (
+                            <div className="error"> Please Provide Message Segments Title *</div>
+                            )}
                             <label>Create message block (s)<br/>
                                 <span>Click on the </span>"keyword"
                                 <span> to insert into your message</span>
@@ -327,6 +417,7 @@ class segment extends Component {
                                 <textarea name="default_message_text" value={this.state.default_message_text} onChange={this.inputChangeHandller} id="default_message_text" className="withtag otherstyle" placeholder="Build block content">
                         
                                 </textarea>
+                                
                                 }
                                 
                                 {this.state.default_message_text==""
@@ -335,6 +426,7 @@ class segment extends Component {
                                 :
                                 <a href="#" onClick={this.storeInMessageBlock} className="add">Add</a>
                                 }
+                                
                             </div>
                             <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{first_name}')} className="formtag">[ First Name ]</button> 
                             <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{last_name}')} class="formtag">[ Last Name ]</button>
@@ -350,14 +442,19 @@ class segment extends Component {
                 }
                 {this.state.segmentEdit ?
                     <div className="subtabcontent">
+                        {this.state.loader && (   
+                                <div className="after_login_refresh"><img src={biglogo} alt=""/></div>
+                        )}
                         <div className="headding gap1">
-                            <span className="big">Edit Message Segments</span> 
+                            <span className="big">Edit a Message Segments</span> 
                             <a  onClick={this.listSegmentHandler} href="#" className="roundarrow"><img src={backArrowLogo}/></a>
                         </div>
                         <form>
                             <label>Title</label>
                             <input type="text" name="sagment_name_edit" value={this.state.sagment_name_edit} onChange={this.inputChangeHandller}  placeholder="Enter your message segment title" className="otherstyle" />
-                            
+                            {this.state.esn && (
+                                <div className="error"> Please Provide Message Segments Title *</div>
+                            )}
                             <label>Edit message block (s)<br/>
                                 <span>Click on the </span>"keyword"
                                 <span> to insert into your message</span>

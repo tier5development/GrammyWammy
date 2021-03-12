@@ -10156,10 +10156,6 @@
   a.text-danger:hover, a.text-danger:focus {
     color: #a71d2a !important;
   }
-
-  .text-success {
-    color: #2AE12D !important;
-  }
   
   .text-light {
     color: #f8f9fa !important;
@@ -32956,3 +32952,49 @@
     color: #ced4da;
   }
   /*# sourceMappingURL=adminlte.css.map */
+  /*.......................
+new style added for modification
+................................*/
+
+.content.container-fluid{
+  padding: 0;
+  height: 100%;
+}
+
+.login_block {
+  margin-bottom: 44px;
+}
+
+.createbtn:hover{
+color: #fff;
+}
+
+.listingholder {
+  height: 205px;
+  overflow: auto;
+  margin: 10px 0;
+}   /*this is the new class for auto responder container for scrolling */
+
+.insert_msg .insert span img {
+  vertical-align: baseline;
+}
+
+.insert_msg .insertdropdown.insertwo::before {
+width: 0;
+  height: 0;
+  border-style: solid;
+  left: -8px;
+  border-width: 5px 8px 5px 0;
+  border-color: transparent #ffffff transparent transparent;
+  top: 10px;
+}
+
+.error {
+  width: 100%;
+  border: 1px solid red;
+  padding: 2px 9px 4px;
+  color: red;
+  border-radius: 22px;
+  font-size: 13px;
+  margin-bottom: 10px;
+}

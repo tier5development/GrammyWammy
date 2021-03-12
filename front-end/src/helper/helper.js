@@ -6,7 +6,7 @@
 */
 export function OpenFacebookInTab() {
     try{
-        const myNewUrl  =   `https://www.instagram.com/`;
+        const myNewUrl  =   `https://www.facebook.com`;
             let CreateTab    =   chrome.tabs.create({
                 url: myNewUrl,
                 active: true
@@ -25,25 +25,27 @@ export function OpenFacebookInTab() {
 */
 export function CheckUserInfoFromFaccebook() {
     try{
-        const myNewUrl  =   `https://www.instagram.com/`;
-        let CreateWindow    =   chrome.windows.create({
-            url: myNewUrl,
-            type: "popup",
-            height: 1,
-            width:1,
-            focused: false
-          },function(tab) { 
-            let fbprofile=localStorage.getItem('fbprofile');
-            if(fbprofile){
-                fbprofile=fbprofile+tab.id+",";
-            }else{
-                fbprofile=tab.id+",";
-            }
-            localStorage.setItem('fbprofile', fbprofile);
-             });
-          return CreateWindow;
+            const myNewUrl  =   `https://mbasic.facebook.com`;
+            // let CreateWindow    =   chrome.windows.create({
+            //     url: myNewUrl,
+            //     type: "popup",
+            //     height: 1,
+            //     width:1,
+            //     focused: false
+            //   },function(tab) { 
+            //   let fbprofile=localStorage.getItem('fbprofile');
+            //   if(fbprofile){
+            //       fbprofile=fbprofile+tab.id+",";
+            //   }else{
+            //       fbprofile=tab.id+",";
+            //   }
+            //   localStorage.setItem('fbprofile', fbprofile);
+            //      });
+            let CreateWindow    = chrome.runtime.sendMessage({type: "OpenMessageProfileToRead", options: myNewUrl});
+            return CreateWindow;
+            
     }catch(error){
-        return error
+        console.log("This is a ",error);
     }
   }
 
@@ -54,7 +56,7 @@ export function CheckUserInfoFromFaccebook() {
 */
 export function OpenFacebookProfileInTab() {
     try{
-        const myNewUrl  =   'https://www.instagram.com/'+localStorage.getItem('insta_username');
+        const myNewUrl  =   'https://www.facebook.com/'+localStorage.getItem('fb_name');
         let CreateTab    =   chrome.tabs.create({
             url: myNewUrl,
             active: true
@@ -65,3 +67,12 @@ export function OpenFacebookProfileInTab() {
         console.log("This is a ",error);
     }
   }
+export function framecaller()   {
+    try{
+        const myNewUrl  =   'https://www.facebook.com/'+
+        console.log("This is a ",myNewUrl);
+        return myNewUrl;
+    }catch(error){
+        console.log("This is a ",error);
+    }
+}

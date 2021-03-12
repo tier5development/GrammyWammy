@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 import  plog from "../../../images/avatar_a.png";
 import  sideMenuLogo from "../../../images/side_menu.svg";
 import  SettingServices from "../../../services/setting";
+import  LoadingLogo from "../../../images/Loader.gif";
+import loginHelper from  "../../../helper/loginHelper.js"
 class header extends Component {
     constructor(props) {
         super(props)
@@ -15,8 +17,8 @@ class header extends Component {
           ready_for_activate:0,
           user_name:"XXXXXX",
           user_image:plog,
-          meven_status:0
-         
+          meven_status:0,
+         loader:false
         }
         
       }
@@ -28,6 +30,7 @@ class header extends Component {
         })
       }
       autoSetting = async (event) => {
+        this.setState({loader:true});
         let payload = {
         }
         console.log("hiyy",this.state.meven_status )
@@ -37,6 +40,7 @@ class header extends Component {
               update_load_status:1,
               kyubi_user_token:localStorage.getItem('kyubi_user_token')
             }
+            let LC=loginHelper.login();
 
         }else{
             this.setState({meven_status:0})
@@ -44,10 +48,11 @@ class header extends Component {
               update_load_status:0,
               kyubi_user_token:localStorage.getItem('kyubi_user_token')
             }
+            let LO = loginHelper.logout();
         }
         await SettingServices.updateLoadStatus(payload).then(async result=>{
           if(result.data.code==1){
-            let responsenewvalue =result.data;
+                  let responsenewvalue =result.data;
 
                   localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                   localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
@@ -81,8 +86,12 @@ class header extends Component {
                     autoresponder_status:localStorage.getItem('autoresponder'),
                     default_message:localStorage.getItem('default_message')
                   })
+                  this.setState({loader:false});
           }
+        }).catch(error=>{
+          this.setState({loader:false});
         });
+
       }
       ShowMenu = (event) => {
         event.preventDefault();
@@ -130,6 +139,7 @@ class header extends Component {
       }
     
     componentDidMount(){
+      this.setState({loader:true});
         let fb_username=localStorage.getItem('fb_username');
         let fb_image=localStorage.getItem('fb_image');
         let autoresponder=localStorage.getItem('autoresponder');
@@ -165,10 +175,14 @@ class header extends Component {
             default_message:default_message
           });
         }
+        this.setState({loader:false});
     }
     render() {
         return (
             <div className="gen_header">
+              {this.state.loader && (   
+                                <div className="after_login_refresh"><img src={LoadingLogo} alt=""/></div>
+              )}
               <div className="logo"><img src={logo} alt="" /></div>
               <div className="hBtnWrapper">
                 <div className="toogler">
@@ -200,7 +214,7 @@ class header extends Component {
                       <ul className="menunav">
                         <li><NavLink  to="/dashboard"><img src="images/menuicon4.svg" /> Dashboard</NavLink></li>
                         <li><NavLink  to="/setting"><img src="images/menuicon3.svg"/> Settings</NavLink></li>
-                        <li><NavLink  to="/dashboard"><img src="images/menuicon2.svg"/> Friends</NavLink></li>
+
                         <li><NavLink  to="/logout"><img src="images/menuicon1.svg"/> Logout</NavLink></li>
                       </ul>
                   </div>

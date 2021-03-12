@@ -18,7 +18,8 @@ class defaultMessage extends Component {
           selectedGPL:null,
           default_message_group:"",
           default_message_text:"",
-          default_time_delay:0
+          default_time_delay:0,
+          loader:false
         }
       }
       handleChange = selectedOption => {
@@ -137,6 +138,7 @@ class defaultMessage extends Component {
         })
       }
       componentDidMount(){
+        this.setState({loader:true})
         let  params ={
           user_rec    :   localStorage.getItem('kyubi_user_token')
         };
@@ -190,14 +192,16 @@ class defaultMessage extends Component {
                 
                 
             }
+            
           }).catch(error=>{
             console.log("This I got From DDDDBBBBBB EROOOOOO",error);
           })
 
-
+          this.setState({loader:false})
 
 
         }).catch(error=>{
+          this.setState({loader:false})
           console.log("This I got From backGround EROOOOOO Default",error);
         })
         
@@ -209,11 +213,11 @@ class defaultMessage extends Component {
 
         return (
             <div id="tabdefaultMessage" className="subtabcontent">
-
+              
             <form>
               <div className="selectbox">
               <Select
-              className="selectbox"
+              
               value={selectedOption}
               onChange={this.handleChange}
               options={options}
@@ -221,20 +225,20 @@ class defaultMessage extends Component {
 
               </div>
               {this.state.default_message_type ? 
-
+              <div className="selectbox">
               <Select
-              className="selectbox"
+              
               value={selectedGPL}
               onChange={this.handleChangeGPL}
               options={GPL}
               />
- 
+              </div>
               : 
               <div>
                 <textarea name="default_message_text" value={this.state.default_message_text} onChange={this.inputChangeHandller} id="default_message_text" className="withtag otherstyle" placeholder="Build block content">
                         
                 </textarea>
-              <a href="#" className="formtag">[ First Name ]</a> <a href="#" className="formtag">[ Last Name ]</a>
+
               <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{first_name}')} className="formtag">[ First Name ]</button> 
               <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{last_name}')} class="formtag">[ Last Name ]</button>
               <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{date}')} class="formtag">[ Todays Date ]</button>
