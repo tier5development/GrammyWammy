@@ -10,16 +10,19 @@ const UsersSchema = new Schema({
         type: Number,
         default: 0
     },
-  
-    instagram_name: {
+    facebook_id: {
+        type: Number,
+        default: 0
+    },
+    facebook_name: {
         type: String,
         default: ''
     },
-    instagram_profile_name: {
+    facebook_profile_name: {
         type: String,
         default: ''
     },
-    instagram_image: {
+    facebook_image: {
         type: String,
         default: ''
     },

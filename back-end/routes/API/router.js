@@ -17,10 +17,6 @@ const router = require('express').Router()
   require('./AutoResponder/router')
   )
 
-  router.use('/messagegroup',
-  require('./MessageGroup/router')
-  )
-
   router.use('/friend',
   require('./Friend/router')
   )

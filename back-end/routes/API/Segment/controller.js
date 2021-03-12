@@ -1,6 +1,5 @@
 
 const MessageSegment    =   require('../../../models/repositories/messagesegment.repository');
-const UsersRepo = require('../../../models/repositories/user.repository');
 module.exports.createSegment = async (req, res) => {
     try {
         let mess="";
@@ -97,36 +96,34 @@ module.exports.editSegment  =   async   (req,   res)    =>  {
     }
 }
 
-module.exports.updateSegment  =   async   (req,   res)    =>  {
+module.exports.updateSegment  = async   (req    ,res)   =>  {
     try{
-
-        console.log("This is my sent",req.body);
-        let segmentDetails= await MessageSegment.GetSegmentWithId(req.body.sagment_id_edit);
-        console.log(req.body.user_id+'User Id');
-        let getUserInfo = await UsersRepo.GetUserById(req.body.user_id);
-        console.log(getUserInfo);
-        if(segmentDetails){
-            console.log('Condition Satisfied');
-            console.log(segmentDetails);
-            let UserSegmentinfo= {
-                title: req.body.message_segment_name,
-                message_blocks:req.body.message_segments_block,
-                is_active:true
-              };
-              let updateSegment=await MessageSegment.updateSegmentById(UserSegmentinfo,req.body.sagment_id_edit);
-              res.send({
-                code: 1,
-                message: "Successfull",
-                payload:await MessageSegment.GetAllMessageSegment(req.body.user_id)
-            });
+        let mess="";
+        let code=1;
+        if(req.body.sagment_id_edit !=""  ){
+            let payload ={
+                title:req.body.message_segment_name,
+                message_blocks:req.body.message_segments_block
+            }
+            let updateMessageSegment=await MessageSegment.updateMessageSegmentById(payload,req.body.sagment_id_edit);
+            messageSegment=await MessageSegment.GetAllMessageSegment(req.body.user_id);
+            //messageSegment=await MessageSegment.GetMessageSegment(req.body.sagment_id_edit);
+            mess="Segments List Successfully";
+            code=1;
+        }else{
+            mess="Segments List Un-Successfully";
+            code=2;
         }
-
-    }catch(error){
+        res.send({
+            code: code,
+            message: mess,
+            payload: messageSegment
+        })    
+    } catch (error) {
         res.send({
             code: 3,
-            message: "Error",
-            payload: error.message
+            message: error.message,
+            payload: error
         })
     }
-
 }

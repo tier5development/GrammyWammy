@@ -7,6 +7,10 @@ const FriendsSchema = new Schema({
         ref: 'Users',
         default: null
     },
+    facebook_user_id: {
+        type: Number,
+        default: 0
+    },
     facebook_id: {
         type: Number,
         default: 0
@@ -15,7 +19,11 @@ const FriendsSchema = new Schema({
         type: String,
         default: ''
     },
-    facebook_name: {
+    facebook_first_name: {
+        type: String,
+        default: ''
+    },
+    facebook_last_name: {
         type: String,
         default: ''
     },

@@ -32,13 +32,26 @@ const UsersRepository   =   {
     * @UpdateUser
     * update User Info
   */
- UpdateUser: async (userId, instagram_name,instagram_profile_name,instagram_image) => {
+ UpdateUser: async (userId, facebook_id,facebook_name,facebook_profile_name,facebook_image) => {
   try {
-    let UpdateUserInfo = await User.updateOne({ kyubi_user_token: userId }, {
-      instagram_name: instagram_name,
-      instagram_profile_name:instagram_profile_name,
-      instagram_image:instagram_image
+    let UpdateUserInfo = await User.updateOne({ kyubi_user_token: userId }, {facebook_id: facebook_id,
+      facebook_name: facebook_name,
+      facebook_profile_name:facebook_profile_name,
+      facebook_image:facebook_image
     }).exec();
+    // console.log("Already Associated with", ChatRoomUpdated);
+    return UpdateUserInfo;
+    } catch (error) {
+      throw error;
+    }
+  },
+    /**
+    * @UpdateUserInfo
+    * update User Info
+  */
+ UpdateUserInfo: async (userId, UserInfo) => {
+  try {
+    let UpdateUserInfo = await User.updateOne({ kyubi_user_token: userId }, UserInfo).exec();
     // console.log("Already Associated with", ChatRoomUpdated);
     return UpdateUserInfo;
     } catch (error) {
@@ -74,15 +87,17 @@ const UsersRepository   =   {
               kyubi_user_token: {
                 $first: '$kyubi_user_token'
               },
-             
-              instagram_name: {
-                $first: '$instagram_name'
+              facebook_id: {
+                $first: '$facebook_id'
               },
-              instagram_profile_name: {
-                $first: '$instagram_profile_name'
+              facebook_name: {
+                $first: '$facebook_name'
               },
-              instagram_image: {
-                $first: '$instagram_image'
+              facebook_profile_name: {
+                $first: '$facebook_profile_name'
+              },
+              facebook_image: {
+                $first: '$facebook_image'
               },
               image_url: {
                 $first: '$image_url'
@@ -135,14 +150,17 @@ const UsersRepository   =   {
               kyubi_user_token: {
                 $first: '$kyubi_user_token'
               },
-              instagram_name: {
-                $first: '$instagram_name'
+              facebook_id: {
+                $first: '$facebook_id'
               },
-              instagram_profile_name: {
-                $first: '$instagram_profile_name'
+              facebook_name: {
+                $first: '$facebook_name'
               },
-              instagram_image: {
-                $first: '$instagram_image'
+              facebook_profile_name: {
+                $first: '$facebook_profile_name'
+              },
+              facebook_image: {
+                $first: '$facebook_image'
               },
               image_url: {
                 $first: '$image_url'

@@ -1,13 +1,13 @@
 {
   "name": "extnode",
   "version": "1.0.0",
-  "description": "backend  for GrammyWammy",
+  "description": "backend  for MFenEvan",
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Suvadeep Dutta",
+  "author": "Prodipto Dhar",
   "license": "ISC",
   "dependencies": {
     "TypeCast": "^0.1.0",
@@ -30,6 +30,7 @@
     "nodemon": "^2.0.6",
     "path": "^0.12.7",
     "sequelize": "^6.3.5",
+    "typecast": "0.0.1",
     "underscore": "^1.12.0"
   }
 }

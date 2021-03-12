@@ -78,28 +78,17 @@ module.exports.FriendsUpdate    =   async   (req,   res)    =>  {
 module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent",req.body);
-        let TimeNowTC=typecast(req.body.TimeNow, 'number')
-        let a = new Date(TimeNowTC);
-        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        let year = a.getFullYear();
-        let month = months[a.getMonth()];
-        let date = a.getDate();
-        let hour = a.getHours();
-        let min = a.getMinutes();
-        let sec = a.getSeconds();
-        let OnlyDate = date + ' ' + month + ' ' + year ;
-        let KeywordParams={
-            ChangeDate:OnlyDate,
-            ChangeFirstName:req.body.FacebookFirstName,
-            ChangeLastName:req.body.FacebookLastName
+        let ResponseDetails={
+            stateCode:2,
+            ResponseMessage: "Sorry Can`t Send Any Message"
         }
-        let getUserSettings= await UserSettingRepository.GetUserSettingById(req.body.MfenevanId);
         let sendOption = 0;
+        let getUserSettings= await UserSettingRepository.GetUserSettingById(req.body.MfenevanId);
         if(getUserSettings){
             let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId,req.body.FacebookUserId);
             if(FriendsInfo){
-                
-                  let FriendsInfoPayload= {
+                console.log("Userr Settings",getUserSettings);
+                let FriendsInfoPayload= {
                     facebook_username:req.body.ProfileLink,
                     facebook_first_name:req.body.FacebookFirstName,
                     facebook_last_name:req.body.FacebookLastName
@@ -135,64 +124,76 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
                 sendOption = 1;
             }
         }else{
-            sendOption = 0;  
+            sendOption  =   0;
         }
         if(sendOption==1 && getUserSettings.default_message==1){
             if(getUserSettings.default_message_type==0){
-                let newText=getUserSettings.default_message_text.replace('{first_name}'," "+KeywordParams.ChangeFirstName);
-                newText=newText.replace('{last_name}'," "+KeywordParams.ChangeLastName);
-                newText=newText.replace('{date}'," "+KeywordParams.ChangeDate);
-                newText=newText.replace('{Date}'," "+KeywordParams.ChangeDate);
-                res.status(200).send({
-                    code: 1,
-                    message: "Succefully fetched random message from the selected group",
-                    payload: {
-                    message: newText
-                    }
-                })
+
+            let TimeNowTC=typecast(req.body.TimeNow, 'number')
+            let a = new Date(TimeNowTC);
+            let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            let year = a.getFullYear();
+            let month = months[a.getMonth()];
+            let date = a.getDate();
+            let hour = a.getHours();
+            let min = a.getMinutes();
+            let sec = a.getSeconds();
+            let OnlyDate = date + ' ' + month + ' ' + year ;
+            let DateTime = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec 
+
+               let newText=getUserSettings.default_message_text.replace('{first_name}', req.body.FacebookFirstName);
+                newText=newText.replace('{last_name}', req.body.FacebookLastName);
+                newText=newText.replace('{date}', OnlyDate);
+                newText=newText.replace('{date_time}', DateTime);
+                ResponseDetails={
+                    stateCode:1,
+                    ResponseMessage: newText
+                }
             }else{
                 if(getUserSettings.default_message_group!=""){
                     await MessageGroup.GetMessageGroup(getUserSettings.default_message_group).then(async resultGroup=>{
                         let TotalNumberofBlocks=resultGroup.associate_blocks.length;
                         let CointNum=Math.floor(Math.random() * TotalNumberofBlocks);
                         let randomBlock = resultGroup.associate_blocks[CointNum];
+                        console.log("This is Random MessageGroup=====",randomBlock);
                         if(randomBlock.length>0){
                             let i = 0
                             let finalMessage = []
                             sendResponse = (data) =>{
-                            res.status(200).send({
-                                code: 1,
-                                message: "Succefully fetched random message from the selected group",
-                                payload: {
-                                message: data
+                                ResponseDetails={
+                                    stateCode:1,
+                                    ResponseMessage: data
                                 }
-                            })
+                            // res.status(200).send({
+                            //     code: 1,
+                            //     message: "Succefully fetched random message from the selected group",
+                            //     payload: {
+                            //     message: data
+                            //     // data: randomSegment.segment_id.message_blocks[getRandomInt(0,randomSegment.segment_id.message_blocks.length -1)]
+                            //     }
+                            // })
                             }
-                            constructMessage(i,randomBlock,finalMessage,sendResponse,KeywordParams);
+                            constructMessage(i,randomBlock,finalMessage,sendResponse);
                             
-                        }else{
-                            res.status(200).send({
-                                code: 2,
-                                message: "UnSuccefully fetched random message from the selected group",
-                                payload: { }
-                            }) 
                         }
+                        // ResponseDetails={
+                        //     stateCode:1,
+                        //     ResponseMessage: randomBlock
+                        // }
                     });
-                }else{
-                    res.status(200).send({
-                        code: 2,
-                        message: "UnSuccefully fetched random message from the selected group",
-                        payload: {}
-                    }) 
                 }
             }
         }else{
-            res.status(200).send({
-                code: 2,
-                message: "UnSuccefully fetched random message from the selected group",
-                payload: {}
-            }) 
+            ResponseDetails={
+                stateCode:2,
+                ResponseMessage: ""
+            }
         }
+        res.send({
+            code: 1,
+            message: "Successfull",
+            payload: ResponseDetails
+        })
         
     }catch(error){
         res.send({
@@ -505,7 +506,7 @@ module.exports.fetchMessageGroupAndContents =   async   (req,   res)    =>  {
     }
 }
 
-async function constructMessage(i,messageBlock,finalMessage,__callback,KeywordParams){
+async function constructMessage(i,messageBlock,finalMessage,__callback){
     if(messageBlock[i].type == "id"){
                 let MessageSegmentDetails=await MessageSegment.GetMessageSegment(messageBlock[i].value);
                 //         console.log("This is XXXXXXXXXXXXXXXX =====",MessageSegmentDetails);
@@ -514,22 +515,13 @@ async function constructMessage(i,messageBlock,finalMessage,__callback,KeywordPa
                 let CointBlock =Math.floor(Math.random() * TotalNumberofSegment);
                 //         console.log("This is XXXXXXXXXXXXXXXX =====",CointBlock);
                 let randomSegments = MessageSegmentDetails.message_blocks[CointBlock];
-                let newText=randomSegments.replace('{first_name}'," "+KeywordParams.ChangeFirstName);
-                newText=newText.replace('{last_name}'," "+KeywordParams.ChangeLastName);
-                newText=newText.replace('{date}'," "+KeywordParams.ChangeDate);
-                newText=newText.replace('{Date}'," "+KeywordParams.ChangeDate);
-                
-        finalMessage.push(newText)
+        finalMessage.push(randomSegments)
       }else{
-        let newText=messageBlock[i].value.replace('{first_name}', KeywordParams.ChangeFirstName);
-        newText=newText.replace('{last_name}'," "+KeywordParams.ChangeLastName);
-        newText=newText.replace('{date}'," "+KeywordParams.ChangeDate);
-        newText=newText.replace('{Date}'," "+KeywordParams.ChangeDate);
-        finalMessage.push(newText)
+        finalMessage.push(messageBlock[i].value)
       }
       i++
       if(i < messageBlock.length){
-        constructMessage(i,messageBlock,finalMessage,__callback,KeywordParams)
+        constructMessage(i,messageBlock,finalMessage,__callback)
       }else{
         //console.log("message",finalMessage.join(' '))
           return __callback(finalMessage.join(' '))

@@ -53,7 +53,8 @@ module.exports.updateautoresponder  =   async   (req,   res)    =>  {
         console.log(getUserSettings);
         if(getUserSettings){
             let UserSettingsInfoPayload= {
-                autoresponder:req.body.autoresponder
+                autoresponder:0,
+                default_message:0
               };
               let updateUserSettingsInfo=await UserSettingRepository.UpdateUserSettingsById(req.body.user_id,req.body.autoresponder);
              let  userInfo= UserHelper.UserdetailsInfo(req.body.user_id).then(result=>{
@@ -228,19 +229,31 @@ module.exports.setsetting   =   async   (req,   res)    =>  {
             let getUserSettings= await UserSettingRepository.GetUserSettingById(getUserInfo._id);
             if(getUserSettings){
                 console.log("This arexxxxxxxxxxxxx",getUserSettings);
-                let UsersSettingsDetailinfo= {
-                    default_message: req.body.defaultmessage,
-                    default_message_text: req.body.default_message_text,
-                    autoresponder: req.body.autoresponder,
-                    default_time_delay: cast.number(req.body.default_time_delay)
-                  };
-                  let UpdateUserSettingsNew=await UserSettingRepository.UpdateUserSettingsDetails(
+                if(req.body.default_message_group==""){
+                    let UpdateUserSettingsNew=await UserSettingRepository.UpdateUserSettingsWithoutGroup(
                         getUserInfo._id,
-                        req.body.defaultmessage,
+                        cast.number(req.body.default_message_type),
                         req.body.default_message_text,
-                        req.body.autoresponder,
                         cast.number(req.body.default_time_delay)
-                    );
+                    ).then(resu=>{
+                        console.log(resu);
+                    }).catch(error=>{
+                        console.log(error);
+                    });
+                }else{
+                    let UpdateUserSettingsNew=await UserSettingRepository.UpdateUserSettingsWithGroup(
+                        getUserInfo._id,
+                        req.body.default_message_group,
+                        cast.number(req.body.default_message_type),
+                        req.body.default_message_text,
+                        cast.number(req.body.default_time_delay)
+                    ).then(resu=>{
+                        console.log(resu);
+                    }).catch(error=>{
+                        console.log(error);
+                    });
+                }
+                  
                     let  userInfo= UserHelper.UserdetailsInfo(getUserInfo._id).then(result=>{
                         console.log("yo yo +++++++++++++++++",result);
                             res.send({
@@ -251,43 +264,43 @@ module.exports.setsetting   =   async   (req,   res)    =>  {
                      }).catch(error => {
                         res.send({
                             code: 2,
-                            message: error.message,
+                            message: error,
                             payload: error
                         });
                      });
 
             }else{
-                let UsersSettingsDetailinfo= {
-                    user_id: getUserInfo._id,
-                    default_message: req.body.defaultmessage,
-                    default_message_text: req.body.default_message_text,
-                    autoresponder: req.body.autoresponder,
-                    default_time_delay: cast.number(req.body.default_time_delay)
-                  };
-                  let getUserSettingsNew=await UserSettingRepository.saveUserSettingsDetails(UsersSettingsDetailinfo);
-                  
-                  let  userInfo= UserHelper.UserdetailsInfo(getUserInfo._id).then(result=>{
-                    console.log("yo yo +++++++++++++++++",result);
-                        res.send({
-                            code: 1,
-                            message: "Successfull",
-                            payload: result
-                        });
-                 }).catch(error => {
+            let UsersSettingsDetailinfo= {
+                user_id: getUserInfo._id,
+                default_message_group:req.body.default_message_group,
+                default_message_type: cast.number(req.body.default_message_type),
+                default_message_text: req.body.default_message_text,
+                default_time_delay: cast.number(req.body.default_time_delay)
+                };
+                let getUserSettingsNew=await UserSettingRepository.saveUserSettingsDetails(UsersSettingsDetailinfo);
+                
+                let  userInfo= UserHelper.UserdetailsInfo(getUserInfo._id).then(result=>{
+                console.log("yo yo +++++++++++++++++",result);
+                    res.send({
+                        code: 1,
+                        message: "Successfull",
+                        payload: result
+                    });
+                }).catch(error => {
                     res.send({
                         code: 2,
-                        message: error.message,
+                        message: error,
                         payload: error
                     });
-                 });
-            }
+                });
         }
+    }
         
     }catch(error){
         res.send({
             code: 3,
             message: "Error",
-            payload: error.message
+            payload: error
         })
     }
 }
@@ -326,9 +339,8 @@ module.exports.getSetting   =   async   (req,   res)    =>  {
 }
 module.exports.getUserDetails   =   async   (req,   res)    =>  {
     try{
-        console.log(req.body.user_email);
         let  userInfo= UserHelper.UserdetailsInfo(req.body.user_id).then(result=>{
-            console.log("yo yo",result);
+            console.log("yo yo +++++++++++++++++",result);
                 res.send({
                     code: 1,
                     message: "Successfull",
@@ -346,6 +358,47 @@ module.exports.getUserDetails   =   async   (req,   res)    =>  {
         res.send({
             code: 3,
             message: error.message,
+            payload: error
+        })
+    }
+}
+module.exports.updateLoadStatus =   async   (req,   res)    =>  {
+    try{
+        console.log("This is my sent",req.body);
+        let getUserInfo = await UsersRepo.GetUserById(req.body.kyubi_user_token);
+        if(getUserInfo._id){
+            let getUserSettings= await UserSettingRepository.GetUserSettingById(getUserInfo._id);
+            if(getUserSettings){
+                console.log("This arexxxxxxxxxxxxx",getUserSettings);
+                let UpdateUserSettingsNew=await UserSettingRepository.UpdateUserSettingsLoad(
+                    getUserSettings._id,
+                    req.body.update_load_status
+                ).then(resu=>{
+                    console.log("zzzzzzzzzzzzz",resu);
+                }).catch(error=>{
+                    console.log("iiiiiiiiiiiiii",error);
+                });
+
+                let  userInfo= UserHelper.UserdetailsInfo(getUserInfo._id).then(result=>{
+                    console.log("yo yo +++++++++++++++++",result);
+                        res.send({
+                            code: 1,
+                            message: "Successfull",
+                            payload: result
+                        });
+                    }).catch(error => {
+                        res.send({
+                            code: 2,
+                            message: error,
+                            payload: error
+                        });
+                    });
+            }
+        }
+    }catch(error){
+        res.send({
+            code: 3,
+            message: "Error",
             payload: error
         })
     }

@@ -13,6 +13,6 @@ router.post('/edit',
 controller.editSegment  
 )
 router.post('/update',
-controller.updateSegment 
+controller.updateSegment  
 )
 module.exports = router

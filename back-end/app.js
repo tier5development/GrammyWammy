@@ -26,7 +26,7 @@ app.engine('ejs', engine);
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 server.listen(port, function (err, data) {
-  console.log(`GrammyWammy running on port ${port}`)
+  console.log(`MFenEvan running on port ${port}`)
 });
 /**
   * connecting the mongo db from mongoose.js in here

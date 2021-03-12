@@ -6,9 +6,9 @@ const FriendsRepository   =   {
     * @GetUserByUserFacebookID
     * Get user As Per user_id  and Facebook ID
   */
- GetUserByUserFacebookID: async (UserId,FacebookID) => {
+ GetUserByUserFacebookID: async (UserId,FacebookID,FacebookUserId) => {
     try {
-      let FriendsInfo = await Friends.findOne({ 'user_id': mongoose.Types.ObjectId(UserId),'facebook_id': FacebookID}).exec();
+      let FriendsInfo = await Friends.findOne({ 'user_id': mongoose.Types.ObjectId(UserId),'facebook_id': FacebookID,'facebook_user_id': FacebookUserId}).exec();
       return FriendsInfo;
     } catch (e) {
       throw e;

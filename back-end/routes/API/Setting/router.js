@@ -30,5 +30,7 @@ controller.getSetting
 router.post('/getUserDetails',
 controller.getUserDetails
 )
-
+router.post('/updateLoadStatus',
+controller.updateLoadStatus
+)
 module.exports = router
