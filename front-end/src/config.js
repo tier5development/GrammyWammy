@@ -1,3 +1,3 @@
-module.exports.host = "http://3.236.238.87:8008" //"https://api.mefnevan.com" for https with ngrok
+module.exports.host = "http://localhost:8080" //"https://api.mefnevan.com" for https with ngrok
 module.exports.kyubi = "https://app.kyubi.io/api/end-user" //for https with ngrok
-module.exports.kyubiExtensionId = "601849b204436f796ec59f0f" // "601849b204436f796ec59f0f"
+module.exports.kyubiExtensionId = "603cd60abbd71c17c01e9ac6" // "601849b204436f796ec59f0f"
