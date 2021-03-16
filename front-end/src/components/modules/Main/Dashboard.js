@@ -7,7 +7,7 @@ import settingService from "../../../services/setting";
 import AuthServices from "../../../services/authService";
 import biglogo from "../../../images/biglogo.svg";
 import RefreshLogo from "../../../images/layer1.svg";
-import FaceBookLogo from "../../../images/fb_blue.svg";
+import FaceBookLogo from "../../../images/Instagram.png";
 import IconLogo from "../../../images/icon.svg";
 import AvatarLogo from "../../../images/Avatar.png";
 import LoaderLogo from "../../../images/Loader.gif"
@@ -140,12 +140,12 @@ class Dashboard extends Component {
                 :
                 <div className="login_caution">
                   <img src={IconLogo} alt=""/>
-                  Please login to your Facebook profile and click the refresh button below to proceed further.
+                  Please login to your Instagram profile and click the refresh button below to proceed further.
                 </div>
                 }
                 
                 <a onClick={this.refreshHandler}  href="#" className="bluebtn"><img src={RefreshLogo} alt=""/> Refresh</a>
-                <a  onClick={this.fbHandler} href="#" className="whitebtn"><img src={FaceBookLogo} alt=""/> Facebook</a>
+                <a  onClick={this.fbHandler} href="#" className="whitebtn"><img src={FaceBookLogo} alt=""/> Instagram</a>
               </div>
               <Footer></Footer>
             </div>

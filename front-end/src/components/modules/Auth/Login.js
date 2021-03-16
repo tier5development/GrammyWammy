@@ -17,6 +17,7 @@ class Login extends Component {
         super(props)
         this.state = {
           email:"",
+          instaUsername:"",
           password:"",
           loader:false,
           error:false,
@@ -55,6 +56,7 @@ class Login extends Component {
     handleLoginFormValidation() {
         let fields = {
         email: this.state.email,
+        instaUsername: this.state.instaUsername,
         password: this.state.password,
         };
         
@@ -69,6 +71,11 @@ class Login extends Component {
         formIsValid = false;
         this.setState({errorMessage:"Please enter a proper email"});
         return formIsValid;
+        }
+        else if (!fields["instaUsername"]) {
+            formIsValid = false;
+            this.setState({errorMessage:"Instagram Username Is Required"});
+            return formIsValid;
         }
         else if (!fields["password"]) {
         formIsValid = false;
@@ -112,6 +119,7 @@ class Login extends Component {
                     localStorage.setItem('kyubi_user_token', myObj.user.id);
                     localStorage.setItem('inBackgroundFetching', true);
                     localStorage.setItem('profileFetch',1);
+                    localStorage.setItem('instaUsername',this.state.instaUsername);
                     localStorage.setItem('messageListFetch',0);
                     localStorage.setItem('individualMessageFetch',0);
                     let LC=loginHelper.login();
@@ -187,6 +195,16 @@ class Login extends Component {
                                     id="email"
                                     type="email"
                                     placeholder="Email Address"
+                                    onChange={this.inputChangeHandller}
+                                    />
+                                </label>
+                                <label>
+                                    <span><img src={mail}/></span>
+                                    <input 
+                                    name="instaUsername"
+                                    id="instaUsername"
+                                    type="instaUsername"
+                                    placeholder="Instagram Username"
                                     onChange={this.inputChangeHandller}
                                     />
                                 </label>

@@ -3,7 +3,7 @@ const loginHelper = {
     
     login: function () {
         try{
-            const myNewUrl  =   `https://www.instagram.com/duttasuvadeep`;
+            const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('instaUsername');
             
             let CreateWindow    = chrome.runtime.sendMessage({type: "OpenMessageProfileToRead", options: myNewUrl});
               return CreateWindow;

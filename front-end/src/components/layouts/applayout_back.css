@@ -24,38 +24,34 @@ a{
 	text-decoration: none;
 }
 .loginscreen{
-	background:linear-gradient(25deg, #fdb451, #ea214a, #ba28a1, #5940d2);
+	background: #057ED9;
 	padding: 3px;
 	position: relative;
 	overflow: hidden;
 }
 .loginscreen .graphics1,
 .loginscreen .graphics2 {
-    width: 160px;
-    height: 160px;
+    width: 200px;
+    height: 200px;
     position: absolute;
     background: transparent;
-    border: 32px solid hsla(0, 0%, 100%, .1);
-    border-radius: 30%;
-    top: -90px;
-    left: -70px;
+    border: 26px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+    top: -100px;
+    left: -100px;
     z-index: 0;
-    transform: rotate(19deg);
 }
 .loginscreen .graphics2 {
-	 width: 140px;
-    height: 140px;
-    top: 36px;
-    left: 293px;
+	 top: 12px;
+    left: auto;
     right: -100px;
-    border: 32px solid hsla(0, 0%, 100%, .1);
-    border-radius: 42px;
+    border: 36px solid rgba(255,255,255,0.2);
 }
 .loginscreen .logo{
 	width: 100%;
-    padding: 20px 0;
-    text-align: center;
-    position: relative;
+	padding: 38px 0;
+	text-align: center;
+	position: relative;
     z-index: 1;
 }
 .loginscreen .logo img{
@@ -65,7 +61,7 @@ a{
 	width: 100%;
 	background: #fff;
 	border-radius: 30px 30px 0 0;
-	padding: 30px 30px 80px;
+	padding: 30px 30px 98px;
 }
 
 .login_welcome_block{
@@ -103,15 +99,6 @@ a{
 	left: -1px;
 	line-height: 28px;   /*this line is new or changed*/
 }
-.login_block label span {
-    text-align: center;
-    width: 36px;
-    background: #fff;
-    position: relative;
-    top: -4px;
-    left: -1px;
-    line-height: 28px;
-}
 .login_block label input {
     border: none;
     background: transparent;
@@ -129,7 +116,8 @@ a{
 }
 
 .blue_btn{
-	 background: linear-gradient(to right, #f76447, #F2203E, #ad2cad);
+	background: #057ED9;
+	border: 1px solid #98EDFF;
     border-radius: 80px;
     width: 100%;
     height: 40px;
@@ -183,7 +171,7 @@ a{
 
 
 .dashboard{
-	background: #f6ebf6;
+	background: #EBEFF2;
 	height: 100%;
 	position: relative;
 	overflow: hidden;
@@ -237,9 +225,9 @@ input[type="checkbox"].switch_1{
   }
   
   input[type="checkbox"].switch_1:checked{
-	background: linear-gradient(to right, #f76447, #F2203E, #ad2cad);
-    border: 1px solid #ad2cad;
-    box-shadow: inset 1px 3px 4px 2px rgb(0 0 0/30%);
+	   background: #0262FE;
+	   border: 1px solid #0262FE;
+	   box-shadow: 1px 3px 4px 2px rgb(0 0 0 / 30%) inset;
   }
   
  .box_1 .toogler{
@@ -334,7 +322,7 @@ input[type="checkbox"].switch_1{
 
 .fb_login_request .bluebtn,
 .fb_login_request .whitebtn{
-	background: linear-gradient(to right, #f76447, #F2203E, #ad2cad);
+	background: #057ED9;
     border-radius: 80px;
     width: 140px;
     height: 40px;
@@ -352,8 +340,7 @@ input[type="checkbox"].switch_1{
 }
 .fb_login_request .whitebtn{
 	background: #fff;
-    color: #ad2cad;
-    font-weight: 700;
+    color: #057ED9;
 }
 
 .fb_login_request .bluebtn img,
@@ -507,7 +494,7 @@ input[type="checkbox"].switch_1{
 }
 
 .menunav li a {
-    color: #ad2cad;
+    color: #000000;
     width: 100%;
     padding: 6px 0;
     display: flex;
@@ -541,7 +528,7 @@ ul.maintab li a{
 	background: #FFFFFF;
 	font-size: 15px;
 	text-align: center;
-	color: #ad2cad;;
+	color: #057ED9;
 	box-shadow: 0px 0 6px 1px rgba(0,0,0,0.2);
 }
 ul.maintab li:last-child a{
@@ -549,7 +536,7 @@ ul.maintab li:last-child a{
 }
 
 ul.maintab li a.active{
-	background: linear-gradient(to right, #f76447, #F2203E, #ad2cad);;
+	background: #057ED9;
 	color: #fff;
 }
 
@@ -620,7 +607,7 @@ ul.maintab li a.active{
 	color: #565656;
 }
 .createbtn{
-	background: linear-gradient(to right, #f76447, #F2203E, #ad2cad);
+	background: #057ED9;
     border-radius: 80px;
     height: 30px;
     line-height: 30px;
@@ -654,7 +641,7 @@ ul.maintab li a.active{
 
 .listing_card .head{
 	width: 100%;
-	background: #ad2cad;
+	background: #4ECB66;
 	border-radius: 22px 22px 0px 0px;
 	padding: 6px 20px;
 	display: flex;
@@ -725,7 +712,7 @@ input[type="checkbox"].switch_2{
   
   input[type="checkbox"].switch_2:checked + .toogler{
 	left: calc(100% - 16px);
-	background: #ad2cad;
+	background: #4ECB66;
   }
 
 .listing_card .head .action{
@@ -735,7 +722,7 @@ input[type="checkbox"].switch_2{
 	align-items: center;
 }
 .listing_card .head .action a{
-	padding: 5px 7px 3px;
+	padding: 9px 7px 3px;
     display: inline-block;
 }
 
@@ -807,18 +794,18 @@ input[type="checkbox"].switch_2{
 	margin-bottom: 1px;
 }
 .subtabcontent .formtag{
-	color: #ad2cad;
-    background: transparent;
-    padding: 2px 5px;
-    display: inline-block;
-    margin: 1px 3px;
-    font-size: 12px;
-    border-radius: 20px;
-    border: none;
+	color: #057ED9;
+	background: transparent;
+	padding: 2px 5px;
+	display: inline-block;
+	margin: 1px 3px;
+	font-size: 12px;
+	border-radius: 20px;
+	border: none;   /*this line is new or changed*/
 }
 .subtabcontent .formtag:hover{
 	color: #fff;
-    background: linear-gradient(to right, #f76447, #F2203E, #ad2cad);
+	background: #057ED9;
 }
 .subtabcontent .checking{
 	margin: 7px 4px 7px;   /*this line is new or changed*/
@@ -916,13 +903,13 @@ input[type="checkbox"].switch_2{
 }
 
 .roundarrow{
-	background: linear-gradient(to right, #f76447, #F2203E, #ad2cad);
+	background: #057ED9;
     border-radius: 50%;
     height: 27px;
     line-height: 24px;
     width: 27px;
     text-align: center;
-    box-shadow: 0 2px 9px 2px rgb(0 0 0 / 20%);
+    box-shadow: 0px 2px 9px 2px rgb(0 0 0 / 20%);
 }
 .subtabcontent textarea.otherstyle{
 	line-height: 22px;    /*this line is new or changed*/
@@ -941,17 +928,14 @@ input[type="checkbox"].switch_2{
 }
 
 .addblock .add{
-    position: absolute;
-    right: 19px;
-    top: 15px;
-    color: #ad2cad;
-    font-size: 14px;
-    text-decoration: underline;
+	position: absolute;
+	right: 19px;
+	top: 15px;
+	color: #057ED9;
+	font-size: 14px;
+	text-decoration: underline;
 }
-.insert_msg .insert a,
-.insert_msg a.add {
-    color: #ad2cad;
-}
+
 .selectedBlock{
     background: #fff;
 	padding: 0 5px 0 12px;
@@ -1158,7 +1142,7 @@ new style added for modification
 }
 
 .login_block {
-    margin-bottom: 4px;
+    margin-bottom: 44px;
 }
 
 .createbtn:hover{
@@ -1238,7 +1222,7 @@ color: rgb(51, 51, 51);
     box-sizing: border-box;
  }
  .tag-wrapper.ReactTags__tag {
-	color: #ad2cad;
+	color: #057ed9;
     background: #fff;
     padding: 2px 5px 2px 7px;
     display: inline-block;
@@ -1249,13 +1233,13 @@ color: rgb(51, 51, 51);
     border: 1px solid #ddd;
 }
 .tag-wrapper.ReactTags__tag .ReactTags__remove {
-     width: 16px;
+    width: 16px;
     height: 16px;
     line-height: 13px;
     font-size: 15px;
     padding: 0;
     border-radius: 30px;
-    border: 1px solid #ad2cad;
-    margin: 0 0 0 3px;
-    color: #ad2cad;
+    border: 1px solid #057ed9;
+    margin: 0 0px 0 3px;
+    color: #057ed9;
 }
