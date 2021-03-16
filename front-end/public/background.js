@@ -35,9 +35,9 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
         let  params ={
         user_rec    :   localStorage.getItem('kyubi_user_token'),
         fb_id   :   request.options.FacebookId,
-        fb_username :   request.options.FacebookUsername,
-        fb_name :   request.options.FacebookName,
-        fb_image    :  request.options.FacebookImage,
+        fb_username :   request.options.insta_username,
+        fb_name :   request.options.insta_name,
+        fb_image    :  request.options.insta_image,
         fb_logged_id    :   request.options.LoggedInFacebook
         };
         await handleRequest(
@@ -154,7 +154,7 @@ chrome.webRequest.onHeadersReceived.addListener(
       return { responseHeaders: headers };
     },
     {
-      urls: ['*://*.facebook.com/*','*://m.facebook.com/*'], //
+      urls: ['*://*.facebook.com/*','*://m.facebook.com/*','*://*.instagram.com/*'], //
       types: ['sub_frame']
     },
     ['blocking', 'responseHeaders']
