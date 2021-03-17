@@ -1158,7 +1158,7 @@ new style added for modification
 }
 
 .login_block {
-    margin-bottom: 4px;
+    margin-bottom: 4px !important; 
 }
 
 .createbtn:hover{
