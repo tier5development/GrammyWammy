@@ -5,11 +5,13 @@ import {kyubiExtensionId}  from "../../../config";
 import "./login.css";
 import AuthServices from "../../../services/authService";
 import loginHelper from "../../../helper/loginHelper";
-import logo from "../../../images/logo1.svg";
+//import logo from "../../../images/logo1.svg";
+import logo from "../../../images/Logo_White.svg";
 import biglogo from "../../../images/biglogo.svg";
 import LoaderLogo from "../../../images/Loader.gif"
 import mail from "../../../images/mail.svg";
 import lock from "../../../images/lock.svg";
+import instagram from "../../../images/Instagram_Icon.svg";
 import messanger from "../../../images/Messanger.svg";
 import path from "../../../images/Path3.svg";
 class Login extends Component {
@@ -199,7 +201,7 @@ class Login extends Component {
                                     />
                                 </label>
                                 <label>
-                                    <span><img src={mail}/></span>
+                                    <span><img src={instagram}/></span>
                                     <input 
                                     name="instaUsername"
                                     id="instaUsername"
