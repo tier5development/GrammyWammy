@@ -17,10 +17,16 @@ if(NavItem){
         UserLoggedInFacebook =  false;
     }else{
       
-        InstagramUsername  = document.getElementsByClassName('_7UhW9       fKFbl yUEEX   KV-D4              fDxYl     ')[0].innerText;
-        UserInstagramName  = document.getElementsByClassName('rhpdm')[0].innerText;
+        // InstagramUsername  = document.getElementsByClassName('_7UhW9       fKFbl yUEEX   KV-D4              fDxYl     ')[0].innerText;
+        // UserInstagramName  = document.getElementsByClassName('rhpdm')[0].innerText;
+        // //UserInstagramImage  =  document.getElementsByClassName('be6sR')[0].src;
+        // UserInstagramImage  =  document.getElementsByClassName('_47KiJ')[0].children[4].children[1].children[0].src;
+        // UserLoggedInFacebook  = true;
+
+        InstagramUsername  ='';
+        UserInstagramName  = '';
         //UserInstagramImage  =  document.getElementsByClassName('be6sR')[0].src;
-        UserInstagramImage  =  document.getElementsByClassName('_47KiJ')[0].children[4].children[1].children[0].src;
+        UserInstagramImage  =  '';
         UserLoggedInFacebook  = true;
         
     }   

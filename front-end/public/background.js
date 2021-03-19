@@ -7,7 +7,7 @@ const mBasicUrl = 'https://mbasic.facebook.com';
 const mFacebook = 'https://m.facebook.com';
 const method = { POST: "post", GET: "get", PUT: "put", DELETE: "delete" };
 const toJsonStr = (val) => JSON.stringify(val);
-
+const getUserToken = () => localStorage.getItem("kyubi_user_token");
 /** 
  * @handleRequest
  * this function will handel the https request
@@ -26,10 +26,83 @@ const handleRequest = (path, methodType, bodyData) => {
 
 
 /** 
+ * this will listen to the  URL and Take decission depending on the URL and tallying  windowID in localstore
+ * 
+*/
+chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
+  /**
+   * Once the window is loaded
+   */
+  if (changeInfo.status === 'complete') {
+      let WindowURL   =   tab.url
+      let WindowId    =   tab.windowId;
+      let TabId   =   tab.id;
+      let WindowIdString  =   String(tab.windowId);
+      let TabIdString =   String(tab.id);
+      let UserToken=getUserToken();
+      
+      if(WindowURL === 'https://www.instagram.com/direct/inbox/')
+      {
+          console.log('Satisfied');
+          data={tabinfo:TabId,windowinfo:WindowId}
+          chrome.tabs.sendMessage(TabId, { catch: "check-new-incoming-message",data });
+          //scanForNewMessage();
+         
+      }
+      if(WindowURL === 'https://www.instagram.com/'){
+          localStorage.setItem('profileTabId',TabId);
+          console.log("Yes the Profile is there Suvadeep");
+          console.log("This is info from background",tab);
+          data={userToken:UserToken,tabinfo:TabId,windowinfo:WindowId}
+          console.log(data);
+          chrome.tabs.sendMessage(TabId, { catch: "get-login-info",data });
+      }
+     
+     
+  }
+});
+
+// function scanForNewMessage(){
+//   console.log('called');
+//   chrome.windows.getCurrent(w => {
+//     chrome.tabs.query({active: true, windowId: w.id}, tabs => {
+//       const tabId = tabs[0].id;
+//       data={}
+//       chrome.tabs.sendMessage(tabId, { catch: "check-new-incoming-message",data });
+      
+//     });
+//   });
+// }
+
+/** 
  * this will listen to the  on runtime Message
  * 
 */
+const urlParam = "instaExt";
 chrome.runtime.onMessage.addListener(async function(request, sender) {
+
+
+  if(request.type   ==  "postIndividualMessage"){
+    messageLink = request.options.messageLink;
+    messageId = messageLink.split("/").pop();
+    messageUserName = request.options.userName;
+    console.log('Id '+messageId);
+    console.log('On BackGround '+messageUserName);
+    console.log('Profile Tab '+localStorage.getItem("profileTabId"));
+    console.log(`https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`);
+    chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+      url: `https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`,
+      active: true}, function(tab) {
+        tabId = tab.id;
+        localStorage.setItem('profileTabId',tabId);
+    });
+    // chrome.tabs.create({ 
+    //   url: `https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`,
+    // }, function(tab) {
+        
+    // });
+  }
+
     if (request.type == "storeUserInfoOrQueryThenStore"){
         console.log("This I Got In Background",request.options);
         let  params ={
@@ -38,7 +111,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
         fb_username :   request.options.insta_username,
         fb_name :   request.options.insta_name,
         fb_image    :  request.options.insta_image,
-        fb_logged_id    :   request.options.LoggedInFacebook
+        fb_logged_id    :   request.options.insta_logged_id
         };
         await handleRequest(
             "api/user/userCheckStoreNRetrive",
@@ -56,12 +129,12 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                       localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_name);
                       localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_profile_name);
                       localStorage.setItem('fb_image', responsenewvalue.payload.UserInfo.facebook_image);
-                      localStorage.setItem('fb_logged_id', request.options.LoggedInFacebook);
+                      localStorage.setItem('fb_logged_id', request.options.insta_logged_id);
                       localStorage.setItem('inBackgroundFetching', false);
                       localStorage.setItem('profileFetch',0);
                       localStorage.setItem('messageListFetch',0);
                       localStorage.setItem('individualMessageFetch',0);
-                      UserLoggedInFacebook=request.options.LoggedInFacebook;
+                      UserLoggedInFacebook=request.options.insta_logged_id;
                       BackGroundFetchingStatus  =false;
                       if(responsenewvalue.payload.UserSettings.default_message){
                         localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
@@ -86,8 +159,13 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                       localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
                       if((AutoResponderStatus == 1 || DefaultMessageStatus == 1) && UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
                         console.log("Open Message List  84848484");
-                        document.getElementById('profileFrame').src = "";
-                        document.getElementById('messageListMain').src = "https://m.facebook.com/messages/";
+                        //document.getElementById('profileFrame').src = "";
+                        //document.getElementById('messageListMain').src = "https://m.facebook.com/messages/";
+                        const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+                        let CreateTab    =   chrome.tabs.create({
+                            url: myNewUrl,
+                            active: true
+                          });
                       } 
             }).catch(error=>{
               localStorage.setItem('profileFetch',0);
@@ -100,7 +178,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
     if (request.type == "OpenMessageProfileToRead"){
       //console.log("User Details",request.options);
       localStorage.setItem('profileFetch',1);
-      document.getElementById('profileFrame').src = request.options;
+      //document.getElementById('profileFrame').src = request.options;
       let ListURLArray =[];
       let NewListURLArray=JSON.stringify(ListURLArray);
       localStorage.setItem('ListURLArray', NewListURLArray);
@@ -112,9 +190,9 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
       let NewListURLArray=JSON.stringify(ListURLArray);
       localStorage.setItem('ListURLArray', NewListURLArray);
       localStorage.setItem('CheckMessageNReply',0);
-      document.getElementById('profileFrame').src = "";
-      document.getElementById('messageListMain').src = "";
-      document.getElementById('messageIndividualMain').src = "";
+      //document.getElementById('profileFrame').src = "";
+      // document.getElementById('messageListMain').src = "";
+      // document.getElementById('messageIndividualMain').src = "";
     }
     if(request.type ==  "OpenSeconderyUrlToReadMessageList"){
       //document.getElementById('messageListSecondery').src = mFacebook+""+request.options;
@@ -142,26 +220,6 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
     }
 
 })
-
-chrome.webRequest.onHeadersReceived.addListener(
-    function (info) {
-      var headers = info.responseHeaders;
-      var index = headers.findIndex(x =>
-        x.name.toLowerCase() == "x-frame-options");
-      if (index != -1) {
-        headers.splice(index, 1);
-      }
-      return { responseHeaders: headers };
-    },
-    {
-      urls: ['*://*.facebook.com/*','*://m.facebook.com/*','*://*.instagram.com/*'], //
-      types: ['sub_frame']
-    },
-    ['blocking', 'responseHeaders']
-  );
-
-
-
 
 chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(async function(msg) {
@@ -299,7 +357,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                           individualThreadList.splice(indexthreadlink, 1);
                           let NewListURLArray=JSON.stringify(individualThreadList);
                           localStorage.setItem('ListURLArray', NewListURLArray);
-                          document.getElementById('messageIndividualMain').src ="";
+                         // document.getElementById('messageIndividualMain').src ="";
                           localStorage.setItem('CheckMessageNReply',0);
                           CheckLocalStoreAndHitIndividualMList();
                         }
@@ -345,7 +403,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 individualThreadList.splice(indexthreadlink, 1);
                 let NewListURLArray=JSON.stringify(individualThreadList);
                 localStorage.setItem('ListURLArray', NewListURLArray);
-                document.getElementById('messageIndividualMain').src ="";
+               // document.getElementById('messageIndividualMain').src ="";
                 localStorage.setItem('CheckMessageNReply',0);
                 CheckLocalStoreAndHitIndividualMList();
               }
@@ -358,7 +416,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 individualThreadList.splice(indexthreadlink, 1);
                 let NewListURLArray=JSON.stringify(individualThreadList);
                 localStorage.setItem('ListURLArray', NewListURLArray);
-                document.getElementById('messageIndividualMain').src ="";
+                //document.getElementById('messageIndividualMain').src ="";
                 localStorage.setItem('CheckMessageNReply',0);
                 CheckLocalStoreAndHitIndividualMList();
               }
@@ -371,7 +429,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 individualThreadList.splice(indexthreadlink, 1);
                 let NewListURLArray=JSON.stringify(individualThreadList);
                 localStorage.setItem('ListURLArray', NewListURLArray);
-                document.getElementById('messageIndividualMain').src ="";
+                //document.getElementById('messageIndividualMain').src ="";
                 localStorage.setItem('CheckMessageNReply',0);
                 CheckLocalStoreAndHitIndividualMList();
               }
@@ -401,7 +459,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         individualThreadList.splice(indexthreadlink, 1);
         let NewListURLArray=JSON.stringify(individualThreadList);
         localStorage.setItem('ListURLArray', NewListURLArray);
-        document.getElementById('messageIndividualMain').src ="";
+        //document.getElementById('messageIndividualMain').src ="";
         localStorage.setItem('CheckMessageNReply',0);
         CheckLocalStoreAndHitIndividualMList();
       }
@@ -558,8 +616,8 @@ function CheckLocalStoreAndHitIndividualMList(){
         console.log("Trigger ===========77",ListURLArray);
         if(ListURLArray.length>0){
           console.log("Trigger ===========7",ListURLArray[0]);
-          document.getElementById('messageIndividualMain').src = "";
-          document.getElementById('messageIndividualMain').src = ListURLArray[0];
+          //document.getElementById('messageIndividualMain').src = "";
+          //document.getElementById('messageIndividualMain').src = ListURLArray[0];
           localStorage.setItem('CheckMessageNReply',1);
         }
         

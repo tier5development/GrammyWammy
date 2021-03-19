@@ -1,0 +1,66 @@
+{
+  "name": "Grammy Wammy",
+  "version": "1.1.1",
+  "manifest_version": 2,
+  "description": "Grammy Wammy",
+  "icons": {
+      "48": "48X48.png",
+      "128": "128X128.png"
+  },
+  "browser_action": {
+      "default_icon": "128X128.png",
+      "default_popup": "popup.html"
+  },
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "clipboardRead",
+    "https://www.messenger.com/*",
+    "https://m.facebook.com/*",
+    "https://mbasic.facebook.com/",
+    "https://www.instagram.com/*",
+    "notifications",
+    "https://api.mefnevan.com/api",
+    "webRequest",
+    "webRequestBlocking"
+],
+"content_scripts": [
+    {
+        "all_frames": true,
+        "js": [
+            "vendor.js",
+            "profileGetter.js"
+        ],
+        "matches": [
+            "https://www.instagram.com/*"
+        ],
+        "run_at": "document_end"
+    },
+    {
+        "all_frames": true,
+        "js": [
+            "vendor.js",
+            "content.js"
+        ],
+        "matches": [
+            "https://www.instagram.com/direct/inbox/"
+        ],
+        "run_at": "document_end"
+    },
+    {
+        "all_frames": true,
+        "js": [
+            "vendor.js",
+            "messageIndividual.js"
+        ],
+        "matches": [
+            "https://mbasic.facebook.com/messages/read/?tid=cid*"
+        ],
+        "run_at": "document_end"
+    }
+]
+}

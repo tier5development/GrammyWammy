@@ -2,16 +2,13 @@
 const loginHelper = {
     
     login: function () {
-        try{
-            const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('instaUsername');
-            
-            let CreateWindow    = chrome.runtime.sendMessage({type: "OpenMessageProfileToRead", options: myNewUrl});
-              return CreateWindow;
-        }catch(error){
-            return error
-        }
         
-        
+        chrome.tabs.create({ 
+            url: `https://www.instagram.com/`,
+            active: true
+        }, function(tab) {
+           
+        });
     },
     logout: function () {
     try{
