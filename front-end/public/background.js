@@ -81,11 +81,11 @@ function scanForNewMessage(){
 
 function reloadInstagram()
 {
-  setInterval(function(){ 
-      chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tab) {
-      chrome.tabs.reload(tab[0].id) 
-    });
- }, 180000);
+//   setInterval(function(){ 
+//       chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tab) {
+//       chrome.tabs.reload(tab[0].id) 
+//     });
+//  }, 180000);
  
 }
 
@@ -101,12 +101,14 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
     messageLink = request.options.messageLink;
     messageId = messageLink.split("/").pop();
     messageUserName = request.options.userName;
+    messageContent =  request.options.messageContent;
+    console.log(messageContent);
     console.log('Id '+messageId);
     console.log('On BackGround '+messageUserName);
     console.log('Profile Tab '+localStorage.getItem("profileTabId"));
-    console.log(`https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`);
+    //console.log(`https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`);
     chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-      url: `https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`,
+      url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
       active: true}, function(tab) {
         tabId = tab.id;
         localStorage.setItem('profileTabId',tabId);

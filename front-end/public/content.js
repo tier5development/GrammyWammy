@@ -8,7 +8,7 @@ $("body").arrive(sendMessageBtn, function () {
     console.log("isfromexension",isFromExtension[0])
     if (isFromExtension[1] === "true") {
       setTimeout(function () {
-        postTweet((closeWindow = true), isFromExtension[0]);
+        postTweet((closeWindow = true), isFromExtension[0], isFromExtension[2]);
       }, 1000);
      }
  
@@ -19,8 +19,9 @@ const getParam = (paramName) => {
   console.log(urlString);
   var url = new URL(urlString);
   var id = url.searchParams.get("id");
+  var message = url.searchParams.get("message");
   var c = url.searchParams.get(paramName);
-  return [id, c];
+  return [id, c, message];
 };
 
 const goTo = (page, title, url) => {
@@ -31,8 +32,9 @@ const goTo = (page, title, url) => {
   }
 };
 
-const postTweet = (closeWindow,id) => {
+const postTweet = (closeWindow,id,message) => {
   console.log('Value id '+id);
+  console.log('Response Message '+message);
   setTimeout(() => {
   var anchor = document.getElementsByClassName("-qQT3 rOtsg");
   let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
@@ -159,7 +161,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
                   console.log(messageUsername);
                   console.log(messageLink);
                   console.log(latestMsgDivContent);
-                  postMessage(messageLink , messageUsername);
+                  postMessage(messageLink , messageUsername , latestMsgDivContent);
                
               }
               
@@ -168,12 +170,13 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
       }, 1000);
   }
 });
-function postMessage(link,user)
+function postMessage(link,user,message)
 {
   setTimeout(() => {
   let params ={
     messageLink : link,
-    userName  : user
+    userName  : user,
+    messageContent:message
   }
  
   chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
