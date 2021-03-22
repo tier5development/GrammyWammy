@@ -43,10 +43,11 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
       
       if(WindowURL === 'https://www.instagram.com/direct/inbox/')
       {
-          console.log('Satisfied');
+          
           data={tabinfo:TabId,windowinfo:WindowId}
           chrome.tabs.sendMessage(TabId, { catch: "check-new-incoming-message",data });
-          //scanForNewMessage();
+          scanForNewMessage();
+          reloadInstagram();
          
       }
       if(WindowURL === 'https://www.instagram.com/'){
@@ -62,17 +63,31 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
   }
 });
 
-// function scanForNewMessage(){
-//   console.log('called');
-//   chrome.windows.getCurrent(w => {
-//     chrome.tabs.query({active: true, windowId: w.id}, tabs => {
-//       const tabId = tabs[0].id;
-//       data={}
-//       chrome.tabs.sendMessage(tabId, { catch: "check-new-incoming-message",data });
-      
-//     });
-//   });
-// }
+function scanForNewMessage(){
+  console.log('called');
+  setInterval(function(){ 
+
+    chrome.windows.getCurrent(w => {
+      chrome.tabs.query({active: true, windowId: w.id}, tabs => {
+        const tabId = tabs[0].id;
+        data={}
+        chrome.tabs.sendMessage(tabId, { catch: "check-new-incoming-message",data });
+        
+      });
+    });
+    }, 11000);
+ 
+}
+
+function reloadInstagram()
+{
+  setInterval(function(){ 
+      chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tab) {
+      chrome.tabs.reload(tab[0].id) 
+    });
+ }, 180000);
+ 
+}
 
 /** 
  * this will listen to the  on runtime Message

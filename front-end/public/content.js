@@ -143,14 +143,15 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
         let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
         console.log(allMessageDiv);
         console.log(allMessageDiv.length);
-
+        let unreadMessage = 0;
         for (var i = 0; i < allMessageDiv.length; i++) {
             if(allMessageDiv[i])
             { 
               let childDiv = allMessageDiv[i].children[0].children[0]; 
               
               if(childDiv.childElementCount == 3)
-              {
+              {   
+                  
                   let messageUsername = childDiv.children[1].children[0].children[0].children[0].children[0].children[0].textContent;
                   let latestMsgDiv = childDiv.children[1].children[1];
                   let messageLink = 'https://www.instagram.com'+allMessageDiv[i].children[0].getAttribute("href");
@@ -159,7 +160,9 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
                   console.log(messageLink);
                   console.log(latestMsgDivContent);
                   postMessage(messageLink , messageUsername);
+               
               }
+              
             }
         }
       }, 1000);
@@ -167,11 +170,13 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
 });
 function postMessage(link,user)
 {
+  setTimeout(() => {
   let params ={
     messageLink : link,
     userName  : user
   }
  
   chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
+}, 3000);
 
 }
