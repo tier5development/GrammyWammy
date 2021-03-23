@@ -81,12 +81,7 @@ function scanForNewMessage(){
 
 function reloadInstagram()
 {
-//   setInterval(function(){ 
-//       chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tab) {
-//       chrome.tabs.reload(tab[0].id) 
-//     });
-//  }, 180000);
- 
+
 }
 
 /** 
@@ -104,12 +99,8 @@ if(request.type   ==  "postIndividualMessage")
           {
             return false;
           }
-          messageContent =  getAutoResponseText(request.options.messageContent);
-          
-          console.log(messageContent);
-          console.log('Id '+messageId);
-          console.log('On BackGround '+messageUserName);
-          console.log('Profile Tab '+localStorage.getItem("profileTabId"));
+          messageContent =  getAutoResponseText(request.options.messageContent,request.options.userName);
+         
         
           chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
             url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
@@ -118,16 +109,38 @@ if(request.type   ==  "postIndividualMessage")
             });
   
   }
-    function getAutoResponseText(message)
+    function getAutoResponseText(message,userName)
     {
+        setUserDetails(userName);
+        let fullName = JSON.parse(localStorage.getItem("individualMessageDetails")).userFullName;
+        let splitFullName = fullName.split(" ");
+        let firstName = (splitFullName[0]) ? splitFullName[0] :'';
+        let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
+      
         let autoResponderKeywords = JSON.parse(localStorage.getItem('keywordsTally'));
         let responseMessage ='';
         for (var i = 0; i < autoResponderKeywords.length; i++) {
           let object = autoResponderKeywords[i];
-              console.log(object.keyword+">>>");
-              console.log(message+'#####');
+              
               if (message.includes(object.keyword)) {
-                   responseMessage = object.message;
+
+                  let ResponseText = object.message;
+                  console.log(ResponseText);
+                  console.log(firstName);
+                  console.log(lastName);
+                  let NowTime=new Date().getTime();  
+                  let a = new Date(NowTime);
+                  let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                  let year = a.getFullYear();
+                  let month = months[a.getMonth()];
+                  let date = a.getDate();
+                 
+                  let OnlyDate = date + ' ' + month + ' ' + year ;
+                  let NewResponseText = ResponseText.replace('{first_name}',firstName);
+                  NewResponseText = NewResponseText.replace('{last_name}',lastName);
+                  NewResponseText = NewResponseText.replace('{Date}',OnlyDate);
+                  NewResponseText = NewResponseText.replace('{date}',OnlyDate);
+                  responseMessage = NewResponseText;
               } 
         }
         if(responseMessage)
@@ -137,6 +150,38 @@ if(request.type   ==  "postIndividualMessage")
         else
         {
           return localStorage.getItem('default_message_text');
+        }
+    }
+
+    function setUserDetails(userName)
+    {
+      
+        var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
+        var validation = regex.test(userName);
+        if(validation) {
+          $.get("https://www.instagram.com/"+userName+"/?__a=1")
+          .done(function(data) { 
+
+            var userImage = data["graphql"]["user"]["profile_pic_url_hd"];
+            var userFullName = data["graphql"]["user"]["full_name"];
+            var userId = data["graphql"]["user"]["id"];
+            var userName = data["graphql"]["user"]["username"];
+            let  params ={
+              userId    :   userId,
+              userFullName   :   userFullName,
+              userName :   userName,
+              userImage :   userImage
+            };
+            localStorage.setItem("individualMessageDetails",JSON.stringify(params));
+
+            })
+          .fail(function() { 
+            // code for 404 error 
+            console.log('Username was not found!')
+          })
+        
+        } else {
+          console.log('The username is invalid!')
         }
     }
 
