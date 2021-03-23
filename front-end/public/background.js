@@ -75,7 +75,7 @@ function scanForNewMessage(){
         
       });
     });
-    }, 11000);
+    }, 6000);
  
 }
 
@@ -95,30 +95,57 @@ function reloadInstagram()
 */
 const urlParam = "instaExt";
 chrome.runtime.onMessage.addListener(async function(request, sender) {
-
-
-  if(request.type   ==  "postIndividualMessage"){
-    messageLink = request.options.messageLink;
-    messageId = messageLink.split("/").pop();
-    messageUserName = request.options.userName;
-    messageContent =  request.options.messageContent;
-    console.log(messageContent);
-    console.log('Id '+messageId);
-    console.log('On BackGround '+messageUserName);
-    console.log('Profile Tab '+localStorage.getItem("profileTabId"));
-    //console.log(`https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`);
-    chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-      url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-      active: true}, function(tab) {
-        tabId = tab.id;
-        localStorage.setItem('profileTabId',tabId);
-    });
-    // chrome.tabs.create({ 
-    //   url: `https://www.instagram.com/direct/inbox/?id=${messageId}&${urlParam}=true`,
-    // }, function(tab) {
+if(request.type   ==  "postIndividualMessage")
+  {
+          messageLink = request.options.messageLink;
+          messageId = messageLink.split("/").pop();
+          messageUserName = request.options.userName;
+          if(request.options.messageContent == 'Typing...')
+          {
+            return false;
+          }
+          messageContent =  getAutoResponseText(request.options.messageContent);
+          
+          console.log(messageContent);
+          console.log('Id '+messageId);
+          console.log('On BackGround '+messageUserName);
+          console.log('Profile Tab '+localStorage.getItem("profileTabId"));
         
-    // });
+          chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+            url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
+            active: true}, function(tab) {
+              tabId = tab.id;
+            });
+  
   }
+    function getAutoResponseText(message)
+    {
+        let autoResponderKeywords = JSON.parse(localStorage.getItem('keywordsTally'));
+        let responseMessage ='';
+        for (var i = 0; i < autoResponderKeywords.length; i++) {
+          let object = autoResponderKeywords[i];
+              console.log(object.keyword+">>>");
+              console.log(message+'#####');
+              if (message.includes(object.keyword)) {
+                   responseMessage = object.message;
+              } 
+        }
+        if(responseMessage)
+        {
+           return responseMessage;
+        }
+        else
+        {
+          return localStorage.getItem('default_message_text');
+        }
+    }
+
+    if(request.type   ==  "loadHomePage")
+    {
+      chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+        url: `https://www.instagram.com/${localStorage.getItem("fb_name")}`,
+        active: true});
+    }
 
     if (request.type == "storeUserInfoOrQueryThenStore"){
         console.log("This I Got In Background",request.options);
@@ -176,8 +203,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                       localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
                       if((AutoResponderStatus == 1 || DefaultMessageStatus == 1) && UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
                         console.log("Open Message List  84848484");
-                        //document.getElementById('profileFrame').src = "";
-                        //document.getElementById('messageListMain').src = "https://m.facebook.com/messages/";
+                      
                         const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
                         let CreateTab    =   chrome.tabs.create({
                             url: myNewUrl,

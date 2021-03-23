@@ -48,20 +48,20 @@ const postTweet = (closeWindow,id,message) => {
        if(id == tagId)
        {
           console.log('Condition Satisfied');
-          populateTextArea();
+          populateTextArea(message);
           anchor[i].click();
          
        }
   }
-}, 5000);
+}, 1000);
  
 
 };
 
-function populateTextArea()
+function populateTextArea(response)
 {
   setTimeout(function() {
-    var message = "Hey, How are you doing ?";
+    var message = response;
     console.log(message);
     $(`textarea`).focus();
     const blob = new Blob([message], { type: 'text/plain' });
@@ -77,6 +77,11 @@ function populateTextArea()
              console.log('Trigger Button Here');
              $('button:contains("Send")').trigger('click');            
             }, 1000)
+            /// Back To Instagram Home Page ///
+            setTimeout(function() {
+            chrome.runtime.sendMessage({type: "loadHomePage", options: ''});
+            }, 2000)
+            /// Back To Instagram Home Page ///
            
             
         },
@@ -85,7 +90,7 @@ function populateTextArea()
             console.log(error);
         }
     );
-   }, 2000);
+   }, 1000);
 }
 
 chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
