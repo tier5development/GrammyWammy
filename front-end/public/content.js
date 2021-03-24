@@ -146,10 +146,36 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
   }
   if(request.catch === "check-new-incoming-message")
   {
+
+    setTimeout(() => {
+
+    //const myList = document.querySelectorAll('.DPiy6 .Igw0E .IwRSH .eGOV_ ._4EzTm');
+
+    var target = document.querySelector('.N9abW');
+    
+    var LocationDetails =window.location;
+    var count  = 0;
+    var observer = new MutationObserver(function(mutations) {
+      
+       fetchMessageDetails();
+     
+       
+    });
+
+   // configuration of the observer:
+    var config = { attributes: true, childList: true, characterData: true, subtree:true }
+    
+    // pass in the target node, as well as the observer options
+    observer.observe(target, config);
+   
+    }, 5000);
+
+    function fetchMessageDetails()
+    {
+       console.log('Function Called');
         setTimeout(() => {
         let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
-        console.log(allMessageDiv);
-        console.log(allMessageDiv.length);
+       
         let unreadMessage = 0;
         for (var i = 0; i < allMessageDiv.length; i++) {
             if(allMessageDiv[i])
@@ -163,9 +189,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
                   let latestMsgDiv = childDiv.children[1].children[1];
                   let messageLink = 'https://www.instagram.com'+allMessageDiv[i].children[0].getAttribute("href");
                   let latestMsgDivContent = latestMsgDiv.children[0].children[0].children[0].children[0].textContent;
-                  console.log(messageUsername);
-                  console.log(messageLink);
-                  console.log(latestMsgDivContent);
+             
                   postMessage(messageLink , messageUsername , latestMsgDivContent);
                
               }
@@ -173,18 +197,23 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
             }
         }
       }, 1000);
+    }
+
+    function postMessage(link,user,message)
+    {
+      console.log('Post Function called');
+      setTimeout(() => {
+      let params ={
+        messageLink : link,
+        userName  : user,
+        messageContent:message
+      }
+    
+      chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
+    }, 3000);
+
+    }
+
+     
   }
 });
-function postMessage(link,user,message)
-{
-  setTimeout(() => {
-  let params ={
-    messageLink : link,
-    userName  : user,
-    messageContent:message
-  }
- 
-  chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
-}, 3000);
-
-}

@@ -46,8 +46,8 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
           
           data={tabinfo:TabId,windowinfo:WindowId}
           chrome.tabs.sendMessage(TabId, { catch: "check-new-incoming-message",data });
-          scanForNewMessage();
-          reloadInstagram();
+          // scanForNewMessage();
+          // reloadInstagram();
          
       }
       if(WindowURL === 'https://www.instagram.com/'){
