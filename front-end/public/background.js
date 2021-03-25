@@ -47,7 +47,7 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
           data={tabinfo:TabId,windowinfo:WindowId}
           chrome.tabs.sendMessage(TabId, { catch: "check-new-incoming-message",data });
           // scanForNewMessage();
-          // reloadInstagram();
+          
          
       }
       if(WindowURL === 'https://www.instagram.com/'){
@@ -56,7 +56,9 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
           console.log("This is info from background",tab);
           data={userToken:UserToken,tabinfo:TabId,windowinfo:WindowId}
           console.log(data);
+          reloadInstagram();
           chrome.tabs.sendMessage(TabId, { catch: "get-login-info",data });
+          
       }
      
      
@@ -81,7 +83,10 @@ function scanForNewMessage(){
 
 function reloadInstagram()
 {
-
+  chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tab) {
+  chrome.tabs.reload(tab[0].id) 
+ });
+ setTimeout(reloadInstagram, 300000);
 }
 
 /** 
@@ -140,7 +145,7 @@ if(request.type   ==  "postIndividualMessage")
                   NewResponseText = NewResponseText.replace('{last_name}',lastName);
                   NewResponseText = NewResponseText.replace('{Date}',OnlyDate);
                   NewResponseText = NewResponseText.replace('{date}',OnlyDate);
-                  responseMessage = NewResponseText;
+                  responseMessage += NewResponseText;
               } 
         }
         if(responseMessage)
