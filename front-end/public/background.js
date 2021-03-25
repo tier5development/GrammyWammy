@@ -104,7 +104,9 @@ if(request.type   ==  "postIndividualMessage")
           {
             return false;
           }
-          messageContent =  getAutoResponseText(request.options.messageContent,request.options.userName);
+          setUserDetails(messageUserName);
+          messageContent =  getAutoResponseText(request.options.messageContent,messageUserName);
+          
          
         
           chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
@@ -116,18 +118,31 @@ if(request.type   ==  "postIndividualMessage")
   }
     function getAutoResponseText(message,userName)
     {
-        setUserDetails(userName);
-        let fullName = JSON.parse(localStorage.getItem("individualMessageDetails")).userFullName;
-        let splitFullName = fullName.split(" ");
-        let firstName = (splitFullName[0]) ? splitFullName[0] :'';
-        let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
-      
+       
         let autoResponderKeywords = JSON.parse(localStorage.getItem('keywordsTally'));
         let responseMessage ='';
         for (var i = 0; i < autoResponderKeywords.length; i++) {
           let object = autoResponderKeywords[i];
               
               if (message.includes(object.keyword)) {
+           
+                  console.log('Details '+localStorage.getItem("individualMessageDetails"));
+                  console.log('Username'+userName);
+                  if(localStorage.getItem("individualMessageDetails"))
+                  {
+                      console.log('stored');
+                      fullName = JSON.parse(localStorage.getItem("individualMessageDetails")).userFullName;
+                  }
+                  else
+                  {
+                      console.log('no stored');
+                      fullName = userName;
+                  }
+                  console.log(fullName+' Full Name');
+                  let splitFullName = fullName.split(" ");
+                  let firstName = (splitFullName[0]) ? splitFullName[0] :'';
+                  let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
+
 
                   let ResponseText = object.message;
                   console.log(ResponseText);
@@ -192,8 +207,9 @@ if(request.type   ==  "postIndividualMessage")
 
     if(request.type   ==  "loadHomePage")
     {
+      //localStorage.setItem("individualMessageDetails","");
       chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-        url: `https://www.instagram.com/${localStorage.getItem("fb_name")}`,
+        url: `https://www.instagram.com/${localStorage.getItem("fb_username")}`,
         active: true});
     }
 
@@ -220,8 +236,8 @@ if(request.type   ==  "postIndividualMessage")
                       localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                       localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
                       localStorage.setItem('fb_id', responsenewvalue.payload.UserInfo.facebook_fbid);
-                      localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_name);
-                      localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_profile_name);
+                      localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
+                      localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_name);
                       localStorage.setItem('fb_image', responsenewvalue.payload.UserInfo.facebook_image);
                       localStorage.setItem('fb_logged_id', request.options.insta_logged_id);
                       localStorage.setItem('inBackgroundFetching', false);

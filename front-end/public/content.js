@@ -199,21 +199,20 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
       }, 1000);
     }
 
-    function postMessage(link,user,message)
-    {
-      console.log('Post Function called');
-      setTimeout(() => {
-      let params ={
-        messageLink : link,
-        userName  : user,
-        messageContent:message
-      }
-    
-      chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
-    }, 3000);
-
     }
-
-     
-  }
 });
+
+function postMessage(link,user,message)
+{
+  console.log('Post Function called');
+  setTimeout(() => {
+  let params ={
+    messageLink : link,
+    userName  : user,
+    messageContent:message
+  }
+  
+  chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
+}, 3000);
+
+}
