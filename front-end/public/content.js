@@ -1,4 +1,5 @@
 const urlParam = "instaExt";
+let port = chrome.runtime.connect({name: "knockknock"});
 const sendMessageBtn = `button[class="sqdOP  L3NKy   y3zKF     "]`;
 
 $(document).ready(function () {
@@ -79,7 +80,8 @@ function populateTextArea(response)
             }, 1000)
             /// Back To Instagram Home Page ///
             setTimeout(function() {
-            chrome.runtime.sendMessage({type: "loadHomePage", options: ''});
+           // chrome.runtime.sendMessage({type: "loadHomePage", options: ''});
+           port.postMessage({options: '',ConFlag:"loadHomePage"});
             }, 2000)
             /// Back To Instagram Home Page ///
            
@@ -173,6 +175,8 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     function fetchMessageDetails()
     {
        console.log('Function Called');
+      //  reloadParams ='';
+      //  port.postMessage({options: reloadParams,ConFlag:"reloadMessage"});
         setTimeout(() => {
         let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
        
@@ -212,7 +216,8 @@ function postMessage(link,user,message)
     messageContent:message
   }
   
-  chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
+  //chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
+  port.postMessage({options: params,ConFlag:"CheckMessageContent"});
 }, 3000);
 
 }

@@ -43,7 +43,7 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
       
       if(WindowURL === 'https://www.instagram.com/direct/inbox/')
       {
-          
+          localStorage.setItem('messageListId',TabId);
           data={tabinfo:TabId,windowinfo:WindowId}
           chrome.tabs.sendMessage(TabId, { catch: "check-new-incoming-message",data });
           // scanForNewMessage();
@@ -83,137 +83,23 @@ function scanForNewMessage(){
 
 function reloadInstagram()
 {
-  chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tab) {
-  chrome.tabs.reload(tab[0].id) 
- });
- setTimeout(reloadInstagram, 300000);
+//   chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tab) {
+//   chrome.tabs.reload(tab[0].id) 
+//  });
+// chrome.tabs.update( parseInt(localStorage.getItem("messageListId")), { 
+//   url: `https://www.instagram.com/direct/inbox/`,
+//   active: true});
+//  setTimeout(reloadInstagram, 300000);
 }
 
 /** 
  * this will listen to the  on runtime Message
  * 
 */
-const urlParam = "instaExt";
+
 chrome.runtime.onMessage.addListener(async function(request, sender) {
-if(request.type   ==  "postIndividualMessage")
-  {
-          messageLink = request.options.messageLink;
-          messageId = messageLink.split("/").pop();
-          messageUserName = request.options.userName;
-          if(request.options.messageContent == 'Typing...')
-          {
-            return false;
-          }
-          setUserDetails(messageUserName);
-          messageContent =  getAutoResponseText(request.options.messageContent,messageUserName);
-          
-         
-        
-          chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-            url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-            active: true}, function(tab) {
-              tabId = tab.id;
-            });
-  
-  }
-    function getAutoResponseText(message,userName)
-    {
-       
-        let autoResponderKeywords = JSON.parse(localStorage.getItem('keywordsTally'));
-        let responseMessage ='';
-        for (var i = 0; i < autoResponderKeywords.length; i++) {
-          let object = autoResponderKeywords[i];
-              
-              if (message.includes(object.keyword)) {
-           
-                  console.log('Details '+localStorage.getItem("individualMessageDetails"));
-                  console.log('Username'+userName);
-                  if(localStorage.getItem("individualMessageDetails"))
-                  {
-                      console.log('stored');
-                      fullName = JSON.parse(localStorage.getItem("individualMessageDetails")).userFullName;
-                  }
-                  else
-                  {
-                      console.log('no stored');
-                      fullName = userName;
-                  }
-                  console.log(fullName+' Full Name');
-                  let splitFullName = fullName.split(" ");
-                  let firstName = (splitFullName[0]) ? splitFullName[0] :'';
-                  let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
-
-
-                  let ResponseText = object.message;
-                  console.log(ResponseText);
-                  console.log(firstName);
-                  console.log(lastName);
-                  let NowTime=new Date().getTime();  
-                  let a = new Date(NowTime);
-                  let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                  let year = a.getFullYear();
-                  let month = months[a.getMonth()];
-                  let date = a.getDate();
-                 
-                  let OnlyDate = date + ' ' + month + ' ' + year ;
-                  let NewResponseText = ResponseText.replace('{first_name}',firstName);
-                  NewResponseText = NewResponseText.replace('{last_name}',lastName);
-                  NewResponseText = NewResponseText.replace('{Date}',OnlyDate);
-                  NewResponseText = NewResponseText.replace('{date}',OnlyDate);
-                  responseMessage += NewResponseText;
-              } 
-        }
-        if(responseMessage)
-        {
-           return responseMessage;
-        }
-        else
-        {
-          return localStorage.getItem('default_message_text');
-        }
-    }
-
-    function setUserDetails(userName)
-    {
-      
-        var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
-        var validation = regex.test(userName);
-        if(validation) {
-          $.get("https://www.instagram.com/"+userName+"/?__a=1")
-          .done(function(data) { 
-
-            var userImage = data["graphql"]["user"]["profile_pic_url_hd"];
-            var userFullName = data["graphql"]["user"]["full_name"];
-            var userId = data["graphql"]["user"]["id"];
-            var userName = data["graphql"]["user"]["username"];
-            let  params ={
-              userId    :   userId,
-              userFullName   :   userFullName,
-              userName :   userName,
-              userImage :   userImage
-            };
-            localStorage.setItem("individualMessageDetails",JSON.stringify(params));
-
-            })
-          .fail(function() { 
-            // code for 404 error 
-            console.log('Username was not found!')
-          })
-        
-        } else {
-          console.log('The username is invalid!')
-        }
-    }
-
-    if(request.type   ==  "loadHomePage")
-    {
-      //localStorage.setItem("individualMessageDetails","");
-      chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-        url: `https://www.instagram.com/${localStorage.getItem("fb_username")}`,
-        active: true});
-    }
-
-    if (request.type == "storeUserInfoOrQueryThenStore"){
+ 
+  if (request.type == "storeUserInfoOrQueryThenStore"){
         console.log("This I Got In Background",request.options);
         let  params ={
         user_rec    :   localStorage.getItem('kyubi_user_token'),
@@ -330,409 +216,137 @@ if(request.type   ==  "postIndividualMessage")
 
 })
 
+const urlParam = "instaExt";
 chrome.runtime.onConnect.addListener(function(port) {
     port.onMessage.addListener(async function(msg) {
-    if (msg.ConFlag == "INDVAL"){
-      let ListURL=localStorage.getItem('ListURLArray');
-      let ListURLArray=JSON.parse(ListURL);
-      if(ListURLArray.length  === 0){
-        ListURLArray[ListURLArray.length]=mBasicUrl+""+ msg.SendURL;
-        let NewListURLArray=JSON.stringify(ListURLArray);
-        localStorage.setItem('ListURLArray', NewListURLArray);
-      }else{
-        let check = ListURLArray.includes(mBasicUrl+""+ msg.SendURL);
-        if(check){
 
-        }else{
-        ListURLArray[ListURLArray.length]=mBasicUrl+""+ msg.SendURL;
-        let NewListURLArray=JSON.stringify(ListURLArray);
-        localStorage.setItem('ListURLArray', NewListURLArray);
-        }
-        
-      }
-      CheckLocalStoreAndHitIndividualMList();
-    }
-    if(msg.ConFlag == "CheckMessageContent"){
-      console.log("Now  Again I am In BackGround xxxxxxxxxxxxxxxxxxxx",msg.MessageDetails);
-      let fb_Name=localStorage.getItem('fb_username');
-      let FacebookUserId=localStorage.getItem('fb_id');
-      fb_Name=fb_Name.trim();
-      let m_username=msg.MessageDetails.profile_name.trim();
-      let ProfileLink=msg.MessageDetails.ProfileLink.trim();
-      if(msg.MessageDetails.facebook_Id[0].trim() == FacebookUserId.trim()){
-        FacebooKFriendId=msg.MessageDetails.facebook_Id[1].trim()
-      }else{
-        FacebooKFriendId=msg.MessageDetails.facebook_Id[0].trim()
-      }
-      if(fb_Name!=m_username){
-        
-        let fb_logged_id=localStorage.getItem('fb_logged_id');
-        let inBackgroundFetching=localStorage.getItem('inBackgroundFetching');
-        let default_message=localStorage.getItem('default_message');
-        let autoresponder=localStorage.getItem('autoresponder');
-        if(fb_logged_id == "true" && inBackgroundFetching== "false"){
-          if(default_message !=0  ||  autoresponder!=0){
-                let IncomingMessage = msg.MessageDetails.message_content.split(',').join(" , ");
-                IncomingMessage = IncomingMessage.split('.').join("  ");
-                IncomingMessage = IncomingMessage.split('?').join(" ");
-                IncomingMessage = IncomingMessage.split('<br>').join(" ");
-                IncomingMessage = IncomingMessage.split('`').join(" ");
-                IncomingMessage = IncomingMessage.split("'").join(" ");
-                IncomingMessage = IncomingMessage.split('"').join(" ");
-                IncomingMessage = IncomingMessage.split('*').join(" ");
-                IncomingMessage = IncomingMessage.split('’').join(" ");
-                IncomingMessage = IncomingMessage.split('“').join(" ");
-                IncomingMessage = IncomingMessage.split('”').join(" ");
-                IncomingMessage = " "+IncomingMessage+" ";
-                IncomingMessage=IncomingMessage.toLowerCase();
-                let FriendFaceBookName=m_username;
-                let UserFaceBookName=fb_Name;
-                let AutoResponderKeyword=localStorage.getItem('keywordsTally');
-                let MfenevanId  = localStorage.getItem('user_id');
-                let keyObj = JSON.parse(AutoResponderKeyword);
-                let FriendFullName = FriendFaceBookName.split(" ");
-                let FirstCountx =0;
-                let FriendFirstName ="";
-                let FriendLastName ="";
-                let NowTime=new Date().getTime();  
-                if(FriendFullName.length>1){
-                    FriendFullName.map(function(eachval){
-                        if(FirstCountx ===   0){
-                            FriendFirstName = eachval;
-                        }else{
-                            FriendLastName=FriendLastName+" "+eachval;
-                        }
-                        FirstCountx=FirstCountx+1;
-                      });
-                }else{
-                    FriendFirstName = FriendFullName;
-                }
-                let totalkeyObj =keyObj.length;
-                if(totalkeyObj == 0){
-                  let paramsToSend  =   {
-                    MfenevanId:MfenevanId,
-                    FacebookUserId:FacebookUserId,
-                    FriendFacebookId:FacebooKFriendId,
-                    FacebookFirstName:FriendFirstName,
-                    FacebookLastName:FriendLastName,
-                    ProfileLink:ProfileLink,
-                    TimeNow:NowTime
-                  }
-                  let response  = await handleRequest(
-                    "api/friend/checkFriendReadyToReciveDefaultMessage",
-                    method.POST,
-                    toJsonStr(paramsToSend)
-                    );
-                  let responsenewvalue = await response.json();
-                  console.log("Hit For Default",paramsToSend);
-                  console.log("Hit For Default Now Get From Backend",responsenewvalue);
-                }else{
-                  let ResponseTextArray=[];
-                  let ResponseText="";
-                  await keyObj.map(function(eachval){
-                    let keywordToFind =eachval.keyword.toLowerCase();
-                        keywordToFind = " "+keywordToFind+" ";
-                        if (IncomingMessage.indexOf(keywordToFind)!=-1)
-                        {
-                              let PointIndex=IncomingMessage.indexOf(keywordToFind);
-                              ResponseTextArray[PointIndex] = eachval.message
-                              
-                        }
-                    });
-
-                    if(ResponseTextArray.length === 0){
-                      let paramsToSend  =   {
-                        MfenevanId:MfenevanId,
-                        FacebookUserId:FacebookUserId,
-                        FriendFacebookId:FacebooKFriendId,
-                        FacebookFirstName:FriendFirstName,
-                        FacebookLastName:FriendLastName,
-                        ProfileLink:ProfileLink,
-                        TimeNow:NowTime
-                      }
-                      let response  = await handleRequest(
-                        "api/friend/checkFriendReadyToReciveDefaultMessage",
-                        method.POST,
-                        toJsonStr(paramsToSend)
-                        );
-                      let responsenewvalue = await response.json();
-                      if(responsenewvalue.code == 1){
-                        console.log("Hey I am Sending This-----------------------",paramsToSend);
-                        port.postMessage({userInfoDetails: responsenewvalue.payload.message,ThreadParams:paramsToSend,ConFlagBack:"DEFAULTMESSAGEBACK" });
-                      }else{
-                        let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
-                        let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.location_details);
-                        if (indexthreadlink !== -1) {
-                          individualThreadList.splice(indexthreadlink, 1);
-                          let NewListURLArray=JSON.stringify(individualThreadList);
-                          localStorage.setItem('ListURLArray', NewListURLArray);
-                         // document.getElementById('messageIndividualMain').src ="";
-                          localStorage.setItem('CheckMessageNReply',0);
-                          CheckLocalStoreAndHitIndividualMList();
-                        }
-                        
-                      }
-                    }else{
-                      ResponseTextArray.map(eachRespo=>{
-                        ResponseText=ResponseText+" "+eachRespo;
-                      });
-                        let a = new Date(NowTime);
-                        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                        let year = a.getFullYear();
-                        let month = months[a.getMonth()];
-                        let date = a.getDate();
-                        let hour = a.getHours();
-                        let min = a.getMinutes();
-                        let sec = a.getSeconds();
-                        let OnlyDate = date + ' ' + month + ' ' + year ;
-                        let NewResponseText = ResponseText.split('{first_name}').join(FriendFirstName);
-                        NewResponseText = NewResponseText.split('{last_name}').join(FriendLastName);
-                        NewResponseText = NewResponseText.split('{Date}').join(OnlyDate);
-                        NewResponseText = NewResponseText.split('{date}').join(OnlyDate);
-                        //console.log("Message Array IS++++++++++++++++++++++++",NewResponseText);
-                        let paramsToSend  =   {
-                          MfenevanId:MfenevanId,
-                          FacebookUserId:FacebookUserId,
-                          FriendFacebookId:FacebooKFriendId,
-                          FacebookFirstName:FriendFirstName,
-                          FacebookLastName:FriendLastName,
-                          ProfileLink:ProfileLink,
-                          TimeNow:NowTime
-                        }
-                        console.log("Hey I am Sending This------------------",paramsToSend);
-                        port.postMessage({userInfoDetails: NewResponseText,ThreadParams:paramsToSend,ConFlagBack:"AUTOMESSAGEBACK" });
-                    }
-                }
-                
-
-          }else{
-              let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
-              let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.location_details);
-              if (indexthreadlink !== -1) {
-                individualThreadList.splice(indexthreadlink, 1);
-                let NewListURLArray=JSON.stringify(individualThreadList);
-                localStorage.setItem('ListURLArray', NewListURLArray);
-               // document.getElementById('messageIndividualMain').src ="";
-                localStorage.setItem('CheckMessageNReply',0);
-                CheckLocalStoreAndHitIndividualMList();
+      if (msg.ConFlag == "CheckMessageContent")
+      {
+              messageLink = msg.options.messageLink;
+              messageId = messageLink.split("/").pop();
+              messageUserName = msg.options.userName;
+              if(msg.options.messageContent == 'Typing...')
+              {
+                return false;
               }
-            
-          }
-        }else{
-              let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
-              let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.location_details);
-              if (indexthreadlink !== -1) {
-                individualThreadList.splice(indexthreadlink, 1);
-                let NewListURLArray=JSON.stringify(individualThreadList);
-                localStorage.setItem('ListURLArray', NewListURLArray);
-                //document.getElementById('messageIndividualMain').src ="";
-                localStorage.setItem('CheckMessageNReply',0);
-                CheckLocalStoreAndHitIndividualMList();
-              }
-         
-        }
-      }else{
-              let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
-              let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.location_details);
-              if (indexthreadlink !== -1) {
-                individualThreadList.splice(indexthreadlink, 1);
-                let NewListURLArray=JSON.stringify(individualThreadList);
-                localStorage.setItem('ListURLArray', NewListURLArray);
-                //document.getElementById('messageIndividualMain').src ="";
-                localStorage.setItem('CheckMessageNReply',0);
-                CheckLocalStoreAndHitIndividualMList();
-              }
-        
-      }
-    }
-    if(msg.ConFlag == "STOREANDCLOSE"){
-      let params  =   {
-        FacebookFirstName : msg.MessageDetails.FacebookFirstName,
-        FacebookLastName  :msg.MessageDetails.FacebookLastName,
-        FacebookUserId  :msg.MessageDetails.FacebookUserId,
-        FriendFacebookId  :msg.MessageDetails.FriendFacebookId,
-        MessageSenderType :msg.MessageDetails.MessageSenderType,
-        MfenevanId  :msg.MessageDetails.MfenevanId,
-        ProfileLink :msg.MessageDetails.ProfileLink,
-        ResponseMessage :msg.MessageDetails.ResponseMessage,
-        ResponseTime  :msg.MessageDetails.ResponseTime
-      }
-      let response = await handleRequest(
-        "api/friend/saveLastMessageOutForFriend",
-        method.POST,
-        toJsonStr(params)
-      );
-      let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
-      let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.LocationDetails);
-      if (indexthreadlink !== -1) {
-        individualThreadList.splice(indexthreadlink, 1);
-        let NewListURLArray=JSON.stringify(individualThreadList);
-        localStorage.setItem('ListURLArray', NewListURLArray);
-        //document.getElementById('messageIndividualMain').src ="";
-        localStorage.setItem('CheckMessageNReply',0);
-        CheckLocalStoreAndHitIndividualMList();
-      }
+              setUserDetails(messageUserName);
+              messageContent =  getAutoResponseText(msg.options.messageContent,messageUserName);
+              
+              chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+                url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
+                active: true}, function(tab) {
+                  tabId = tab.id;
+                });
       
-      // if(individualThreadList.length != 0){
-      //   let NewIndividualThreadLinksx = [];
-      //   let i=0;
-      //   await individualThreadList.map(async function(eachval){
-      //     if(eachval==msg.MessageDetails.LocationDetails){
+      }
+        function getAutoResponseText(message,userName)
+        {
+           
+            let autoResponderKeywords = JSON.parse(localStorage.getItem('keywordsTally'));
+            let responseMessage ='';
+            for (var i = 0; i < autoResponderKeywords.length; i++) {
+              let object = autoResponderKeywords[i];
+                  
+                  if (message.includes(object.keyword)) {
+               
+                      console.log('Details '+localStorage.getItem("individualMessageDetails"));
+                      console.log('Username'+userName);
+                      if(localStorage.getItem("individualMessageDetails"))
+                      {
+                          console.log('stored');
+                          fullName = JSON.parse(localStorage.getItem("individualMessageDetails")).userFullName;
+                      }
+                      else
+                      {
+                          console.log('no stored');
+                          fullName = userName;
+                      }
+                      console.log(fullName+' Full Name');
+                      let splitFullName = fullName.split(" ");
+                      let firstName = (splitFullName[0]) ? splitFullName[0] :'';
+                      let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
+    
+    
+                      let ResponseText = object.message;
+                      console.log(ResponseText);
+                      console.log(firstName);
+                      console.log(lastName);
+                      let NowTime=new Date().getTime();  
+                      let a = new Date(NowTime);
+                      let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                      let year = a.getFullYear();
+                      let month = months[a.getMonth()];
+                      let date = a.getDate();
+                     
+                      let OnlyDate = date + ' ' + month + ' ' + year ;
+                      let NewResponseText = ResponseText.replace('{first_name}',firstName);
+                      NewResponseText = NewResponseText.replace('{last_name}',lastName);
+                      NewResponseText = NewResponseText.replace('{Date}',OnlyDate);
+                      NewResponseText = NewResponseText.replace('{date}',OnlyDate);
+                      responseMessage += NewResponseText;
+                  } 
+            }
+            if(responseMessage)
+            {
+               return responseMessage;
+            }
+            else
+            {
+              return localStorage.getItem('default_message_text');
+            }
+        }
+    
+        function setUserDetails(userName)
+        {
+          
+            var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
+            var validation = regex.test(userName);
+            if(validation) {
+              $.get("https://www.instagram.com/"+userName+"/?__a=1")
+              .done(function(data) { 
+    
+                var userImage = data["graphql"]["user"]["profile_pic_url_hd"];
+                var userFullName = data["graphql"]["user"]["full_name"];
+                var userId = data["graphql"]["user"]["id"];
+                var userName = data["graphql"]["user"]["username"];
+                let  params ={
+                  userId    :   userId,
+                  userFullName   :   userFullName,
+                  userName :   userName,
+                  userImage :   userImage
+                };
+                localStorage.setItem("individualMessageDetails",JSON.stringify(params));
+    
+                })
+              .fail(function() { 
+                // code for 404 error 
+                console.log('Username was not found!')
+              })
             
-      //     }else{
-      //       NewIndividualThreadLinksx[i]=msg.MessageDetails.LocationDetails;
-      //       i=i+1;
-      //     }
-      //   });
-      //   document.getElementById('messageIndividualMain').src ="";
-      //   localStorage.setItem('ListURLArray',NewIndividualThreadLinksx);
-      //   localStorage.setItem('CheckMessageNReply',0);
-      //   CheckLocalStoreAndHitIndividualMList();
-      // }
+            } else {
+              console.log('The username is invalid!')
+            }
+        }
+    
+        if(msg.ConFlag   ==  "loadHomePage")
+        {
+         
+          chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+            url: `https://www.instagram.com/${localStorage.getItem("fb_username")}`,
+            active: false});
 
-      console.log("Now  Again I am In BackGround 332",msg.MessageDetails);
-      console.log("Now  i have  to send this in db from BackGround 344",params);
-    }
+            chrome.tabs.update( parseInt(localStorage.getItem("messageListId")), { 
+              url: `https://www.instagram.com/direct/inbox/`,
+              active: true});
+        }
+        if(msg.ConFlag   ==  "reloadMessage")
+        {
+          
+          // chrome.tabs.update( parseInt(localStorage.getItem("messageListId")), { 
+          //   url: `https://www.instagram.com/direct/inbox/`,
+          //   active: true});
+        }
   });
 });
-async function TallyWithKeyWordsOrDefault(IncomingMessage,FriendFaceBookName,FacebooKFriendId,UserFaceBookName,FacebookUserId,ProfileLink){
-  //let port = chrome.runtime.connect({name: "knockknock"});
-  let AutoResponderKeyword=localStorage.getItem('keywordsTally');
-  let MfenevanId  = localStorage.getItem('user_id');
-  let keyObj = JSON.parse(AutoResponderKeyword);
-  let FriendFullName = FriendFaceBookName.split(" ");
-  let FirstCountx =0;
-  let FriendFirstName ="";
-  let FriendLastName ="";
-  let NowTime=new Date().getTime();  
-  if(FriendFullName.length>1){
-      FriendFullName.map(function(eachval){
-          if(FirstCountx ===   0){
-              FriendFirstName = eachval;
-          }else{
-              FriendLastName=FriendLastName+" "+eachval;
-          }
-          FirstCountx=FirstCountx+1;
-        });
-  }else{
-      FriendFirstName = FriendFullName;
-  }
-  console.log("I Got This Keywords Count ))))))",keyObj.length);
-  let totalkeyObj =keyObj.length;
-  if(totalkeyObj == 0){
-     
-    let paramsToSend  =   {
-      MfenevanId:MfenevanId,
-      FacebookUserId:FacebookUserId,
-      FriendFacebookId:FacebooKFriendId,
-      FacebookFirstName:FriendFirstName,
-      FacebookLastName:FriendLastName,
-      ProfileLink:ProfileLink,
-      TimeNow:NowTime
-    }
-    let response  = await handleRequest(
-      "api/friend/checkFriendReadyToReciveDefaultMessage",
-      method.POST,
-      toJsonStr(paramsToSend)
-      );
-    let responsenewvalue = await response.json();
-    console.log("Hit For Default",paramsToSend);
-    console.log("Hit For Default Now Get From Backend",responsenewvalue);
-    
-  }else{
-    let ResponseTextArray=[];
-    let ResponseText="";
-    await keyObj.map(function(eachval){
-      let keywordToFind =eachval.keyword.toLowerCase();
-          keywordToFind = " "+keywordToFind+" ";
-          if (IncomingMessage.indexOf(keywordToFind)!=-1)
-          {
-                let PointIndex=IncomingMessage.indexOf(keywordToFind);
-                ResponseTextArray[PointIndex] = eachval.message
-                
-          }
-      });
-    
-    console.log("Hit For Keyword Check",keyObj.length);
-    console.log("Message Array IS",ResponseTextArray);
-    if(ResponseTextArray.length === 0){
-      
-      let paramsToSend  =   {
-        MfenevanId:MfenevanId,
-        FacebookUserId:FacebookUserId,
-        FriendFacebookId:FacebooKFriendId,
-        FacebookFirstName:FriendFirstName,
-        FacebookLastName:FriendLastName,
-        ProfileLink:ProfileLink,
-        TimeNow:NowTime
-      }
-      let response  = await handleRequest(
-        "api/friend/checkFriendReadyToReciveDefaultMessage",
-        method.POST,
-        toJsonStr(paramsToSend)
-        );
-      let responsenewvalue = await response.json();
-      console.log("Hit For Default",paramsToSend);
-      console.log("Hit For Default Now Get From Backend",responsenewvalue);
-      if(responsenewvalue.code == 1){
-        return {userInfoDetails: responsenewvalue,ConFlagBack:"DEFAULTMESSAGEBACK" };
-      }else{
-            //TODO Remove  from Link Array,Remove From IFrame and CheckMessageNReply ==0
-            console.log("TODO Remove  from Link Array,Remove From IFrame and CheckMessageNReply ==0");
 
-      }
-      
-    }else{
-      ResponseTextArray.map(eachRespo=>{
-        ResponseText=ResponseText+" "+eachRespo;
-      });
-        let a = new Date(NowTime);
-        let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        let year = a.getFullYear();
-        let month = months[a.getMonth()];
-        let date = a.getDate();
-        let hour = a.getHours();
-        let min = a.getMinutes();
-        let sec = a.getSeconds();
-        let OnlyDate = date + ' ' + month + ' ' + year ;
-      let NewResponseText = ResponseText.split('{first_name}').join(FriendFirstName);
-        NewResponseText = NewResponseText.split('{last_name}').join(FriendLastName);
-        NewResponseText = NewResponseText.split('{Date}').join(OnlyDate);
-        NewResponseText = NewResponseText.split('{date}').join(OnlyDate);
-      console.log("Message Array IS++++++++++++++++++++++++",NewResponseText);
-      return {userInfoDetails: NewResponseText,ConFlagBack:"AUTOMESSAGEBACK" };
-    }
-  }
-}
-function CheckLocalStoreAndHitIndividualMList(){
-  let ListURL=localStorage.getItem('ListURLArray');
-  let CheckMessageNReply=localStorage.getItem('CheckMessageNReply');
-  let fb_logged_id=localStorage.getItem('fb_logged_id');
-  let inBackgroundFetching=localStorage.getItem('inBackgroundFetching');
-  let default_message=localStorage.getItem('default_message');
-  let autoresponder=localStorage.getItem('autoresponder');
-  console.log("Trigger ===========1",ListURL);
-  console.log("Trigger ===========2",CheckMessageNReply);
-  console.log("Trigger ===========3",fb_logged_id);
-  console.log("Trigger ===========4",inBackgroundFetching);
-  console.log("Trigger ===========5",default_message);
-  console.log("Trigger ===========6",autoresponder);
-  if(fb_logged_id == "true" && inBackgroundFetching== "false"){
-    if(default_message !=0  ||  autoresponder!=0){
-      if(CheckMessageNReply == 0){
-
-        let ListURLArray = JSON.parse(ListURL);
-        console.log("Trigger ===========77",ListURLArray);
-        if(ListURLArray.length>0){
-          console.log("Trigger ===========7",ListURLArray[0]);
-          //document.getElementById('messageIndividualMain').src = "";
-          //document.getElementById('messageIndividualMain').src = ListURLArray[0];
-          localStorage.setItem('CheckMessageNReply',1);
-        }
-        
-      }
-    }
-  }
-
-}
 
