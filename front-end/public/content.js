@@ -1,5 +1,8 @@
 const urlParam = "instaExt";
 let port = chrome.runtime.connect({name: "knockknock"});
+port.onDisconnect.addListener(obj => {
+  console.log('disconnected port');
+})
 const sendMessageBtn = `button[class="sqdOP  L3NKy   y3zKF     "]`;
 
 $(document).ready(function () {

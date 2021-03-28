@@ -218,6 +218,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
 
 const urlParam = "instaExt";
 chrome.runtime.onConnect.addListener(function(port) {
+  if (port.name === 'knockknock') {
     port.onMessage.addListener(async function(msg) {
 
       if (msg.ConFlag == "CheckMessageContent")
@@ -292,8 +293,54 @@ chrome.runtime.onConnect.addListener(function(port) {
             }
             else
             {
+              getDefaultMessage();
               return localStorage.getItem('default_message_text');
             }
+        }
+
+
+        function getDefaultMessage()
+        {
+          let GrammyWammyId  = localStorage.getItem('user_id');
+          let NowTime=new Date().getTime();  
+          if(localStorage.getItem("individualMessageDetails"))
+          {
+                messagePostedBy  = JSON.parse(localStorage.getItem("individualMessageDetails"));
+                fullName = messagePostedBy.userFullName;
+                let splitFullName = fullName.split(" ");
+                let firstName = (splitFullName[0]) ? splitFullName[0] :'';
+                let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
+                let postedByUsername = messagePostedBy.userName;
+                let profileLink = `https://www.instagram.com/${postedByUsername}`;
+                let instagramFriendId = JSON.parse(localStorage.getItem("individualMessageDetails")).userId;
+
+                
+                let paramsToSend  =   {
+                  MfenevanId:GrammyWammyId,
+                  FacebookUserId:'',
+                  FriendFacebookId:instagramFriendId,
+                  FacebookFirstName:firstName,
+                  FacebookLastName:lastName,
+                  ProfileLink:profileLink,
+                  TimeNow:NowTime
+                }
+
+                let response  =  handleRequest(
+                "api/friend/checkFriendReadyToReciveDefaultMessage",
+                method.POST,
+                toJsonStr(paramsToSend)
+                ).then(async response =>  {;
+                  let responsenewvalue = await response.json();
+                  //console.log("Hit For Default",paramsToSend);
+                console.log("Hit For Default Now Get From Backend",responsenewvalue);
+                }).catch(error=>{
+                
+                  
+                } )
+                
+          }
+         
+          
         }
     
         function setUserDetails(userName)
@@ -347,6 +394,7 @@ chrome.runtime.onConnect.addListener(function(port) {
           //   active: true});
         }
   });
+}
 });
 
 
