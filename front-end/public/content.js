@@ -1,7 +1,8 @@
 const urlParam = "instaExt";
-let port = chrome.runtime.connect({name: "knockknock"});
+var port = chrome.runtime.connect({name: "knockknock"});
 port.onDisconnect.addListener(obj => {
   console.log('disconnected port');
+  var port = chrome.runtime.connect({name: "knockknock"});
 })
 const sendMessageBtn = `button[class="sqdOP  L3NKy   y3zKF     "]`;
 
@@ -83,8 +84,7 @@ function populateTextArea(response)
             }, 1000)
             /// Back To Instagram Home Page ///
             setTimeout(function() {
-           // chrome.runtime.sendMessage({type: "loadHomePage", options: ''});
-           port.postMessage({options: '',ConFlag:"loadHomePage"});
+                 port.postMessage({options: '',ConFlag:"loadHomePage"});
             }, 2000)
             /// Back To Instagram Home Page ///
            
@@ -107,10 +107,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     let TabId   =   request.data.tabinfo;
     let WindowIdString  =   String(WindowId);
     let TabIdString =   String(TabId);
-    // let jwtToken =request.data.userToken;
-    // let tokens = jwtToken.split(".");
-    // let tokenstring = atob(tokens[1]);
-    // let myObj = JSON.parse(tokenstring);
+   
     let UserKyubiToken = request.data.userToken; 
     
    
@@ -151,21 +148,28 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
   }
   if(request.catch === "check-new-incoming-message")
   {
-
+    fetchMessageDetails();
     setTimeout(() => {
 
-    //const myList = document.querySelectorAll('.DPiy6 .Igw0E .IwRSH .eGOV_ ._4EzTm');
-
     var target = document.querySelector('.N9abW');
-    
     var LocationDetails =window.location;
     var count  = 0;
     var observer = new MutationObserver(function(mutations) {
       
-       fetchMessageDetails();
-     
-       
-    });
+      mutations.forEach(function(mutation) { 
+        if(mutation.addedNodes.length === 1)
+        {
+            $(mutation.addedNodes).each( async function() {
+                var messageTextLength = $(this).text().length;
+                if(messageTextLength === 0)
+                {
+                console.log('Satisfied'); 
+                fetchMessageDetails();
+                }
+            });
+        }
+      });
+     });
 
    // configuration of the observer:
     var config = { attributes: true, childList: true, characterData: true, subtree:true }
@@ -220,7 +224,14 @@ function postMessage(link,user,message)
   }
   
   //chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
+  if (port) {
   port.postMessage({options: params,ConFlag:"CheckMessageContent"});
+  }
+  else
+  {
+    var reConnect = chrome.runtime.connect({name: "reconnect"});
+    reConnect.postMessage({options: params,ConFlag:"CheckMessageContent"});
+  }
 }, 3000);
 
 }

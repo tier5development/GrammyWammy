@@ -440,6 +440,7 @@ class responseSetting extends Component {
                             <span className="big">Create a Auto Responder</span> 
                             <a  onClick={this.listAutoResponderHandler} href="#" className="roundarrow"><img src={backArrowLogo}/></a>
                         </div>
+                   <div className="makeitScroll">     
                     <form>
                         <label>
                             Auto Responder Name
@@ -487,6 +488,7 @@ class responseSetting extends Component {
     
                         <button className="blue_btn" onClick={this.createAutoResponderGroupHandler} type="submit">Save Auto Responder</button>
                     </form>
+                    </div>
                 </div>
                 :
                 ""
@@ -500,6 +502,7 @@ class responseSetting extends Component {
                             <span className="big">Edit a Auto Responder</span> 
                             <a  onClick={this.listAutoResponderHandler} href="#" className="roundarrow"><img src={backArrowLogo}/></a>
                         </div>
+                <div className="makeitScroll">      
                     <form>
                         <label>
                             Auto Responder Name
@@ -545,6 +548,7 @@ class responseSetting extends Component {
                         <button className="blue_btn" onClick={this.createAutoResponderGroupHandlerEdit} type="submit">Update Auto Responder</button>
 
                     </form>
+                    </div>
                 </div>
                 :
                 ""

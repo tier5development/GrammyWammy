@@ -18,14 +18,11 @@
   "permissions": [
     "tabs",
     "storage",
+    "webNavigation",
     "clipboardRead",
-    "https://www.messenger.com/*",
-    "https://*.facebook.com/*",
-    "https://mbasic.facebook.com/",
-    "https://www.instagram.com/direct/*",
     "https://www.instagram.com/*",
-    "notifications",
-    "https://api.mefnevan.com/api/*"
+    "notifications"
+    
 ],
 "content_scripts": [
     {
@@ -42,8 +39,7 @@
             "content.js"
         ],
         "matches": [
-           "https://www.instagram.com/direct/inbox/*",
-           "https://www.instagram.com/*"
+            "https://www.instagram.com/*"
         ],
         "run_at": "document_start"
     }
