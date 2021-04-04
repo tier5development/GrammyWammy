@@ -74,7 +74,6 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
           console.log("This is info from background",tab);
           data={userToken:UserToken,tabinfo:TabId,windowinfo:WindowId}
           console.log(data);
-          reloadInstagram();
           chrome.tabs.sendMessage(TabId, { catch: "get-login-info",data });
           
       }
@@ -191,6 +190,7 @@ chrome.runtime.onConnect.addListener(function(port) {
               messageLink = msg.options.messageLink;
               messageId = messageLink.split("/").pop();
               messageUserName = msg.options.userName;
+              
               if(msg.options.messageContent == 'Typing...')
               {
                 chrome.windows.getCurrent(w => {
@@ -204,13 +204,14 @@ chrome.runtime.onConnect.addListener(function(port) {
                 return false;
               }
               setUserDetails(messageUserName);
+              setTimeout(function () {
               messageContent =  getAutoResponseText(msg.options.messageContent,messageUserName);
-              
               chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                 url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
                 active: true}, function(tab) {
                   tabId = tab.id;
                 });
+              }, 1000);
       
       }
         function getAutoResponseText(message,userName)
@@ -305,7 +306,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 "api/friend/checkFriendReadyToReciveDefaultMessage",
                 method.POST,
                 toJsonStr(paramsToSend)
-                ).then(async response =>  {;
+                ).then(async response =>  {
                   let responsenewvalue = await response.json();
                   //console.log("Hit For Default",paramsToSend);
                 console.log("Hit For Default Now Get From Backend",responsenewvalue.payload.message);
@@ -340,8 +341,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                   userImage :   userImage
                 };
                 localStorage.setItem("individualMessageDetails",JSON.stringify(params));
-                passingObject(params);
-    
+                
                 })
               .fail(function() { 
                 // code for 404 error 
@@ -353,12 +353,8 @@ chrome.runtime.onConnect.addListener(function(port) {
             }
         }
 
-        function passingObject(userdetails)
-        {
-           console,log(`User Details ${userDetails}`);
-        }
-    
-        if(msg.ConFlag   ==  "loadHomePage")
+        
+      if(msg.ConFlag   ==  "loadHomePage")
         {
          
           chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 

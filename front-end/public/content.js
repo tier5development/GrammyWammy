@@ -85,7 +85,7 @@ function populateTextArea(response)
             /// Back To Instagram Home Page ///
             setTimeout(function() {
                  port.postMessage({options: '',ConFlag:"loadHomePage"});
-            }, 2000)
+            }, 1000)
             /// Back To Instagram Home Page ///
            
             
@@ -149,8 +149,6 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
   if(request.catch === "check-new-incoming-message")
   {
     fetchMessageDetails();
-    setTimeout(() => {
-
     var target = document.querySelector('.N9abW');
     var LocationDetails =window.location;
     var count  = 0;
@@ -159,8 +157,10 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
       mutations.forEach(function(mutation) { 
         if(mutation.addedNodes.length === 1)
         {
+            
             $(mutation.addedNodes).each( async function() {
                 var messageTextLength = $(this).text().length;
+                console.log(messageTextLength);
                 if(messageTextLength === 0)
                 {
                 console.log('Satisfied'); 
@@ -177,7 +177,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     // pass in the target node, as well as the observer options
     observer.observe(target, config);
    
-    }, 5000);
+    
 
     function fetchMessageDetails()
     {
@@ -224,14 +224,9 @@ function postMessage(link,user,message)
   }
   
   //chrome.runtime.sendMessage({type: "postIndividualMessage", options: params});
-  if (port) {
   port.postMessage({options: params,ConFlag:"CheckMessageContent"});
-  }
-  else
-  {
-    var reConnect = chrome.runtime.connect({name: "reconnect"});
-    reConnect.postMessage({options: params,ConFlag:"CheckMessageContent"});
-  }
-}, 3000);
+
+ 
+}, 2000);
 
 }
