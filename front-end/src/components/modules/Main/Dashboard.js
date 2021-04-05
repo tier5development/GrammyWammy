@@ -132,7 +132,7 @@ class Dashboard extends Component {
               <div className="after_log_profile">
                 <img src={this.state.fb_image} alt=""/>
                 <p>Welcome</p>
-                <h3>{this.state.fb_username}</h3>
+                <h3>{this.state.fb_name}</h3>
               </div>
               <div className="fb_login_request">
                 {this.state.is_user_logged_in_facebook == "true" ?

@@ -160,7 +160,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
             
             $(mutation.addedNodes).each( async function() {
                 var messageTextLength = $(this).text().length;
-                console.log(messageTextLength);
+                // console.log(messageTextLength);
                 if(messageTextLength === 0)
                 {
                 console.log('Satisfied'); 

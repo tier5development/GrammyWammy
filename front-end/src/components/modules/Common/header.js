@@ -102,12 +102,13 @@ class header extends Component {
 
         let fb_username=localStorage.getItem('fb_username');
         let fb_image=localStorage.getItem('fb_image');
+        let fb_name=localStorage.getItem('fb_name');
         let autoresponder=localStorage.getItem('autoresponder');
         let default_message=localStorage.getItem('default_message');
         console.log("I am In Header");
         if(fb_username){
           this.setState({
-            user_name:fb_username
+            user_name:fb_name
         });
         }
         if(fb_image){
@@ -141,13 +142,14 @@ class header extends Component {
     componentDidMount(){
       this.setState({loader:true});
         let fb_username=localStorage.getItem('fb_username');
+        let fb_name=localStorage.getItem('fb_name');
         let fb_image=localStorage.getItem('fb_image');
         let autoresponder=localStorage.getItem('autoresponder');
         let default_message=localStorage.getItem('default_message');
         console.log("I am In Header");
         if(fb_username){
           this.setState({
-            user_name:fb_username
+            user_name:fb_name
         });
         }
         if(fb_image){
