@@ -3,7 +3,8 @@ const   FriendsRepo =   require('../../../models/repositories/friends.repository
 const   UserSettingRepository   =   require('../../../models/repositories/settings.repository');
 const   MessageGroup    =   require('../../../models/repositories/messagegroup.repository');
 const   MessageSegment  =   require('../../../models/repositories/messagesegment.repository');
-var typecast = require('typecast');
+//var typecast = require('typecast');
+const cast = require('TypeCast');
 module.exports.FriendsCreateOrUpdate    =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent",req.body);
@@ -78,7 +79,9 @@ module.exports.FriendsUpdate    =   async   (req,   res)    =>  {
 module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent",req.body);
-        let TimeNowTC=typecast(req.body.TimeNow, 'number')
+       // let TimeNowTC=typecast(req.body.TimeNow, 'number')
+        let TimeNowTC=cast.number(req.body.TimeNow)
+        
         let a = new Date(TimeNowTC);
         let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         let year = a.getFullYear();
