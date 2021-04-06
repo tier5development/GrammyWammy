@@ -109,13 +109,14 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
  
   if (request.type == "storeUserInfoOrQueryThenStore"){
         console.log("This I Got In Background",request.options);
+        getInstagramId(request.options.insta_username);
         let  params ={
         user_rec    :   localStorage.getItem('kyubi_user_token'),
-        fb_id   :   request.options.FacebookId,
+        fb_id       :   localStorage.getItem('instagramIdForTheLoggedInUser'),
         fb_username :   request.options.insta_username,
-        fb_name :   request.options.insta_name,
+        fb_name     :   request.options.insta_name,
         fb_image    :  request.options.insta_image,
-        fb_logged_id    :   request.options.insta_logged_id
+        fb_logged_id :   request.options.insta_logged_id
         };
         await handleRequest(
             "api/user/userCheckStoreNRetrive",
@@ -176,6 +177,30 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
               localStorage.setItem('individualMessageFetch',0);
               
             } )
+
+            /** For getting instagram id of the logged in user */
+            function getInstagramId(userName)
+            {
+              
+                var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
+                var validation = regex.test(userName);
+                if(validation) {
+                  $.get("https://www.instagram.com/"+userName+"/?__a=1")
+                  .done(function(data) { 
+                   var instagramId = data["graphql"]["user"]["id"];
+                   localStorage.setItem("instagramIdForTheLoggedInUser",instagramId);
+                  })
+                  .fail(function() { 
+                    // code for 404 error 
+                    console.log('Username was not found!')
+                  })
+                
+                } else {
+                  console.log('The username is invalid!')
+                }
+            }
+          /** For getting instagram id of the logged in user */
+    
 
     }
 })
@@ -278,6 +303,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
         function getDefaultMessage()
         {
+          console.log('individual Message Details '+localStorage.getItem('individualMessageDetails'));
           let GrammyWammyId  = localStorage.getItem('user_id');
           let NowTime=new Date().getTime();  
           if(localStorage.getItem("individualMessageDetails"))
@@ -289,18 +315,21 @@ chrome.runtime.onConnect.addListener(function(port) {
                 let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
                 let postedByUsername = messagePostedBy.userName;
                 let profileLink = `https://www.instagram.com/${postedByUsername}`;
-                let instagramFriendId = JSON.parse(localStorage.getItem("individualMessageDetails")).userId;
+                let instagramFriendId = messagePostedBy.userId;
 
                 
                 let paramsToSend  =   {
                   MfenevanId:GrammyWammyId,
-                  FacebookUserId:'',
+                  FacebookUserId:localStorage.getItem('instagramIdForTheLoggedInUser'),
                   FriendFacebookId:instagramFriendId,
                   FacebookFirstName:firstName,
                   FacebookLastName:lastName,
                   ProfileLink:profileLink,
+                  Username: postedByUsername,
                   TimeNow:NowTime
                 }
+
+                console.log('Params To Send '+firstName);
 
                 let response  =  handleRequest(
                 "api/friend/checkFriendReadyToReciveDefaultMessage",
@@ -308,8 +337,9 @@ chrome.runtime.onConnect.addListener(function(port) {
                 toJsonStr(paramsToSend)
                 ).then(async response =>  {
                   let responsenewvalue = await response.json();
-                  //console.log("Hit For Default",paramsToSend);
+                  console.log("Hit For Default",paramsToSend);
                 console.log("Hit For Default Now Get From Backend",responsenewvalue.payload.message);
+                console.log("The whole payload",responsenewvalue.payload);
                 localStorage.setItem("defaultMessageFromBackend",responsenewvalue.payload.message);
                 }).catch(error=>{
                 
