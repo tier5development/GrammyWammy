@@ -98,8 +98,10 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
         }
         let getUserSettings= await UserSettingRepository.GetUserSettingById(req.body.MfenevanId);
         let sendOption = 0;
+        console.log('Having Get Settings'+ getUserSettings);
         if(getUserSettings){
             let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId,req.body.FacebookUserId);
+            console.log('Facebook Friends'+ FriendsInfo);
             if(FriendsInfo){
                 
                   let FriendsInfoPayload= {
@@ -130,10 +132,11 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
                     user_id: req.body.MfenevanId,
                     facebook_id: req.body.FriendFacebookId,
                     facebook_user_id:req.body.FacebookUserId,
-                    facebook_username:req.body.ProfileLink,
+                    facebook_username:req.body.Username,
                     facebook_first_name:req.body.FacebookFirstName,
                     facebook_last_name:req.body.FacebookLastName
                 };
+                console.log('Facebook Info Payload '+FriendsInfoPayload);
                 let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
                 sendOption = 1;
             }
