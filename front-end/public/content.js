@@ -228,5 +228,27 @@ function postMessage(link,user,message)
 
  
 }, 2000);
-
 }
+
+port.onMessage.addListener(async function(msg) {
+  if (msg.ConFlagBack == "DEFAULTMESSAGEBACK"){
+   
+    //console.log("RESPONSE To USER With Default Message",msg.userInfoDetails);
+        let Nowtime=$.now();
+        
+        let setDefaultMessageSaveONEX={
+          FacebookFirstName: msg.ThreadParams.FacebookFirstName,
+          FacebookLastName: msg.ThreadParams.FacebookLastName,
+          FacebookUserId: msg.ThreadParams.FacebookUserId,
+          FriendFacebookId: msg.ThreadParams.FriendFacebookId,
+          MfenevanId: msg.ThreadParams.MfenevanId,
+          ProfileLink: msg.ThreadParams.ProfileLink,
+          ResponseMessage: msg.userInfoDetails,
+          ResponseTime:Nowtime,
+          MessageSenderType:"last_default_message_time",
+          LocationDetails:''
+          };
+        //console.log("RESPONSE To Save  and Close With Link",setDefaultMessageSaveONEX);
+        port.postMessage({MessageDetails: setDefaultMessageSaveONEX,ConFlag:"STOREANDCLOSE"});
+  }
+})

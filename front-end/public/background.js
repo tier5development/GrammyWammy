@@ -215,7 +215,7 @@ chrome.runtime.onConnect.addListener(function(port) {
               messageLink = msg.options.messageLink;
               messageId = messageLink.split("/").pop();
               messageUserName = msg.options.userName;
-              
+              setUserDetails(messageUserName);
               if(msg.options.messageContent == 'Typing...')
               {
                 chrome.windows.getCurrent(w => {
@@ -228,14 +228,15 @@ chrome.runtime.onConnect.addListener(function(port) {
                 });
                 return false;
               }
-              setUserDetails(messageUserName);
               setTimeout(function () {
               messageContent =  getAutoResponseText(msg.options.messageContent,messageUserName);
+            
               chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                 url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
                 active: true}, function(tab) {
                   tabId = tab.id;
                 });
+              
               }, 1000);
       
       }
@@ -338,9 +339,19 @@ chrome.runtime.onConnect.addListener(function(port) {
                 ).then(async response =>  {
                   let responsenewvalue = await response.json();
                   console.log("Hit For Default",paramsToSend);
-                console.log("Hit For Default Now Get From Backend",responsenewvalue.payload.message);
-                console.log("The whole payload",responsenewvalue.payload);
-                localStorage.setItem("defaultMessageFromBackend",responsenewvalue.payload.message);
+                  console.log("Hit For Default Now Get From Backend",responsenewvalue.payload.message);
+                  console.log("The whole payload",responsenewvalue);
+                  
+                  if(responsenewvalue.code === 2)
+                  {
+                    localStorage.setItem("defaultMessageFromBackend",'Failed');
+                  }
+                  if(responsenewvalue.code === 1)
+                  {
+                    localStorage.setItem("defaultMessageFromBackend",responsenewvalue.payload.message);
+                    port.postMessage({userInfoDetails: responsenewvalue.payload.message,ThreadParams:paramsToSend,ConFlagBack:"DEFAULTMESSAGEBACK" });
+                  }
+
                 }).catch(error=>{
                 
                   
@@ -382,6 +393,56 @@ chrome.runtime.onConnect.addListener(function(port) {
               console.log('The username is invalid!')
             }
         }
+
+
+        if(msg.ConFlag == "STOREANDCLOSE"){
+          let params  =   {
+            FacebookFirstName : msg.MessageDetails.FacebookFirstName,
+            FacebookLastName  :msg.MessageDetails.FacebookLastName,
+            FacebookUserId  :msg.MessageDetails.FacebookUserId,
+            FriendFacebookId  :msg.MessageDetails.FriendFacebookId,
+            MessageSenderType :msg.MessageDetails.MessageSenderType,
+            MfenevanId  :msg.MessageDetails.MfenevanId,
+            ProfileLink :msg.MessageDetails.ProfileLink,
+            ResponseMessage :msg.MessageDetails.ResponseMessage,
+            ResponseTime  :msg.MessageDetails.ResponseTime
+          }
+          let response = await handleRequest(
+            "api/friend/saveLastMessageOutForFriend",
+            method.POST,
+            toJsonStr(params)
+          );
+          let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
+          let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.LocationDetails);
+          if (indexthreadlink !== -1) {
+            individualThreadList.splice(indexthreadlink, 1);
+            let NewListURLArray=JSON.stringify(individualThreadList);
+            localStorage.setItem('ListURLArray', NewListURLArray);
+            //document.getElementById('messageIndividualMain').src ="";
+            localStorage.setItem('CheckMessageNReply',0);
+            CheckLocalStoreAndHitIndividualMList();
+          }
+          
+          // if(individualThreadList.length != 0){
+          //   let NewIndividualThreadLinksx = [];
+          //   let i=0;
+          //   await individualThreadList.map(async function(eachval){
+          //     if(eachval==msg.MessageDetails.LocationDetails){
+                
+          //     }else{
+          //       NewIndividualThreadLinksx[i]=msg.MessageDetails.LocationDetails;
+          //       i=i+1;
+          //     }
+          //   });
+          //   document.getElementById('messageIndividualMain').src ="";
+          //   localStorage.setItem('ListURLArray',NewIndividualThreadLinksx);
+          //   localStorage.setItem('CheckMessageNReply',0);
+          //   CheckLocalStoreAndHitIndividualMList();
+          // }
+    
+          console.log("Now  Again I am In BackGround 332",msg.MessageDetails);
+          console.log("Now  i have  to send this in db from BackGround 344",params);
+        }  
 
         
       if(msg.ConFlag   ==  "loadHomePage")
