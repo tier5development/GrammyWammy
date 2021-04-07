@@ -114,7 +114,7 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
                     sendOption = 1;
                 }else{
                     console.log("This Is the timeeeeeeeeeeeeeeeeeee Now before  casting",req.body.TimeNow);
-                    let TimeNow=typecast(req.body.TimeNow, 'number')
+                    let TimeNow=cast.number(req.body.TimeNow)
                     console.log("This Is the timeeeeeeeeeeeeeeeeeee Now after  casting",TimeNow);
                     let timediff=(TimeNow - FriendsInfo.last_default_message_time)/ (60*60*1000);
                     console.log("This Is the timeeeeeeeeeeeeeeeeeee Difference",timediff);
@@ -193,6 +193,7 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
                 }
             }
         }else{
+            console.log('Condition Satisfied');
             res.status(200).send({
                 code: 2,
                 message: "UnSuccefully fetched random message from the selected group",
