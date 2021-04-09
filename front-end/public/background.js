@@ -214,20 +214,28 @@ chrome.runtime.onConnect.addListener(function(port) {
       {
               console.log('Reached Here');
               messageLink = msg.options.messageLink;
+              console.log('Reached Here1');
               messageId = messageLink.split("/").pop();
+              console.log('Reached Here2');
               messageUserName = msg.options.userName;
-              if(msg.options.messageContent == 'Typing...')
-              {
-                chrome.windows.getCurrent(w => {
-                  chrome.tabs.query({active: true, windowId: w.id}, tabs => {
-                    const tabId = tabs[0].id;
-                    data={}
-                    chrome.tabs.sendMessage(tabId, { catch: "check-new-incoming-message",data });
+              console.log('Reached Here3');
+              console.log(msg.options.messageContent);
+              // if(msg.options.messageContent == 'Typing...')
+              // {
+              //   console.log('Reached Here4');
+              //   chrome.windows.getCurrent(w => {
+              //     chrome.tabs.query({active: true, windowId: w.id}, tabs => {
+              //       const tabId = tabs[0].id;
+              //       data={}
+              //       chrome.tabs.sendMessage(tabId, { catch: "check-new-incoming-message",data });
                     
-                  });
-                });
-                return false;
-              }
+              //     });
+              //   });
+              //   console.log('Reached Here5');
+              //   return false;
+              //   console.log('Reached Here6');
+              // }
+              console.log('Before Calling the function');
               getAutoResponseText(msg.options.messageContent,messageUserName,messageId);
         }
 
@@ -351,7 +359,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                             
                             if(responsenewvalue.code === 2)
                             {
-                              var messageContent = 'Failed';
+                              var messageContent = '';
                               chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                               url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
                               active: true}, function(tab) {

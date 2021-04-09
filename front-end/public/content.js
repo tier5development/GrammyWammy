@@ -200,10 +200,18 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
                   let latestMsgDiv = childDiv.children[1].children[1];
                   let messageLink = 'https://www.instagram.com'+allMessageDiv[i].children[0].getAttribute("href");
                   let latestMsgDivContent = latestMsgDiv.children[0].children[0].children[0].children[0].textContent;
+                  if(latestMsgDivContent == 'Typing...')
+                  {
+                    fetchMessageDetails();
+                    return false;
+                  }
+                  else
+                  {
+                    postMessage(messageLink , messageUsername , latestMsgDivContent);
+                  }
              
-                  postMessage(messageLink , messageUsername , latestMsgDivContent);
-               
-              }
+                  
+               }
               
             }
         }
