@@ -37,6 +37,7 @@ class logout extends Component {
         localStorage.removeItem('profileFetch');
         localStorage.removeItem('messageListFetch');
         localStorage.removeItem('individualMessageFetch');
+        localStorage.removeItem('individualMessageFetch');
         
         this.props.history.push('/');
          

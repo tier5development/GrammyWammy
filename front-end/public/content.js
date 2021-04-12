@@ -132,7 +132,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
       UserInstagramName  = "";
       UserInstagramImage  =  "";
       UserLoggedInInstagram  = false;
-      UserKyubiToken=atob(tokens[1]);
+      //UserKyubiToken=atob(tokens[1]);
     }
     let parameters={
       token : UserKyubiToken,

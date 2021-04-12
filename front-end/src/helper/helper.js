@@ -24,29 +24,18 @@ export function OpenFacebookInTab() {
  * 
 */
 export function CheckUserInfoFromFaccebook() {
-    try{
-            const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('instaUsername');
-            // let CreateWindow    =   chrome.windows.create({
-            //     url: myNewUrl,
-            //     type: "popup",
-            //     height: 1,
-            //     width:1,
-            //     focused: false
-            //   },function(tab) { 
-            //   let fbprofile=localStorage.getItem('fbprofile');
-            //   if(fbprofile){
-            //       fbprofile=fbprofile+tab.id+",";
-            //   }else{
-            //       fbprofile=tab.id+",";
-            //   }
-            //   localStorage.setItem('fbprofile', fbprofile);
-            //      });
-            let CreateWindow    = chrome.runtime.sendMessage({type: "OpenMessageProfileToRead", options: myNewUrl});
-            return CreateWindow;
+    // try{
+    //         const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('fb_username');
             
-    }catch(error){
-        console.log("This is a ",error);
-    }
+    //         let CreateWindow    = chrome.runtime.sendMessage({type: "OpenMessageProfileToRead", options: myNewUrl});
+    //         return CreateWindow;
+            
+    // }catch(error){
+    //     console.log("This is a ",error);
+    // }
+    chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+        url: `https://www.instagram.com/${localStorage.getItem("fb_username")}`,
+        active: false});
   }
 
 /** 
@@ -56,7 +45,7 @@ export function CheckUserInfoFromFaccebook() {
 */
 export function OpenFacebookProfileInTab() {
     try{
-        const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('instaUsername');
+        const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('fb_username');
         let CreateTab    =   chrome.tabs.create({
             url: myNewUrl,
             active: true

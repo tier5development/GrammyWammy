@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import logo from "../../../images/Logo_Side.svg";
 import { NavLink } from "react-router-dom";
-import  plog from "../../../images/avatar_a.png";
+import  plog from "../../../images/Avatar.png";
 import  sideMenuLogo from "../../../images/side_menu.svg";
 import  SettingServices from "../../../services/setting";
 import  LoadingLogo from "../../../images/Loader.gif";
@@ -15,7 +15,7 @@ class header extends Component {
           default_message:0,
           autoresponder_status:0,
           ready_for_activate:0,
-          user_name:"XXXXXX",
+          user_name:"",
           user_image:plog,
           meven_status:0,
          loader:false
@@ -57,8 +57,8 @@ class header extends Component {
                   localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                   localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
                   localStorage.setItem('fb_id', responsenewvalue.payload.UserInfo.facebook_id);
-                  localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_name);
-                  localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_profile_name);
+                  localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
+                  localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_name);
                   localStorage.setItem('fb_image', responsenewvalue.payload.UserInfo.facebook_image);
                   
                   if(responsenewvalue.payload.UserSettings.default_message){

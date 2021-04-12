@@ -130,7 +130,7 @@ class Dashboard extends Component {
             <div className="dashboard">
               <Header selectedtab="dashboard"></Header>
               <div className="after_log_profile">
-                <img src={this.state.fb_image} alt=""/>
+                <img src={this.state.fb_image != "" ? this.state.fb_image : AvatarLogo} alt=""/>
                 <p>Welcome</p>
                 <h3>{this.state.fb_name}</h3>
               </div>
