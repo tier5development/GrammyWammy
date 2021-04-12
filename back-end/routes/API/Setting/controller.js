@@ -272,7 +272,7 @@ module.exports.setsetting   =   async   (req,   res)    =>  {
             }else{
             let UsersSettingsDetailinfo= {
                 user_id: getUserInfo._id,
-                default_message_group:req.body.default_message_group,
+                default_message_group:req.body.default_message_group ? req.body.default_message_group : null ,
                 default_message_type: cast.number(req.body.default_message_type),
                 default_message_text: req.body.default_message_text,
                 default_time_delay: cast.number(req.body.default_time_delay)

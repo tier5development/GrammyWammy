@@ -26,6 +26,7 @@ const UserSettingRepository   =   {
       }
       return UserSettingInfo;
     } catch (e) {
+      console.log(e);
       throw e;
     }
   },
