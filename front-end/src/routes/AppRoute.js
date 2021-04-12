@@ -28,6 +28,7 @@ const AppRoute = ({ sidebarIsOpen, toggleSidebar }) => {
         {/* <Topbar toggleSidebar={toggleSidebar} /> */}
         <Switch>
         <Route exact path="/" test="abc" component={Login} />
+        <Route exact path="/forgotPassword" component={ForgotPassword} />
         <Route  exact  path="/dashboard" component={Dashboard} />
         <Route  exact  path="/setting" component={Setting} />
         <Route  exact  path="/autoresponder" component={AutoResponder} />

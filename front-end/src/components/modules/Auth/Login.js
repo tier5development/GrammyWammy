@@ -1,5 +1,5 @@
 import React, { Component} from "react";
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, NavLink } from 'react-router-dom';
 
 import {kyubiExtensionId}  from "../../../config";
 import "./login.css";
@@ -204,7 +204,9 @@ class Login extends Component {
                                     />
                                 </label>
                                 <div className="text-right gap1">
-                                    <a href="#" className="link">Forgot Password?</a>
+                                    <NavLink  to="/forgotPassword">
+                                        <p className="link">Forgot Password ?</p>
+                                    </NavLink>
                                 </div>
                                 <button type="button" className="blue_btn" onClick={this.loginHandler} >LOGIN</button>
                                 <div className="login_signup">
