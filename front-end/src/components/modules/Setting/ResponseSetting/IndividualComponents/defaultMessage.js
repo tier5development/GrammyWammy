@@ -106,10 +106,10 @@ class defaultMessage extends Component {
                       let responsenewvalue =result.data;
                       localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                       localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
-                      localStorage.setItem('fb_id', responsenewvalue.payload.UserInfo.facebook_id);
-                      localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_name);
-                      localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_profile_name);
-                      localStorage.setItem('fb_image', responsenewvalue.payload.UserInfo.facebook_image);
+                      localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.facebook_id);
+                      localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.facebook_name);
+                      localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.facebook_profile_name);
+                      localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.facebook_image);
                       
                       if(responsenewvalue.payload.UserSettings.default_message){
                         localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);

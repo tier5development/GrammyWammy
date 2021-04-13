@@ -29,7 +29,7 @@ class Dashboard extends Component {
 
   fbHandler = async (event) => {
     event.preventDefault();
-    let fb_logged_id=localStorage.getItem('fb_logged_id');
+    let fb_logged_id=localStorage.getItem('insta_logged_id');
     console.log("You Are Loged in",fb_logged_id);
     if(fb_logged_id === "false"){
       OpenFacebookInTab();
@@ -47,17 +47,17 @@ class Dashboard extends Component {
     CheckUserInfoFromFaccebook();
     setTimeout(() => {
 
-      let fb_image=localStorage.getItem('fb_image');
-      let fb_username=localStorage.getItem('fb_username');
-      let fb_name=localStorage.getItem('fb_name');
-      let fb_id=localStorage.getItem('fb_id');
+      let fb_image=localStorage.getItem('insta_image');
+      let fb_username=localStorage.getItem('insta_username');
+      let fb_name=localStorage.getItem('insta_name');
+      let fb_id=localStorage.getItem('insta_id');
       
       this.setState({
         fb_image:fb_image,
         fb_username:fb_username,
         fb_name:fb_name,
         fb_id:fb_id,
-        is_user_logged_in_facebook:localStorage.getItem('fb_logged_id'),
+        is_user_logged_in_facebook:localStorage.getItem('insta_logged_id'),
         loader:false
       })
 
@@ -73,10 +73,10 @@ class Dashboard extends Component {
                   let responsenewvalue =result.data;
                   localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                   localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
-                  localStorage.setItem('fb_id', responsenewvalue.payload.UserInfo.facebook_fbid);
-                  localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
-                  localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_name);
-                  localStorage.setItem('fb_image', responsenewvalue.payload.UserInfo.facebook_image);
+                  localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.facebook_fbid);
+                  localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
+                  localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.facebook_name);
+                  localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.facebook_image);
                   
                   if(responsenewvalue.payload.UserSettings.default_message){
                     localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
@@ -100,17 +100,17 @@ class Dashboard extends Component {
                   
                   localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
                   this.setState({
-                        fb_image:localStorage.getItem('fb_image'),
-                        fb_name:localStorage.getItem('fb_name'),
-                        fb_username:localStorage.getItem('fb_username'),
-                        is_user_logged_in_facebook:localStorage.getItem('fb_logged_id')
+                        fb_image:localStorage.getItem('insta_image'),
+                        fb_name:localStorage.getItem('insta_name'),
+                        fb_username:localStorage.getItem('insta_username'),
+                        is_user_logged_in_facebook:localStorage.getItem('insta_logged_id')
                   })
         }else{
           this.setState({
-            fb_image:localStorage.getItem('fb_image'),
-            fb_name:localStorage.getItem('fb_name'),
-            fb_username:localStorage.getItem('fb_username'),
-            is_user_logged_in_facebook:localStorage.getItem('fb_logged_id')
+            fb_image:localStorage.getItem('insta_image'),
+            fb_name:localStorage.getItem('insta_name'),
+            fb_username:localStorage.getItem('insta_username'),
+            is_user_logged_in_facebook:localStorage.getItem('insta_logged_id')
           })
         }
         this.setState({

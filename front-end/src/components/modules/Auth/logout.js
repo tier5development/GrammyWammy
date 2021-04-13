@@ -15,19 +15,19 @@ class logout extends Component {
       }
       componentDidMount(){
         let LO = loginHelper.logout();
-        localStorage.removeItem("fb_id")
+        localStorage.removeItem("insta_id")
         localStorage.removeItem("token")
         localStorage.removeItem("keywordsTally")
         localStorage.removeItem('inBackgroundFetching');
-        localStorage.removeItem('fb_image');
-        localStorage.removeItem('fb_logged_id');
-        localStorage.removeItem('fb_name');
-        localStorage.removeItem('fb_username');
+        localStorage.removeItem('insta_image');
+        localStorage.removeItem('insta_logged_id');
+        localStorage.removeItem('insta_name');
+        localStorage.removeItem('insta_username');
         localStorage.removeItem("autoresponder")
         localStorage.removeItem("kyubi_user_token")
         localStorage.removeItem("user_id")
         localStorage.removeItem("default_message_text")
-        localStorage.removeItem("fb_username")
+        localStorage.removeItem("insta_username")
         localStorage.removeItem("default_time_delay")
         localStorage.removeItem("default_message")
         localStorage.removeItem("individualThreadList")

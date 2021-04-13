@@ -133,15 +133,15 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                       // localStorage.setItem('ListURLArray', urlArray);
                       localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                       localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
-                      localStorage.setItem('fb_id', responsenewvalue.payload.UserInfo.facebook_fbid);
-                      localStorage.setItem('fb_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
-                      localStorage.setItem('fb_name', responsenewvalue.payload.UserInfo.facebook_name);
-                      localStorage.setItem('fb_image', responsenewvalue.payload.UserInfo.facebook_image);
-                      localStorage.setItem('fb_logged_id', request.options.insta_logged_id);
-                      // localStorage.setItem('inBackgroundFetching', false);
-                      // localStorage.setItem('profileFetch',0);
-                      // localStorage.setItem('messageListFetch',0);
-                      // localStorage.setItem('individualMessageFetch',0);
+                      localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.facebook_fbid);
+                      localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
+                      localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.facebook_name);
+                      localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.facebook_image);
+                      localStorage.setItem('insta_logged_id', request.options.insta_logged_id);
+                      localStorage.setItem('inBackgroundFetching', false);
+                      localStorage.setItem('profileFetch',0);
+                      localStorage.setItem('messageListFetch',0);
+                      localStorage.setItem('individualMessageFetch',0);
                       UserLoggedInFacebook=request.options.insta_logged_id;
                       BackGroundFetchingStatus  =false;
                       if(responsenewvalue.payload.UserSettings.default_message){

@@ -41,9 +41,9 @@ class autoResponnder extends Component {
             console.log("This is what i111 Got",result);
             localStorage.setItem('kyubi_user_token', result.data.payload.UserInfo.kyubi_user_token);
                       localStorage.setItem('user_id', result.data.payload.UserInfo.user_id);
-                      localStorage.setItem('fb_id', result.data.payload.UserInfo.facebook_id);
-                      localStorage.setItem('fb_username', result.data.payload.UserInfo.facebook_name);
-                      localStorage.setItem('fb_name', result.data.payload.UserInfo.facebook_profile_name);
+                      localStorage.setItem('insta_id', result.data.payload.UserInfo.facebook_id);
+                      localStorage.setItem('insta_username', result.data.payload.UserInfo.facebook_name);
+                      localStorage.setItem('insta_name', result.data.payload.UserInfo.facebook_profile_name);
                       localStorage.setItem('fb_image', result.data.payload.UserInfo.facebook_image);
                       
 
