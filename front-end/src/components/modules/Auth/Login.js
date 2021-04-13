@@ -159,17 +159,12 @@ class Login extends Component {
             //     this.setState({ loader: false });
             // }
             this.props.history.push('/dashboard');
-            localStorage.openpages = Date.now();
-            var onLocalStorageEvent = function(e){
-                if(e.key == "openpages"){
-                    // Listen if anybody else is opening the same page!
-                    localStorage.page_available = Date.now();
-                }
-                if(e.key == "page_available"){
-                    alert("One more page already open");
-                }
-            };
-            window.addEventListener('storage', onLocalStorageEvent, false);
+        //    let AutoResponderStatus = localStorage.getItem('autoresponder');
+        //    let DefaultMessageStatus = localStorage.getItem('default_message');
+        //    let homeTabStatus = localStorage.getItem('home_tab');
+        //    if((AutoResponderStatus == 1 || DefaultMessageStatus == 1) && homeTabStatus== 0 ){
+        //       window.open("https://www.instagram.com/");   
+        //    }
             //window.open("https://www.w3schools.com");    
         }else{
             this.setState({ loader: false });

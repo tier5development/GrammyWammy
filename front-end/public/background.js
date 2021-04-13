@@ -87,18 +87,18 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
 
 function scanForUrls(){
  
-  setInterval(function(){ 
+  // setInterval(function(){ 
     
-    chrome.tabs.query({url: "*://*.instagram.com/"}, function(tab) {
-       console.log(tab.length);
-      (tab.length === 0) ? localStorage.setItem('home_tab', 0) : localStorage.setItem('home_tab', 1);
-    });
+  //   chrome.tabs.query({url: "*://*.instagram.com/"}, function(tab) {
+  //      console.log(tab.length);
+  //     (tab.length === 0) ? localStorage.setItem('home_tab', 0) : localStorage.setItem('home_tab', 1);
+  //   });
 
-    chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tabInbox) {
-      (tabInbox.length === 0) ? localStorage.setItem('inbox_tab', 0) : localStorage.setItem('inbox_tab', 1);
-    });
+  //   chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tabInbox) {
+  //     (tabInbox.length === 0) ? localStorage.setItem('inbox_tab', 0) : localStorage.setItem('inbox_tab', 1);
+  //   });
 
-    }, 1000);
+  //   }, 1000);
 }
 
 
