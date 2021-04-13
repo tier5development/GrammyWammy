@@ -1,7 +1,7 @@
 {
     "apps": [
       {
-        "name": "my-api-app",
+        "name": "my-api-app-gw",
         "script": "app.js",
         
         "env": {
