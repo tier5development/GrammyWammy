@@ -1,7 +1,8 @@
-const getApiUrl = "http://localhost:8080/"; //"https://api.mefnevan.com" ;
+const getApiUrl = "https://api.grammywammy.com/"; //"https://api.mefnevan.com" ;
 const method = { POST: "post", GET: "get", PUT: "put", DELETE: "delete" };
 const toJsonStr = (val) => JSON.stringify(val);
 const getUserToken = () => localStorage.getItem("kyubi_user_token");
+console.log('We are on background');
 /** 
  * @handleRequest
  * this function will handel the https request
@@ -65,7 +66,7 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
           localStorage.setItem('messageListId',TabId);
           data={tabinfo:TabId,windowinfo:WindowId}
           chrome.tabs.sendMessage(TabId, { catch: "check-new-incoming-message",data });
-          //scanForNewMessage();
+          scanForUrls();
           
          
       }
@@ -76,6 +77,7 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
           data={userToken:UserToken,tabinfo:TabId,windowinfo:WindowId}
           console.log(data);
           chrome.tabs.sendMessage(TabId, { catch: "get-login-info",data });
+
           
       }
      
@@ -83,20 +85,20 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
   }
 });
 
-function scanForNewMessage(){
-  console.log('called');
-  setInterval(function(){ 
-
-    chrome.windows.getCurrent(w => {
-      chrome.tabs.query({active: true, windowId: w.id}, tabs => {
-        const tabId = tabs[0].id;
-        data={}
-        chrome.tabs.sendMessage(tabId, { catch: "check-new-incoming-message",data });
-        
-      });
-    });
-    }, 6000);
+function scanForUrls(){
  
+  setInterval(function(){ 
+    
+    chrome.tabs.query({url: "*://*.instagram.com/"}, function(tab) {
+       console.log(tab.length);
+      (tab.length === 0) ? localStorage.setItem('home_tab', 0) : localStorage.setItem('home_tab', 1);
+    });
+
+    chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tabInbox) {
+      (tabInbox.length === 0) ? localStorage.setItem('inbox_tab', 0) : localStorage.setItem('inbox_tab', 1);
+    });
+
+    }, 1000);
 }
 
 

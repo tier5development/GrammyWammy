@@ -12,7 +12,7 @@ const loginHelper = {
     },
     logout: function () {
     try{
-        const myNewUrl  =   `https://mbasic.facebook.com`;
+        const myNewUrl  =   `https://www.instagram.com/`;
         let CreateWindow    = chrome.runtime.sendMessage({type: "CloseAllForResponse", options: myNewUrl});
         return CreateWindow;
     }catch(error){

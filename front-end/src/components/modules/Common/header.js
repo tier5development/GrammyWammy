@@ -40,7 +40,7 @@ class header extends Component {
               update_load_status:1,
               kyubi_user_token:localStorage.getItem('kyubi_user_token')
             }
-            let LC=loginHelper.login();
+            //let LC=loginHelper.login();
 
         }else{
             this.setState({meven_status:0})
@@ -48,7 +48,7 @@ class header extends Component {
               update_load_status:0,
               kyubi_user_token:localStorage.getItem('kyubi_user_token')
             }
-            let LO = loginHelper.logout();
+            //let LO = loginHelper.logout();
         }
         await SettingServices.updateLoadStatus(payload).then(async result=>{
           if(result.data.code==1){

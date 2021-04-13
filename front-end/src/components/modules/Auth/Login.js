@@ -158,7 +158,19 @@ class Login extends Component {
             // }else{
             //     this.setState({ loader: false });
             // }
-            this.props.history.push('/dashboard');    
+            this.props.history.push('/dashboard');
+            localStorage.openpages = Date.now();
+            var onLocalStorageEvent = function(e){
+                if(e.key == "openpages"){
+                    // Listen if anybody else is opening the same page!
+                    localStorage.page_available = Date.now();
+                }
+                if(e.key == "page_available"){
+                    alert("One more page already open");
+                }
+            };
+            window.addEventListener('storage', onLocalStorageEvent, false);
+            //window.open("https://www.w3schools.com");    
         }else{
             this.setState({ loader: false });
         }
