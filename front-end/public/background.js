@@ -1,6 +1,9 @@
 const getApiUrl = "https://api.grammywammy.com/"; //"https://api.mefnevan.com" ;
 const method = { POST: "post", GET: "get", PUT: "put", DELETE: "delete" };
 const toJsonStr = (val) => JSON.stringify(val);
+let AutoResponderState = localStorage.getItem('autoresponder');
+let DefaultMessageState = localStorage.getItem('default_message');
+console.log(AutoResponderState+'&&&&'+DefaultMessageState);
 const getUserToken = () => localStorage.getItem("kyubi_user_token");
 console.log('We are on background');
 /** 
@@ -287,11 +290,16 @@ chrome.runtime.onConnect.addListener(function(port) {
                   }
                   if(responseMessage)
                   {
+                    console.log('Auto Responder '+AutoResponderState);
+                    console.log('Default Message '+DefaultMessageState);
+                    if((AutoResponderState == 1 || DefaultMessageState == 1))
+                    {
                       chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                       url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${responseMessage}&${urlParam}=true`,
                       active: true}, function(tab) {
                         tabId = tab.id;
                       });
+                    }
                   }
                   else
                   {
@@ -358,27 +366,29 @@ chrome.runtime.onConnect.addListener(function(port) {
                             console.log("Hit For Default",paramsToSend);
                             console.log("Hit For Default Now Get From Backend",responsenewvalue.payload.message);
                             console.log("The whole payload",responsenewvalue);
-                            
-                            if(responsenewvalue.code === 2)
+                            if((AutoResponderState == 1 || DefaultMessageState == 1))
                             {
-                              var messageContent = '';
-                              chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-                              url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                              active: true}, function(tab) {
-                                tabId = tab.id;
-                              });
-                            }
-                            if(responsenewvalue.code === 1)
-                            {
-                              
-                              port.postMessage({userInfoDetails: responsenewvalue.payload.message,ThreadParams:paramsToSend,ConFlagBack:"DEFAULTMESSAGEBACK" });
-                              var messageContent = responsenewvalue.payload.message;
-                              chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-                              url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                              active: true}, function(tab) {
-                                tabId = tab.id;
-                              });
-                            }
+                                if(responsenewvalue.code === 2)
+                                {
+                                  var messageContent = '';
+                                  chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+                                  url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
+                                  active: true}, function(tab) {
+                                    tabId = tab.id;
+                                  });
+                                }
+                                if(responsenewvalue.code === 1)
+                                {
+                                  
+                                  port.postMessage({userInfoDetails: responsenewvalue.payload.message,ThreadParams:paramsToSend,ConFlagBack:"DEFAULTMESSAGEBACK" });
+                                  var messageContent = responsenewvalue.payload.message;
+                                  chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+                                  url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
+                                  active: true}, function(tab) {
+                                    tabId = tab.id;
+                                  });
+                                }
+                          }
 
                           }).catch(error=>{
                           } )
@@ -412,14 +422,14 @@ chrome.runtime.onConnect.addListener(function(port) {
             toJsonStr(params)
           );
           let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
-          let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.LocationDetails);
-          if (indexthreadlink !== -1) {
-            individualThreadList.splice(indexthreadlink, 1);
-            let NewListURLArray=JSON.stringify(individualThreadList);
-            localStorage.setItem('ListURLArray', NewListURLArray);
-            localStorage.setItem('CheckMessageNReply',0);
-            CheckLocalStoreAndHitIndividualMList();
-          }
+         // let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.LocationDetails);
+          // if (indexthreadlink !== -1) {
+          //   individualThreadList.splice(indexthreadlink, 1);
+          //   let NewListURLArray=JSON.stringify(individualThreadList);
+          //   localStorage.setItem('ListURLArray', NewListURLArray);
+          //   localStorage.setItem('CheckMessageNReply',0);
+          //   CheckLocalStoreAndHitIndividualMList();
+          // }
           
           console.log("Now  Again I am In BackGround 332",msg.MessageDetails);
           console.log("Now  i have  to send this in db from BackGround 344",params);

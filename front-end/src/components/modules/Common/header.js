@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 import  plog from "../../../images/Avatar.png";
 import  sideMenuLogo from "../../../images/side_menu.svg";
 import  SettingServices from "../../../services/setting";
+import  {OpenFacebookInTab,CheckUserInfoFromFaccebook,OpenFacebookProfileInTab} from  '../../../helper/helper'
 import  LoadingLogo from "../../../images/Loader.gif";
 import loginHelper from  "../../../helper/loginHelper.js"
 class header extends Component {
@@ -41,8 +42,8 @@ class header extends Component {
               kyubi_user_token:localStorage.getItem('kyubi_user_token')
             }
             //let LC=loginHelper.login();
-
-        }else{
+            }
+            else{
             this.setState({meven_status:0})
             payload = {
               update_load_status:0,
