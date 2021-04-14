@@ -132,7 +132,7 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
                     user_id: req.body.MfenevanId,
                     facebook_id: req.body.FriendFacebookId,
                     facebook_user_id:req.body.FacebookUserId,
-                    facebook_username:req.body.Username,
+                    facebook_username:req.body.ProfileLink,
                     facebook_first_name:req.body.FacebookFirstName,
                     facebook_last_name:req.body.FacebookLastName
                 };
