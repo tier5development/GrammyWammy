@@ -292,14 +292,14 @@ chrome.runtime.onConnect.addListener(function(port) {
                   {
                     console.log('Auto Responder '+AutoResponderState);
                     console.log('Default Message '+DefaultMessageState);
-                    if((AutoResponderState == 1 || DefaultMessageState == 1))
-                    {
+                    // if((AutoResponderState == 1 || DefaultMessageState == 1))
+                    // {
                       chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                       url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${responseMessage}&${urlParam}=true`,
                       active: true}, function(tab) {
                         tabId = tab.id;
                       });
-                    }
+                    //}
                   }
                   else
                   {
@@ -366,8 +366,8 @@ chrome.runtime.onConnect.addListener(function(port) {
                             console.log("Hit For Default",paramsToSend);
                             console.log("Hit For Default Now Get From Backend",responsenewvalue.payload.message);
                             console.log("The whole payload",responsenewvalue);
-                            if((AutoResponderState == 1 || DefaultMessageState == 1))
-                            {
+                            // if((AutoResponderState == 1 || DefaultMessageState == 1))
+                            // {
                                 if(responsenewvalue.code === 2)
                                 {
                                   var messageContent = '';
@@ -388,7 +388,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                                     tabId = tab.id;
                                   });
                                 }
-                          }
+                          //}
 
                           }).catch(error=>{
                           } )
