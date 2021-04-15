@@ -53,19 +53,46 @@ const postTweet = (closeWindow,id,message) => {
        if(id == tagId)
        {
           console.log('Condition Satisfied');
-          populateTextArea(message);
+          if(message == 'Read Message')
+          {
+              readLastMessage(id);
+          }
+          else
+          {
+            populateTextArea(message,id);
+          }
           anchor[i].click();
-         
-       }
+      }
   }
 }, 1000);
- 
-
 };
 
-function populateTextArea(response)
+function readLastMessage(id)
 {
-  setTimeout(function() {
+  console.log('Get Into The Read');
+  setTimeout(() => {
+    let totalIncomingMessages = (document.getElementsByClassName('Igw0E  Xf6Yq          hLiUi    ybXk5').length)-1;
+    console.log(totalIncomingMessages);
+    let userLastSentMessage = document.getElementsByClassName('Igw0E  Xf6Yq   hLiUi    ybXk5')[totalIncomingMessages].parentElement.parentElement.getElementsByClassName('_7UhW9   xLCgt  MMzan  KV-D4   p1tLr  hjZTB')[0].innerText;
+    console.log(userLastSentMessage);
+    userNameToBeSent = document.getElementsByClassName('_7UhW9    vy6Bb      qyrsm KV-D4              fDxYl     ')[1].innerText;
+    console.log(userNameToBeSent);
+
+    let params ={
+      messageId : id,
+      userName  : userNameToBeSent,
+      messageContent:userLastSentMessage
+    }
+    
+    port.postMessage({options: params,ConFlag:"CheckMessageContent"});
+   }, 1000);
+  
+  
+}
+
+function populateTextArea(response,id)
+{
+    setTimeout(function() {
     var message = response;
     console.log(message);
     $(`textarea`).focus();
@@ -84,7 +111,10 @@ function populateTextArea(response)
             }, 1000)
             /// Back To Instagram Home Page ///
             setTimeout(function() {
-                 port.postMessage({options: '',ConFlag:"loadHomePage"});
+                let params ={
+                  messageId : id
+                }
+                port.postMessage({options: params,ConFlag:"loadHomePage"});
             }, 1000)
             /// Back To Instagram Home Page ///
            
@@ -182,9 +212,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
     function fetchMessageDetails()
     {
        console.log('Function Called');
-      //  reloadParams ='';
-      //  port.postMessage({options: reloadParams,ConFlag:"reloadMessage"});
-        setTimeout(() => {
+       setTimeout(() => {
         let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
        
         let unreadMessage = 0;
@@ -196,22 +224,12 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
               if(childDiv.childElementCount == 3)
               {   
                   
-                  let messageUsername = childDiv.children[1].children[0].children[0].children[0].children[0].children[0].textContent;
-                  let latestMsgDiv = childDiv.children[1].children[1];
                   let messageLink = 'https://www.instagram.com'+allMessageDiv[i].children[0].getAttribute("href");
-                  let latestMsgDivContent = latestMsgDiv.children[0].children[0].children[0].children[0].textContent;
-                  if(latestMsgDivContent == 'Typing...')
-                  {
-                    fetchMessageDetails();
-                    return false;
-                  }
-                  else
-                  {
-                    postMessage(messageLink , messageUsername , latestMsgDivContent);
-                  }
-             
+                  let messageId =  messageLink.split("/").pop();
+                  console.log(messageId);
+                  port.postMessage({options: messageId,ConFlag:"StoreMessageLinkInLocalStorage"});
                   
-               }
+              }
               
             }
         }

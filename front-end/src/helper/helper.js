@@ -34,7 +34,7 @@ export function CheckUserInfoFromFaccebook() {
     //     console.log("This is a ",error);
     // }
     chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-        url: `https://www.instagram.com/${localStorage.getItem("fb_username")}`,
+        url: `https://www.instagram.com/${localStorage.getItem("insta_username")}`,
         active: false});
   }
 
@@ -45,7 +45,7 @@ export function CheckUserInfoFromFaccebook() {
 */
 export function OpenFacebookProfileInTab() {
     try{
-        const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('fb_username');
+        const myNewUrl  =   `https://www.instagram.com/`+localStorage.getItem('insta_username');
         let CreateTab    =   chrome.tabs.create({
             url: myNewUrl,
             active: true

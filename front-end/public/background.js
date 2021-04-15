@@ -74,6 +74,14 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
          
       }
       if(WindowURL === 'https://www.instagram.com/'){
+
+          /// For Setting List Id Array ///
+          let ListIdArray =[];
+          let NewListIdArray=JSON.stringify(ListIdArray);
+          localStorage.setItem('ListIdArray', NewListIdArray);
+          localStorage.setItem('CheckMessageNReply',0);
+          /// For Setting List Id Array ///
+
           localStorage.setItem('profileTabId',TabId);
           console.log("Yes the Profile is there Suvadeep");
           console.log("This is info from background",tab);
@@ -218,28 +226,12 @@ chrome.runtime.onConnect.addListener(function(port) {
     if (msg.ConFlag == "CheckMessageContent")
       {
               console.log('Reached Here');
-              messageLink = msg.options.messageLink;
+              messageId = msg.options.messageId;
               console.log('Reached Here1');
-              messageId = messageLink.split("/").pop();
-              console.log('Reached Here2');
+              
               messageUserName = msg.options.userName;
               console.log('Reached Here3');
               console.log(msg.options.messageContent);
-              // if(msg.options.messageContent == 'Typing...')
-              // {
-              //   console.log('Reached Here4');
-              //   chrome.windows.getCurrent(w => {
-              //     chrome.tabs.query({active: true, windowId: w.id}, tabs => {
-              //       const tabId = tabs[0].id;
-              //       data={}
-              //       chrome.tabs.sendMessage(tabId, { catch: "check-new-incoming-message",data });
-                    
-              //     });
-              //   });
-              //   console.log('Reached Here5');
-              //   return false;
-              //   console.log('Reached Here6');
-              // }
               console.log('Before Calling the function');
               getAutoResponseText(msg.options.messageContent,messageUserName,messageId);
         }
@@ -440,13 +432,84 @@ chrome.runtime.onConnect.addListener(function(port) {
         {
          
           chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-            url: `https://www.instagram.com/${localStorage.getItem("fb_username")}`,
+            url: `https://www.instagram.com/${localStorage.getItem("insta_username")}`,
             active: false});
+            localStorage.setItem('CheckMessageNReply',0);
 
-            chrome.tabs.update( parseInt(localStorage.getItem("messageListId")), { 
-              url: `https://www.instagram.com/direct/inbox/`,
-              active: true});
+            
+            console.log(msg.options.messageId);
+            // splice(checkedTweetsArrayIndex, 1);
+            let ListId=localStorage.getItem('ListIdArray');
+            const listIdArrayIndex = ListId.indexOf(msg.options.messageId);
+
+            if (listIdArrayIndex > -1) {
+              ListId.splice(listIdArrayIndex, 1);
+            } 
+            
+            localStorage.setItem("ListIdArray", JSON.stringify(ListId));
+            // chrome.tabs.update( parseInt(localStorage.getItem("messageListId")), { 
+            //   url: `https://www.instagram.com/direct/inbox/`,
+            //   active: true});
         }
+        /// For Storing Message Id's To An Array ///
+        if(msg.ConFlag   ==  "StoreMessageLinkInLocalStorage")
+        {
+             
+              let ListId=localStorage.getItem('ListIdArray');
+              let ListIdArray=JSON.parse(ListId);
+              if(ListIdArray.length  === 0)
+              {
+                  ListIdArray[ListIdArray.length]= msg.options;
+                  let NewListIdArray=JSON.stringify(ListIdArray);
+                  localStorage.setItem('ListIdArray', NewListIdArray);
+              }
+              else
+              {
+                  let check = ListIdArray.includes(msg.options);
+                  if(check){
+
+                  }else{
+                  ListIdArray[ListIdArray.length]=msg.options;
+                  let NewListIdArray=JSON.stringify(ListIdArray);
+                  localStorage.setItem('ListIdArray', NewListIdArray);
+                  }
+            }
+            CheckLocalStoreAndHitIndividualMList();
+        }
+        /// For Storing Message Id's To An Array ///
+
+       ///  For showing indivdual Message Thread ///
+
+       function CheckLocalStoreAndHitIndividualMList(){
+       
+        let ListId=localStorage.getItem('ListIdArray');
+        let CheckMessageNReply=localStorage.getItem('CheckMessageNReply');
+        let insta_logged_id=localStorage.getItem('insta_logged_id');
+        let default_message=localStorage.getItem('default_message');
+        let autoresponder=localStorage.getItem('autoresponder');
+        if(insta_logged_id == "true"){
+          if(default_message !=0  ||  autoresponder!=0){
+            if(CheckMessageNReply == 0){
+              
+              let ListIdArray = JSON.parse(ListId);
+              if(ListIdArray.length>0){
+              console.log("Trigger ===========7",ListIdArray[0]);
+              localStorage.setItem('CheckMessageNReply',1);
+              let statusMessage = 'Read Message';
+              chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
+                  url: `https://www.instagram.com/direct/inbox/?id=${ListIdArray[0]}&message=${statusMessage}&${urlParam}=true`,
+                  active: true}, function(tab) {
+                    tabId = tab.id;
+                  });
+              }
+              
+            }
+          }
+        }
+      
+      }
+
+       ///  For showing indivdual Message Thread ///
         
   });
 //}
