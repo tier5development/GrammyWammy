@@ -69,7 +69,7 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
           localStorage.setItem('messageListId',TabId);
           data={tabinfo:TabId,windowinfo:WindowId}
           chrome.tabs.sendMessage(TabId, { catch: "check-new-incoming-message",data });
-          scanForUrls();
+          resetStatus();
           
          
       }
@@ -96,20 +96,13 @@ chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
   }
 });
 
-function scanForUrls(){
+function resetStatus(){
  
-  // setInterval(function(){ 
-    
-  //   chrome.tabs.query({url: "*://*.instagram.com/"}, function(tab) {
-  //      console.log(tab.length);
-  //     (tab.length === 0) ? localStorage.setItem('home_tab', 0) : localStorage.setItem('home_tab', 1);
-  //   });
+  setInterval(function(){ 
+    console.log('called');
+    localStorage.setItem('CheckMessageNReply',0);
+  }, 20000);
 
-  //   chrome.tabs.query({url: "*://*.instagram.com/direct/inbox/"}, function(tabInbox) {
-  //     (tabInbox.length === 0) ? localStorage.setItem('inbox_tab', 0) : localStorage.setItem('inbox_tab', 1);
-  //   });
-
-  //   }, 1000);
 }
 
 
@@ -140,7 +133,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
               let responsenewvalue = await response.json();
                       let  urlArray="[]";
                       console.log("This from DB",responsenewvalue);
-                      // localStorage.setItem('CheckMessageNReply', 0);
+                      localStorage.setItem('CheckMessageNReply', 0);
                       // localStorage.setItem('ListURLArray', urlArray);
                       localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                       localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
