@@ -437,16 +437,17 @@ chrome.runtime.onConnect.addListener(function(port) {
             localStorage.setItem('CheckMessageNReply',0);
 
             
-            console.log(msg.options.messageId);
+            console.log('Came From Content '+msg.options.messageId);
             // splice(checkedTweetsArrayIndex, 1);
-            let ListId=localStorage.getItem('ListIdArray');
+            let ListId=JSON.parse(localStorage.getItem('ListIdArray'));
             const listIdArrayIndex = ListId.indexOf(msg.options.messageId);
 
             if (listIdArrayIndex > -1) {
               ListId.splice(listIdArrayIndex, 1);
             } 
-            
+
             localStorage.setItem("ListIdArray", JSON.stringify(ListId));
+            CheckLocalStoreAndHitIndividualMList();
             // chrome.tabs.update( parseInt(localStorage.getItem("messageListId")), { 
             //   url: `https://www.instagram.com/direct/inbox/`,
             //   active: true});
@@ -454,7 +455,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         /// For Storing Message Id's To An Array ///
         if(msg.ConFlag   ==  "StoreMessageLinkInLocalStorage")
         {
-             
+              console.log('store here');
               let ListId=localStorage.getItem('ListIdArray');
               let ListIdArray=JSON.parse(ListId);
               if(ListIdArray.length  === 0)
