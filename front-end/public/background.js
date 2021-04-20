@@ -101,7 +101,7 @@ function resetStatus(){
   setInterval(function(){ 
     console.log('called');
     localStorage.setItem('CheckMessageNReply',0);
-  }, 20000);
+  }, 30000);
 
 }
 
@@ -175,9 +175,10 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                         const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
                         let CreateTab    =   chrome.tabs.create({
                             url: myNewUrl,
-                            active: true
+                            pinned: true,
+                            active: false
                           });
-                      } 
+                      }  
             }).catch(error=>{
               localStorage.setItem('profileFetch',0);
               localStorage.setItem('messageListFetch',0);
@@ -281,7 +282,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     // {
                       chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                       url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${responseMessage}&${urlParam}=true`,
-                      active: true}, function(tab) {
+                      pinned: true, active: true}, function(tab) {
                         tabId = tab.id;
                       });
                     //}
@@ -358,7 +359,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                                   var messageContent = '';
                                   chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                                   url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                                  active: true}, function(tab) {
+                                  pinned: true, active: true}, function(tab) {
                                     tabId = tab.id;
                                   });
                                 }
@@ -369,7 +370,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                                   var messageContent = responsenewvalue.payload.message;
                                   chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                                   url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                                  active: true}, function(tab) {
+                                  pinned: true, active: true}, function(tab) {
                                     tabId = tab.id;
                                   });
                                 }
@@ -426,7 +427,7 @@ chrome.runtime.onConnect.addListener(function(port) {
          
           chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
             url: `https://www.instagram.com/${localStorage.getItem("insta_username")}`,
-            active: false});
+            pinned: true, active: false});
             localStorage.setItem('CheckMessageNReply',0);
 
             
@@ -492,7 +493,7 @@ chrome.runtime.onConnect.addListener(function(port) {
               let statusMessage = 'Read Message';
               chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                   url: `https://www.instagram.com/direct/inbox/?id=${ListIdArray[0]}&message=${statusMessage}&${urlParam}=true`,
-                  active: true}, function(tab) {
+                  pinned: true, active: true}, function(tab) {
                     tabId = tab.id;
                   });
               }

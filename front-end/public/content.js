@@ -8,7 +8,8 @@ const sendMessageBtn = `button[class="sqdOP  L3NKy   y3zKF     "]`;
 
 $(document).ready(function () {
   console.log("doc is ready")
-$("body").arrive(sendMessageBtn, function () {
+  console.log($('.-qQT3.rOtsg').length);
+  console.log('Testing Inside');
     var isFromExtension = getParam(urlParam);
     console.log("isfromexension",isFromExtension[0])
     if (isFromExtension[1] === "true") {
@@ -16,9 +17,7 @@ $("body").arrive(sendMessageBtn, function () {
         postTweet((closeWindow = true), isFromExtension[0], isFromExtension[2]);
       }, 1000);
      }
- 
-  })
-});
+ });
 const getParam = (paramName) => {
   var urlString = window.location.href;
   console.log(urlString);
@@ -43,7 +42,8 @@ const postTweet = (closeWindow,id,message) => {
   setTimeout(() => {
   var anchor = document.getElementsByClassName("-qQT3 rOtsg");
   let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
-  console.log(allMessageDiv.length);
+  console.log('Total Inbox Elements '+allMessageDiv.length);
+
   console.log(anchor.length);
   for (var i = 0; i < anchor.length; i++) {
       var anchorTagLink = anchor[i].href;
@@ -52,6 +52,7 @@ const postTweet = (closeWindow,id,message) => {
        console.log('tagId Value '+tagId);
        if(id == tagId)
        {
+          anchor[i].click();
           console.log('Condition Satisfied');
           if(message == 'Read Message')
           {
@@ -61,7 +62,7 @@ const postTweet = (closeWindow,id,message) => {
           {
             populateTextArea(message,id);
           }
-          anchor[i].click();
+        
       }
   }
 }, 1000);
@@ -214,7 +215,7 @@ chrome.runtime.onMessage.addListener(async function (request, sender, sendRespon
        console.log('Function Called');
        setTimeout(() => {
         let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
-       
+        console.log('Total Inbox Elements '+allMessageDiv.length);
         let unreadMessage = 0;
         for (var i = 0; i < allMessageDiv.length; i++) {
             if(allMessageDiv[i])

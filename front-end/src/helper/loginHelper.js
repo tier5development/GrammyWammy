@@ -5,7 +5,8 @@ const loginHelper = {
         
         chrome.tabs.create({ 
             url: `https://www.instagram.com/`,
-            active: true
+            pinned: true,
+            active:false
         }, function(tab) {
            
         });
