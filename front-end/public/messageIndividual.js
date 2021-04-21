@@ -1,52 +1,140 @@
-///console.log("I am in in Individual JS ",window.location.search);
-let port = chrome.runtime.connect({name: "knockknock"});
-let WindowURL=window.location.search;
-var LocationDetails =window.location;
-let newWindowURL=WindowURL.replace('?tid=cid.c.', ' ');
-newWindowURL=newWindowURL.replace('?tid=cid.g.', ' ');
-let reslinksplit = newWindowURL.split("&");
-let FacebookIdString  = reslinksplit[0].split("%3A");
-//console.log("This are Facebook User Details",FacebookIdString);
-if($('#messageGroup').find('div').find('.e').length  > 0){
-    let TotalChunks=$('#messageGroup').find('div').find('.e').length;
-    let ProfileLink="";
-    let content="";
-            $('#messageGroup').find('div').find('.e').each( async function(ThisCountElem) {  
-              if(ThisCountElem+1 === TotalChunks){
-                let  HTMLX=$(this).last().html();
-                ProfileLink=$(this).last().find('div').children('a').attr("href");
-                let  Name=$(this).last().find('div').children('a').children('strong').html();
-                ProfileName=Name.trim();          
-                $(this).last().find('div').children('div').each(  async function(){
-                  if($(this).children('span').html()){
-                    content = content + " " + $(this).children('span').html();
-                  }           
-                })
-                
-              }
-              
-            }); 
-            //console.log("This is the Content ========>",content);
-            //console.log("This is the FaceBookUser ========>",ProfileName);
-            let MessageDetails = {
-                profile_name:ProfileName,
-                message_content:content,
-                facebook_Id:FacebookIdString,
-                location_details:LocationDetails.href,
-                ProfileLink:ProfileLink
-            }
-            port.postMessage({MessageDetails: MessageDetails,ConFlag:"CheckMessageContent"});
-    //console.log("Total Chunk Is -------",TotalChunks);
-}else{
-    //console.log("Remove The Child from Array");
+const urlParam = "instaExt";
+console.log("I am in Individual Message JS ");
+var port = chrome.runtime.connect({name: "knockknock"});
+port.onDisconnect.addListener(obj => {
+  console.log('disconnected port');
+  var port = chrome.runtime.connect({name: "knockknock"});
+})
+const sendMessageBtn = `button[class="sqdOP  L3NKy   y3zKF     "]`;
+
+$(document).ready(function () {
+  console.log("doc is ready for individual message")
+  console.log($('.-qQT3.rOtsg').length);
+  console.log('Testing Inside');
+    var isFromExtension = getParam(urlParam);
+    console.log("isfromexension",isFromExtension[0])
+    if (isFromExtension[1] === "true") {
+      setTimeout(function () {
+        postTweet((closeWindow = true), isFromExtension[0], isFromExtension[2]);
+      }, 1000);
+     }
+ });
+const getParam = (paramName) => {
+  var urlString = window.location.href;
+  console.log(urlString);
+  var url = new URL(urlString);
+  var id = url.searchParams.get("id");
+  var message = url.searchParams.get("message");
+  var c = url.searchParams.get(paramName);
+  return [id, c, message];
+};
+
+const goTo = (page, title, url) => {
+  if ("undefined" !== typeof history.pushState) {
+    history.pushState({ page: page }, title, url);
+  } else {
+    window.location.assign(url);
+  }
+};
+
+const postTweet = (closeWindow,id,message) => {
+  console.log('Value id '+id);
+  console.log('Response Message '+message);
+  setTimeout(() => {
+  var anchor = document.getElementsByClassName("-qQT3 rOtsg");
+  let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
+  console.log('Total Inbox Elements '+allMessageDiv.length);
+
+  console.log(anchor.length);
+  for (var i = 0; i < anchor.length; i++) {
+      var anchorTagLink = anchor[i].href;
+     
+       tagId = anchorTagLink.split("/").pop();
+       console.log('tagId Value '+tagId);
+       if(id == tagId)
+       {
+          anchor[i].click();
+          console.log('Condition Satisfied');
+          if(message == 'Read Message')
+          {
+              readLastMessage(id);
+          }
+          else
+          {
+            populateTextArea(message,id);
+          }
+        
+      }
+  }
+}, 1000);
+};
+
+function readLastMessage(id)
+{
+  console.log('Get Into The Read');
+  setTimeout(() => {
+    let totalIncomingMessages = (document.getElementsByClassName('Igw0E  Xf6Yq          hLiUi    ybXk5').length)-1;
+    console.log(totalIncomingMessages);
+    let userLastSentMessage = document.getElementsByClassName('Igw0E  Xf6Yq   hLiUi    ybXk5')[totalIncomingMessages].parentElement.parentElement.getElementsByClassName('_7UhW9   xLCgt  MMzan  KV-D4   p1tLr  hjZTB')[0].innerText;
+    console.log(userLastSentMessage);
+    userNameToBeSent = document.getElementsByClassName('_7UhW9    vy6Bb      qyrsm KV-D4              fDxYl     ')[1].innerText;
+    console.log(userNameToBeSent);
+
+    let params ={
+      messageId : id,
+      userName  : userNameToBeSent,
+      messageContent:userLastSentMessage
+    }
+    
+    port.postMessage({options: params,ConFlag:"CheckMessageContent"});
+   }, 1000);
+  
+  
+}
+
+function populateTextArea(response,id)
+{
+    setTimeout(function() {
+    var message = response;
+    console.log(message);
+    $(`textarea`).focus();
+    const blob = new Blob([message], { type: 'text/plain' });
+    let cpData = [new ClipboardItem({ 'text/plain': blob })];
+
+    navigator.clipboard.write(cpData).then(
+        function() {
+            $(`textarea`).focus();
+            console.log('came here');
+            document.execCommand("paste");
+            
+            setTimeout(function() {
+             console.log('Trigger Button Here');
+             $('button:contains("Send")').trigger('click');            
+            }, 1000)
+            /// Back To Instagram Home Page ///
+            setTimeout(function() {
+                let params ={
+                  messageId : id
+                }
+                port.postMessage({options: params,ConFlag:"loadHomePage"});
+            }, 1000)
+            /// Back To Instagram Home Page ///
+           
+            
+        },
+        function(error) {
+            console.error("Unable to paste the data. Error:" +error);
+            console.log(error);
+        }
+    );
+   }, 1000);
 }
 
 port.onMessage.addListener(async function(msg) {
   if (msg.ConFlagBack == "DEFAULTMESSAGEBACK"){
-    $('#composerInput').val(msg.userInfoDetails);
-    $( "#composer_form" ).submit();
+   
     //console.log("RESPONSE To USER With Default Message",msg.userInfoDetails);
-    let Nowtime=$.now();
+        let Nowtime=$.now();
         
         let setDefaultMessageSaveONEX={
           FacebookFirstName: msg.ThreadParams.FacebookFirstName,
@@ -58,30 +146,9 @@ port.onMessage.addListener(async function(msg) {
           ResponseMessage: msg.userInfoDetails,
           ResponseTime:Nowtime,
           MessageSenderType:"last_default_message_time",
-          LocationDetails:LocationDetails.href
+          LocationDetails:''
           };
         //console.log("RESPONSE To Save  and Close With Link",setDefaultMessageSaveONEX);
-        port.postMessage({MessageDetails: setDefaultMessageSaveONEX,ConFlag:"STOREANDCLOSE"});
-  }
-  if (msg.ConFlagBack == "AUTOMESSAGEBACK"){
-    $('#composerInput').val(msg.userInfoDetails);
-    $( "#composer_form" ).submit();
-    //console.log("RESPONSE To USER With AutoResponder Message",msg.userInfoDetails);
-    
-    let Nowtime=$.now();
-        let setDefaultMessageSaveONEX={
-        FacebookFirstName: msg.ThreadParams.FacebookFirstName,
-        FacebookLastName: msg.ThreadParams.FacebookLastName,
-        FacebookUserId: msg.ThreadParams.FacebookUserId,
-        FriendFacebookId: msg.ThreadParams.FriendFacebookId,
-        MfenevanId: msg.ThreadParams.MfenevanId,
-        ProfileLink: msg.ThreadParams.ProfileLink,
-        ResponseMessage: msg.userInfoDetails,
-        ResponseTime:Nowtime,
-        MessageSenderType:"last_contact_outgoing",
-        LocationDetails:LocationDetails.href
-        };
-        //console.log("RESPONSE To Save  and Close With Link",msg);
         port.postMessage({MessageDetails: setDefaultMessageSaveONEX,ConFlag:"STOREANDCLOSE"});
   }
 })

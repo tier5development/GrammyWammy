@@ -1,47 +1,31 @@
 setTimeout(function() {
 console.log("I am in Profile JS ");
-let UserFacebookUsername =  "";
-let UserFacebookName    =   "";
-let UserFacebookid  =   "";
-let UserFacebookImage   =   "";
 let InstagramUsername  = "";
 let UserInstagramName  = "";
 let UserInstagramImage = "";
-let UserLoggedInFacebook =  false;
-let NavItem =$('.ctQZg');
-let CheckCounter =0;
-if(NavItem){
-    console.log("I Got THIS Nav Items ",NavItem.length);
-    if(NavItem.length  === 0){
-        CheckCounter =0;
-        UserLoggedInFacebook =  false;
-    }else{
-      
-        // InstagramUsername  = document.getElementsByClassName('_7UhW9       fKFbl yUEEX   KV-D4              fDxYl     ')[0].innerText;
-        // UserInstagramName  = document.getElementsByClassName('rhpdm')[0].innerText;
-        // //UserInstagramImage  =  document.getElementsByClassName('be6sR')[0].src;
-        // UserInstagramImage  =  document.getElementsByClassName('_47KiJ')[0].children[4].children[1].children[0].src;
-        // UserLoggedInFacebook  = true;
-
-        InstagramUsername  ='';
-        UserInstagramName  = '';
-        //UserInstagramImage  =  document.getElementsByClassName('be6sR')[0].src;
-        UserInstagramImage  =  '';
-        UserLoggedInFacebook  = true;
-        
-    }   
-}else{
-    UserLoggedInFacebook =  false;
-    //console.log("I Did Not Got THIS Nav Items ",NavItem);
-}
-
-let parameters={
-    insta_username : InstagramUsername,
-    insta_name : UserInstagramName,
-    insta_image  : UserInstagramImage,
-    LoggedInFacebook  : UserLoggedInFacebook
-  }
-
-//console.log("This I got After Scraping ",parameters);
-chrome.runtime.sendMessage({type: "storeUserInfoOrQueryThenStore", options: parameters});
+let UserLoggedInInstagram =  false;
+if($('.ctQZg').length)
+    {
+      console.log("User Logged In");
+      InstagramUsername  = $('.gmFkV').attr('href').replace(/\//g,'');
+      UserInstagramName  = document.getElementsByClassName('_7UhW9   xLCgt      MMzan   _0PwGv             fDxYl ')[1].innerHTML;
+      UserInstagramImage  =  document.getElementsByClassName('_47KiJ')[0].children[4].children[1].children[0].src;
+      UserLoggedInInstagram  = true;
+    }
+    else
+    {
+      console.log("User Not Logged In");
+      InstagramUsername  = "";
+      UserInstagramName  = "";
+      UserInstagramImage  =  "";
+      UserLoggedInInstagram  = false;
+    }
+    let parameters={
+      insta_username : InstagramUsername,
+      insta_name : UserInstagramName,
+      insta_image  : UserInstagramImage,
+      insta_logged_id  : UserLoggedInInstagram
+    }
+    console.log(parameters);
+    chrome.runtime.sendMessage({type: "storeUserInfoOrQueryThenStore", options: parameters});
 }, 3000);

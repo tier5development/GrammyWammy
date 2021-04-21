@@ -7,7 +7,7 @@ port.onDisconnect.addListener(obj => {
 const sendMessageBtn = `button[class="sqdOP  L3NKy   y3zKF     "]`;
 
 $(document).ready(function () {
-  console.log("doc is ready")
+  console.log("doc is ready for content")
   console.log($('.-qQT3.rOtsg').length);
   console.log('Testing Inside');
     var isFromExtension = getParam(urlParam);

@@ -115,17 +115,27 @@ function resetStatus(){
 chrome.runtime.onMessage.addListener(async function(request, sender) {
  
   if (request.type == "storeUserInfoOrQueryThenStore"){
+
+
         console.log("This I Got In Background",request.options);
-        getInstagramId(request.options.insta_username);
+        
+        var userName = request.options.insta_username;
+        var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
+        var validation = regex.test(userName);
+        if(validation) {
+        $.get("https://www.instagram.com/"+userName+"/?__a=1")
+        .done(function(data) {
+
         let  params ={
         user_rec    :   localStorage.getItem('kyubi_user_token'),
-        fb_id       :   localStorage.getItem('instagramIdForTheLoggedInUser'),
+        fb_id       :   data["graphql"]["user"]["id"],
         fb_username :   request.options.insta_username,
         fb_name     :   request.options.insta_name,
         fb_image    :  request.options.insta_image,
         fb_logged_id :   request.options.insta_logged_id
         };
-        await handleRequest(
+
+        handleRequest(
             "api/user/userCheckStoreNRetrive",
             method.POST,
             toJsonStr(params)
@@ -186,29 +196,15 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
               
             } )
 
-            /** For getting instagram id of the logged in user */
-            function getInstagramId(userName)
-            {
-              
-                var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
-                var validation = regex.test(userName);
-                if(validation) {
-                  $.get("https://www.instagram.com/"+userName+"/?__a=1")
-                  .done(function(data) { 
-                   var instagramId = data["graphql"]["user"]["id"];
-                   localStorage.setItem("instagramIdForTheLoggedInUser",instagramId);
-                  })
-                  .fail(function() { 
-                    // code for 404 error 
-                    console.log('Username was not found!')
-                  })
-                
-                } else {
-                  console.log('The username is invalid!')
-                }
-            }
-          /** For getting instagram id of the logged in user */
-    
+          })
+          .fail(function() { 
+            // code for 404 error 
+            console.log('Username was not found!')
+          })
+        
+        } else {
+          console.log('The username is invalid!')
+        }
 
     }
 })
@@ -233,6 +229,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         function getAutoResponseText(message,userName,messageId)
         {
           console.log('Reached The Function');
+          console.log('User Message '+message.toLowerCase());
           var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
           var validation = regex.test(userName);
           if(validation) {
@@ -282,7 +279,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     // {
                       chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                       url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${responseMessage}&${urlParam}=true`,
-                      pinned: true, active: true}, function(tab) {
+                      pinned: true, active: false}, function(tab) {
                         tabId = tab.id;
                       });
                     //}
@@ -359,7 +356,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                                   var messageContent = '';
                                   chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                                   url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                                  pinned: true, active: true}, function(tab) {
+                                  pinned: true, active: false}, function(tab) {
                                     tabId = tab.id;
                                   });
                                 }
@@ -370,7 +367,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                                   var messageContent = responsenewvalue.payload.message;
                                   chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                                   url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                                  pinned: true, active: true}, function(tab) {
+                                  pinned: true, active: false}, function(tab) {
                                     tabId = tab.id;
                                   });
                                 }
@@ -493,7 +490,7 @@ chrome.runtime.onConnect.addListener(function(port) {
               let statusMessage = 'Read Message';
               chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
                   url: `https://www.instagram.com/direct/inbox/?id=${ListIdArray[0]}&message=${statusMessage}&${urlParam}=true`,
-                  pinned: true, active: true}, function(tab) {
+                  pinned: true, active: false}, function(tab) {
                     tabId = tab.id;
                   });
               }

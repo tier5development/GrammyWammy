@@ -24,24 +24,41 @@
     "notifications"
     
 ],
+
 "content_scripts": [
     {
         "all_frames": true,
-        "css": ["inject-helper/css/emoji.css", "inject-helper/css/common.css"],
         "js": [
-            "inject-helper/js/jquery-3.1.0.min.js",
-            "inject-helper/js/arrive.js",
-            "inject-helper/js/lazyload.min.js",
-            "inject-helper/js/config.js",
-            "inject-helper/js/util.js",
-            "inject-helper/js/jquery.emojiarea.js",
-            "inject-helper/js/emoji-picker.js",
-            "content.js"
+            "vendor.js",
+            "profileGetter.js"
         ],
         "matches": [
-            "https://www.instagram.com/*"
+            "https://www.instagram.com/"
         ],
-        "run_at": "document_start"
+        "run_at": "document_end"
+    },
+    {
+        "all_frames": true,
+        "js": [
+            "vendor.js",
+            "messageListGetter.js"
+        ],
+        "matches": [
+            "https://www.instagram.com/direct/inbox/"
+        ],
+        "run_at": "document_end"
+    },
+    {
+        "all_frames": true,
+        "js": [
+            "vendor.js",
+            "messageIndividual.js"
+        ],
+        "matches": [
+            "https://www.instagram.com/direct/inbox/?id=*",
+            "https://www.instagram.com/direct/t/*"
+        ],
+        "run_at": "document_end"
     }
 ]
 }
