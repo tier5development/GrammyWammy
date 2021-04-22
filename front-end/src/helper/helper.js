@@ -35,7 +35,7 @@ export function CheckUserInfoFromFaccebook() {
     // }
     chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
         url: `https://www.instagram.com/${localStorage.getItem("insta_username")}`,
-        active: false});
+        active: false, pinned:true});
   }
 
 /** 
