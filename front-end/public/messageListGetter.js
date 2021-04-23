@@ -1,14 +1,8 @@
 
 $(document).ready(function(){ 
     console.log("I am in messageList JS ");
-    var port = chrome.runtime.connect({name: "knockknock"});
-    port.onDisconnect.addListener(obj => {
-      console.log('disconnected port');
-      var port = chrome.runtime.connect({name: "knockknock"});
-    }) 
-
-
-    fetchMessageDetails();
+    
+  
     var target = document.querySelector('.N9abW');
     var LocationDetails =window.location;
     var count  = 0;
@@ -20,11 +14,16 @@ $(document).ready(function(){
             
             $(mutation.addedNodes).each( async function() {
                 var messageTextLength = $(this).text().length;
-                // console.log(messageTextLength);
+                //console.log($(this));
+                //console.log(messageTextLength);
+                
+              
                 if(messageTextLength === 0)
                 {
-                console.log('Satisfied'); 
-                fetchMessageDetails();
+                  console.log('Satisfied'); 
+                  var port = chrome.runtime.connect({name: "knockknock"});
+                  port.postMessage({options: 'test',ConFlag:"mutation"});
+                  port.disconnect(); 
                 }
             });
         }
@@ -37,31 +36,6 @@ $(document).ready(function(){
     // pass in the target node, as well as the observer options
     observer.observe(target, config);
 
-    function fetchMessageDetails()
-    {
-       console.log('Function Called');
-       setTimeout(() => {
-        let allMessageDiv = document.getElementsByClassName(' DPiy6 Igw0E IwRSH eGOV_ _4EzTm ');
-        console.log('Total Inbox Elements '+allMessageDiv.length);
-        let unreadMessage = 0;
-        for (var i = 0; i < allMessageDiv.length; i++) {
-            if(allMessageDiv[i])
-            { 
-              let childDiv = allMessageDiv[i].children[0].children[0]; 
-              
-              if(childDiv.childElementCount == 3)
-              {   
-                  
-                  let messageLink = 'https://www.instagram.com'+allMessageDiv[i].children[0].getAttribute("href");
-                  let messageId =  messageLink.split("/").pop();
-                  console.log(messageId);
-                  port.postMessage({options: messageId,ConFlag:"StoreMessageLinkInLocalStorage"});
-                  
-              }
-              
-            }
-        }
-      }, 1000);
-    }
+    
 
 });

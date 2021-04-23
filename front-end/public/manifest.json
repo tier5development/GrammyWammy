@@ -13,7 +13,7 @@
   },
   "background": {
     "scripts": ["inject-helper/js/jquery-3.1.0.min.js", "background.js"],
-    "persistent": false
+    "persistent": true
   },
   "permissions": [
     "tabs",
@@ -28,6 +28,7 @@
 "content_scripts": [
     {
         "all_frames": true,
+        "persistent": true,
         "js": [
             "vendor.js",
             "profileGetter.js"
@@ -39,6 +40,7 @@
     },
     {
         "all_frames": true,
+        "persistent": true,
         "js": [
             "vendor.js",
             "messageListGetter.js"
@@ -50,6 +52,7 @@
     },
     {
         "all_frames": true,
+        "persistent": true,
         "js": [
             "vendor.js",
             "messageIndividual.js"
@@ -58,6 +61,19 @@
             "https://www.instagram.com/direct/inbox/?id=*",
             "https://www.instagram.com/direct/t/*"
         ],
+        "run_at": "document_end"
+    },
+    {
+        "all_frames": true,
+        "persistent": true,
+        "js": [
+            "vendor.js",
+            "refreshAccount.js"
+        ],
+        "matches": [
+            "https://www.instagram.com/explore/people/suggested/",
+            "https://www.instagram.com/accounts/login/?next=/explore/people/suggested/"
+         ],
         "run_at": "document_end"
     }
 ]

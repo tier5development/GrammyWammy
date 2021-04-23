@@ -124,6 +124,10 @@ function populateTextArea(response,id)
         },
         function(error) {
             console.error("Unable to paste the data. Error:" +error);
+            let params ={
+              messageId : id
+            }
+            port.postMessage({options: params,ConFlag:"RefreshInbox"});
             console.log(error);
         }
     );

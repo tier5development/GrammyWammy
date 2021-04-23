@@ -34,7 +34,7 @@ export function CheckUserInfoFromFaccebook() {
     //     console.log("This is a ",error);
     // }
     chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-        url: `https://www.instagram.com/${localStorage.getItem("insta_username")}`,
+        url: `https://www.instagram.com/explore/people/suggested/`,
         active: false, pinned:true});
   }
 
