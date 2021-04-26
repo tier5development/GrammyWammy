@@ -448,7 +448,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
         if(msg.ConFlag   ==  "StoreMessageLinkInLocalStorage")
         {
-              console.log('store here');
+              //console.log('store here');
               recheckMessage();
               let ListId=localStorage.getItem('ListIdArray');
               let ListIdArray=JSON.parse(ListId);
@@ -468,7 +468,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                   let NewListIdArray=JSON.stringify(ListIdArray);
                   localStorage.setItem('ListIdArray', NewListIdArray);
                   }
-            }
+             }
             CheckLocalStoreAndHitIndividualMList();
         }
         function recheckMessage(){
