@@ -166,7 +166,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                         localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
                       }
                       localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
-                      if((AutoResponderStatus == 1 || DefaultMessageStatus == 1) && UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
+                      if( UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
                         console.log("Open Message List  84848484");
                       
                         const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;

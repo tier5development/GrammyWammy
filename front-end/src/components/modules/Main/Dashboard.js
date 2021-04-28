@@ -44,7 +44,7 @@ class Dashboard extends Component {
     this.setState({
       loader:true
     })
-    CheckUserInfoFromFaccebook();
+   // CheckUserInfoFromFaccebook();
     setTimeout(() => {
 
       let fb_image=localStorage.getItem('insta_image');
