@@ -7,7 +7,13 @@ let UserLoggedInInstagram =  false;
 if($('.ctQZg').length)
     {
       console.log("User Logged In");
-      InstagramUsername  = $('.gmFkV').attr('href').replace(/\//g,'');
+      
+      InstagramUsername  = $('.gmFkV').attr('href').replace('/', '');
+      InstagramUsername  =InstagramUsername.replace('/', '');
+
+      let username=$("._7UhW9 .xLCgt .MMzan ._0PwGv .fDxYl").html();
+      console.log("Usernamexxx",username)
+       console.log("Usernamexxx",InstagramUsername.replace('/', ''))
       UserInstagramName  = document.getElementsByClassName('_7UhW9   xLCgt      MMzan   _0PwGv             fDxYl ')[1].innerHTML;
       UserInstagramImage  =  document.getElementsByClassName('_47KiJ')[0].children[4].children[1].children[0].src;
       UserLoggedInInstagram  = true;

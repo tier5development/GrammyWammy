@@ -18,10 +18,11 @@
   "permissions": [
     "tabs",
     "storage",
-    "webNavigation",
     "clipboardRead",
     "https://www.instagram.com/*",
-    "notifications"
+    "notifications",
+    "webRequest",
+    "webRequestBlocking"
     
 ],
 

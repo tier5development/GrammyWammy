@@ -1,4 +1,4 @@
-const getApiUrl = "https://api.grammywammy.com/"; //"https://api.mefnevan.com" ;
+const getApiUrl = "https://apigarmmywammy.ngrok.io/"; //"https://api.mefnevan.com" ;
 const method = { POST: "post", GET: "get", PUT: "put", DELETE: "delete" };
 const toJsonStr = (val) => JSON.stringify(val);
 const getUserToken = () => localStorage.getItem("kyubi_user_token");
@@ -166,16 +166,52 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                         localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
                       }
                       localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
-                      if( UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
-                        console.log("Open Message List  84848484");
+                      // if( UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
+                      //   console.log("Open Message List  84848484");
                       
-                        const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
-                        let CreateTab    =   chrome.tabs.create({
-                            url: myNewUrl,
-                            pinned: true,
-                            active: false
-                          });
-                      }  
+                      //   const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+                      //   let CreateTab    =   chrome.tabs.create({
+                      //       url: myNewUrl,
+                      //       pinned: true,
+                      //       active: false
+                      //     });
+                      // }
+                      console.log("AutoResponderStatus",AutoResponderStatus);
+                      console.log("DefaultMessageStatus",DefaultMessageStatus);
+                      console.log("UserLoggedInFacebook",UserLoggedInFacebook);
+                      console.log("BackGroundFetchingStatus",BackGroundFetchingStatus);
+                      if((AutoResponderStatus == 1 || DefaultMessageStatus == 1) && UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
+                        if(localStorage.getItem('instamunread')){
+                          let newtab=parseInt(localStorage.getItem('instamunread'));
+                          chrome.tabs.get(newtab, function(tab) {
+                            if (!tab) { 
+                              console.log('tab does not exist'); 
+                              const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+                              let CreateTab    =   chrome.tabs.create({
+                                  url: myNewUrl,
+                                  active: false,
+                                  pinned:true
+                              },function(tab) { 
+                                  let instamunread=tab.id;
+                                  localStorage.setItem('instamunread', instamunread);
+                              });
+                            }
+                          })
+                        }else{
+                            const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+                            let CreateTab    =   chrome.tabs.create({
+                                  url: myNewUrl,
+                                  active: false,
+                                  pinned:true
+                            },function(tab) { 
+                                  let instamunread=tab.id;
+                                  localStorage.setItem('instamunread', instamunread);
+                                  // chrome.tabs.executeScript(tab.id, {file: "testpub.js"}, function() { 
+                                  //   console.log("Its been called");
+                                  // });
+                            });
+                        }
+                      }
             }).catch(error=>{
               localStorage.setItem('profileFetch',0);
               localStorage.setItem('messageListFetch',0);
@@ -448,7 +484,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
         if(msg.ConFlag   ==  "StoreMessageLinkInLocalStorage")
         {
-              //console.log('store here');
+              console.log('store here',msg.options);
               recheckMessage();
               let ListId=localStorage.getItem('ListIdArray');
               let ListIdArray=JSON.parse(ListId);
@@ -513,6 +549,11 @@ chrome.runtime.onConnect.addListener(function(port) {
       }
 
        ///  For showing indivdual Message Thread ///
+
+
+       if(msg.ConFlag   ==  "HitCheck"){
+         console.log(`I am Listing  ${msg.options}`);
+       }
         
   });
 //}
