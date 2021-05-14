@@ -230,7 +230,7 @@ class segment extends Component {
                 txtarea.value = front + text + back;
                 strPos = strPos + text.length;
                 let WelcomeMessage = txtarea.value;
-                WelcomeMessage = WelcomeMessage.replace(/{first_name}/g, "");
+                WelcomeMessage = WelcomeMessage.replace(/{user_name}/g, "");
                 WelcomeMessage = WelcomeMessage.replace(/{last_name}/g, "");
                 WelcomeMessage = WelcomeMessage.replace(/{date}/g, "");
                 WelcomeMessage = WelcomeMessage.replace(/{date_time}/g, "");
@@ -275,7 +275,7 @@ class segment extends Component {
             txtarea.value = front + text + back;
             strPos = strPos + text.length;
             let WelcomeMessage = txtarea.value;
-            WelcomeMessage = WelcomeMessage.replace(/{first_name}/g, "");
+            WelcomeMessage = WelcomeMessage.replace(/{user_name}/g, "");
             WelcomeMessage = WelcomeMessage.replace(/{last_name}/g, "");
             WelcomeMessage = WelcomeMessage.replace(/{date}/g, "");
             WelcomeMessage = WelcomeMessage.replace(/{date_time}/g, "");
@@ -428,8 +428,7 @@ class segment extends Component {
                                 }
                                 
                             </div>
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{first_name}')} className="formtag">[ First Name ]</button> 
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{last_name}')} class="formtag">[ Last Name ]</button>
+                            <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{user_name}')} className="formtag">[ User Name ]</button> 
                             <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{date}')} class="formtag">[ Todays Date ]</button>
 
                             <p>&nbsp;</p>
@@ -479,8 +478,7 @@ class segment extends Component {
                                 <a href="#" onClick={this.storeInMessageBlockEdit} className="add">Add</a>
                                 }
                             </div>
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments_edit('default_message_text_edit', '{first_name}')} className="formtag">[ First Name ]</button> 
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments_edit('default_message_text_edit', '{last_name}')} class="formtag">[ Last Name ]</button>
+                            <button type="button" onClick={() => this.insertTagAtMessageSegments_edit('default_message_text_edit', '{user_name}')} className="formtag">[ User Name ]</button> 
                             <button type="button" onClick={() => this.insertTagAtMessageSegments_edit('default_message_text_edit', '{date}')} class="formtag">[ Todays Date ]</button>
 
                             <p>&nbsp;</p>

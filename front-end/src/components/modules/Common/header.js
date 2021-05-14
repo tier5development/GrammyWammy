@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { Component } from "react";
 import logo from "../../../images/Logo_Side.svg";
 import { NavLink } from "react-router-dom";
@@ -57,10 +58,10 @@ class header extends Component {
 
                   localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                   localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
-                  localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.facebook_id);
-                  localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
-                  localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.facebook_name);
-                  localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.facebook_image);
+                  localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.instagram_id);
+                  localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.instagram_profile_name);
+                  localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.instagram_name);
+                  localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.instagram_image);
                   
                   if(responsenewvalue.payload.UserSettings.default_message){
                     localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
@@ -87,6 +88,57 @@ class header extends Component {
                     autoresponder_status:localStorage.getItem('autoresponder'),
                     default_message:localStorage.getItem('default_message')
                   })
+                  if(localStorage.getItem('autoresponder') ==0 && localStorage.getItem('default_message')==0){
+                    if(localStorage.getItem('instaprofile')){
+                      let newtab=parseInt(localStorage.getItem('instaprofile'));
+                      chrome.tabs.remove(newtab);
+                      localStorage.removeItem('instaprofile');
+                    }
+                    if(localStorage.getItem('instamunread')){
+                        let newtabx=parseInt(localStorage.getItem('instamunread'));
+                        chrome.tabs.remove(newtabx);
+                        localStorage.removeItem('instamunread');
+                    }
+                    if(localStorage.getItem('instaIndividualMessage')){
+                        let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
+                        chrome.tabs.remove(instaIndividualMessage);
+                        localStorage.removeItem('instaIndividualMessage');
+                    }
+                    
+                  }
+                  if(localStorage.getItem('autoresponder') ==1 && localStorage.getItem('default_message')==1 && localStorage.getItem('inBackgroundFetching') =="false" && localStorage.getItem('insta_logged_id')=="true"){
+                    if(localStorage.getItem('instamunread')){
+                      console.log("In ONE");
+                      let newtab=parseInt(localStorage.getItem('instamunread'));
+                      chrome.tabs.get(newtab, function(tab) {
+                        if (!tab) { 
+                          //console.log('tab does not exist'); 
+                          const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+                          let CreateTab    =   chrome.tabs.create({
+                              url: myNewUrl,
+                              active: false,
+                              pinned:true
+                          },function(tab) { 
+                              let instamunread=tab.id;
+                              localStorage.setItem('instamunread', instamunread);
+                              
+                          });
+                        }
+                      })
+                    }else{
+                        const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+                        let CreateTab    =   chrome.tabs.create({
+                              url: myNewUrl,
+                              active: false,
+                              pinned:true
+                        },function(tab) { 
+                              let instamunread=tab.id;
+                              localStorage.setItem('instamunread', instamunread);
+                              
+                        });
+                    }
+                  }
+
                   this.setState({loader:false});
           }
         }).catch(error=>{

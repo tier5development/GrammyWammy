@@ -11,6 +11,9 @@
       "default_icon": "128X128.png",
       "default_popup": "popup.html"
   },
+  "web_accessible_resources": [
+    "images/128X128.png"
+  ],
   "background": {
     "scripts": ["inject-helper/js/jquery-3.1.0.min.js", "background.js"],
     "persistent": true
@@ -22,7 +25,8 @@
     "https://www.instagram.com/*",
     "notifications",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "debugger"
     
 ],
 
@@ -59,22 +63,8 @@
             "messageIndividual.js"
         ],
         "matches": [
-            "https://www.instagram.com/direct/inbox/?id=*",
             "https://www.instagram.com/direct/t/*"
         ],
-        "run_at": "document_end"
-    },
-    {
-        "all_frames": true,
-        "persistent": true,
-        "js": [
-            "vendor.js",
-            "refreshAccount.js"
-        ],
-        "matches": [
-            "https://www.instagram.com/explore/people/suggested/",
-            "https://www.instagram.com/accounts/login/?next=/explore/people/suggested/"
-         ],
         "run_at": "document_end"
     }
 ]

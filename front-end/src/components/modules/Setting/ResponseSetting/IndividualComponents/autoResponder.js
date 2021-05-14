@@ -120,7 +120,7 @@ class responseSetting extends Component {
         txtarea.value = front + text + back;
         strPos = strPos + text.length;
         let WelcomeMessage = txtarea.value;
-        WelcomeMessage = WelcomeMessage.replace(/{first_name}/g, "");
+        WelcomeMessage = WelcomeMessage.replace(/{user_name}/g, "");
         WelcomeMessage = WelcomeMessage.replace(/{last_name}/g, "");
         WelcomeMessage = WelcomeMessage.replace(/{date}/g, "");
         WelcomeMessage = WelcomeMessage.replace(/{date_time}/g, "");
@@ -471,8 +471,7 @@ class responseSetting extends Component {
                             value={this.state.auto_responder_message}
                             onChange={this.inputChangeHandller}
                             ></textarea>
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message', '{first_name}')} className="formtag">[ First Name ]</button> 
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message', '{last_name}')} class="formtag">[ Last Name ]</button>
+                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message', '{user_name}')} className="formtag">[ First Name ]</button> 
                             <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message', '{date}')} class="formtag">[ Todays Date ]</button>
 
 
@@ -533,8 +532,7 @@ class responseSetting extends Component {
                             value={this.state.auto_responder_message_edit}
                             onChange={this.inputChangeHandller}
                             ></textarea>
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message_edit', '{first_name}')} className="formtag">[ First Name ]</button> 
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message_edit', '{last_name}')} class="formtag">[ Last Name ]</button>
+                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message_edit', '{user_name}')} className="formtag">[ First Name ]</button> 
                             <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message_edit', '{date}')} class="formtag">[ Todays Date ]</button>
 
                         <label>

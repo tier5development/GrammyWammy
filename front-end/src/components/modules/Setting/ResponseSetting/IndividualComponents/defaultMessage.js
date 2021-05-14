@@ -68,7 +68,7 @@ class defaultMessage extends Component {
         txtarea.value = front + text + back;
         strPos = strPos + text.length;
         let WelcomeMessage = txtarea.value;
-        WelcomeMessage = WelcomeMessage.replace(/{first_name}/g, "");
+        WelcomeMessage = WelcomeMessage.replace(/{user_name}/g, "");
         WelcomeMessage = WelcomeMessage.replace(/{last_name}/g, "");
         WelcomeMessage = WelcomeMessage.replace(/{date}/g, "");
         WelcomeMessage = WelcomeMessage.replace(/{date_time}/g, "");
@@ -106,10 +106,10 @@ class defaultMessage extends Component {
                       let responsenewvalue =result.data;
                       localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                       localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
-                      localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.facebook_id);
-                      localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.facebook_name);
-                      localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.facebook_profile_name);
-                      localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.facebook_image);
+                      localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.instagram_id);
+                      localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.instagram_name);
+                      localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.instagram_profile_name);
+                      localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.instagram_image);
                       
                       if(responsenewvalue.payload.UserSettings.default_message){
                         localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
@@ -239,8 +239,7 @@ class defaultMessage extends Component {
                         
                 </textarea>
 
-              <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{first_name}')} className="formtag">[ First Name ]</button> 
-              <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{last_name}')} class="formtag">[ Last Name ]</button>
+              <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{user_name}')} className="formtag">[ User Name ]</button> 
               <button type="button" onClick={() => this.insertTagAtMessageSegments('default_message_text', '{date}')} class="formtag">[ Todays Date ]</button>
 
               </div>

@@ -113,9 +113,6 @@ class Login extends Component {
                     console.log("Tis Is my Obj",myObj)
                     localStorage.setItem('kyubi_user_token', myObj.user.id);
                     localStorage.setItem('inBackgroundFetching', true);
-                    localStorage.setItem('profileFetch',1);
-                    localStorage.setItem('messageListFetch',0);
-                    localStorage.setItem('individualMessageFetch',0);
                     let LC=loginHelper.login();
                         setTimeout(() => {
                         this.setState({ loader: false });

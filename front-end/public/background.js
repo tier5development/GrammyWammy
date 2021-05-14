@@ -1,150 +1,81 @@
-const getApiUrl = "https://apigarmmywammy.ngrok.io/"; //"https://api.mefnevan.com" ;
+const getApiUrl = "http://localhost:8008"; //"https://api.mefnevan.com" ;
+
 const method = { POST: "post", GET: "get", PUT: "put", DELETE: "delete" };
 const toJsonStr = (val) => JSON.stringify(val);
-const getUserToken = () => localStorage.getItem("kyubi_user_token");
-console.log('We are on background');
+
 /** 
  * @handleRequest
  * this function will handel the https request
  * 
 */
 const handleRequest = (path, methodType, bodyData) => {
-   
     let getWithCredentialHeader = {
         'Accept': 'application/json', 'Content-Type': 'application/json','Access-Control-Allow-Origin': true
     };
     return fetch(getApiUrl + path, {
+      // mode: 'no-cors',
       method: methodType,
       headers: getWithCredentialHeader,
       body: bodyData,
     });
 };
 
-
-const manifest = chrome.runtime.getManifest();
-
-function installContentScript() {
-  // iterate over all content_script definitions from manifest
-  // and install all their js files to the corresponding hosts.
-  let contentScripts = manifest.content_scripts;
-  for (let i = 0; i < contentScripts.length; i++) {
-    let contScript = contentScripts[i];
-    chrome.tabs.query({ url: contScript.matches }, function(foundTabs) {
-      for (let j = 0; j < foundTabs.length; j++) {
-        let javaScripts = contScript.js;
-        for (let k = 0; k < javaScripts.length; k++) {
-          chrome.tabs.executeScript(foundTabs[j].id, {
-            file: javaScripts[k]
-          });          
-        }
-      }
-    });
-  }
-}
-
-chrome.runtime.onInstalled.addListener(installContentScript);
-
-
-/** 
- * this will listen to the  URL and Take decission depending on the URL and tallying  windowID in localstore
- * 
-*/
-chrome.tabs.onUpdated.addListener(async function(tabId, changeInfo, tab) {
-  /**
-   * Once the window is loaded
-   */
-  if (changeInfo.status === 'complete') {
-      let WindowURL   =   tab.url
-      let WindowId    =   tab.windowId;
-      let TabId   =   tab.id;
-      let WindowIdString  =   String(tab.windowId);
-      let TabIdString =   String(tab.id);
-      let UserToken=getUserToken();
-      
-      if(WindowURL === 'https://www.instagram.com/direct/inbox/')
-      {
-          localStorage.setItem('messageListId',TabId);
-          resetStatus();
-          
-      }
-      if(WindowURL === 'https://www.instagram.com/'){
-
-          /// For Setting List Id Array ///
-          let ListIdArray =[];
-          let NewListIdArray=JSON.stringify(ListIdArray);
-          localStorage.setItem('ListIdArray', NewListIdArray);
-          localStorage.setItem('CheckMessageNReply',0);
-          /// For Setting List Id Array ///
-          localStorage.setItem('profileTabId',TabId);
-         
-      }
-     
-     
-  }
-});
-
-function resetStatus(){
- 
-  setInterval(function(){ 
-    //console.log('called');
-    localStorage.setItem('CheckMessageNReply',0);
-  }, 30000);
-  
-}
-
-
-
-/** 
- * this will listen to the  on runtime Message
- * 
-*/
-
 chrome.runtime.onMessage.addListener(async function(request, sender) {
- 
+  console.log("This is the Request =========>",request)
   if (request.type == "storeUserInfoOrQueryThenStore"){
+    
+    
 
+    let user_rec= localStorage.getItem('kyubi_user_token');
+    let UserInstaGramid =request.options.UserInstaGramid;
+    let UserInstaGramUsername=request.options.UserInstaGramUsername;
+    let UserInstaGramName =request.options.UserInstaGramName;
+    let UserInstaGramImage =request.options.UserInstaGramImage;
+    let UserLoggedInInstaGram =request.options.UserLoggedInInstaGram;
+    if(UserLoggedInInstaGram === true){
+    await $.get("https://www.instagram.com/"+UserInstaGramUsername+"/?__a=1")
+      .done(function(data) {
 
-        console.log("This I Got In Background",request.options);
-        
-        var userName = request.options.insta_username;
-        var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
-        var validation = regex.test(userName);
-        if(validation) {
-        $.get("https://www.instagram.com/"+userName+"/?__a=1")
-        .done(function(data) {
+        UserInstaGramid =data["graphql"]["user"]["id"];
+      })
+      .fail(function() { 
+      // code for 404 error 
+        console.log('Username was not found!')
+      })
+    }
 
-        let  params ={
-        user_rec    :   localStorage.getItem('kyubi_user_token'),
-        fb_id       :   data["graphql"]["user"]["id"],
-        fb_username :   request.options.insta_username,
-        fb_name     :   request.options.insta_name,
-        fb_image    :  request.options.insta_image,
-        fb_logged_id :   request.options.insta_logged_id
-        };
-
-        handleRequest(
-            "api/user/userCheckStoreNRetrive",
-            method.POST,
-            toJsonStr(params)
-            ).then(async response =>  {
-              let responsenewvalue = await response.json();
-                      let  urlArray="[]";
+    let  params ={
+      user_rec    :   user_rec,
+      fb_id       :   UserInstaGramid,
+      fb_username :   UserInstaGramUsername,
+      fb_name     :   UserInstaGramName,
+      fb_image    :   UserInstaGramImage,
+      fb_logged_id :  UserLoggedInInstaGram
+    };
+    console.log("This I Wana Send to Background",params);
+    await handleRequest(
+      "/api/user/userCheckStoreNRetrive",
+      method.POST,
+      toJsonStr(params)
+      ).then(async response =>  {
+        let responsenewvalue = await response.json();
+        console.log("I already Got the Info",responsenewvalue);
+        let  urlArray="[]";
                       console.log("This from DB",responsenewvalue);
                       localStorage.setItem('CheckMessageNReply', 0);
                       // localStorage.setItem('ListURLArray', urlArray);
                       localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                       localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
-                      localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.facebook_fbid);
-                      localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.facebook_profile_name);
-                      localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.facebook_name);
-                      localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.facebook_image);
-                      localStorage.setItem('insta_logged_id', request.options.insta_logged_id);
+                      localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.instagram_fbid);
+                      localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.instagram_profile_name);
+                      localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.instagram_name);
+                      localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.instagram_image);
+                      localStorage.setItem('insta_logged_id', request.options.UserLoggedInInstaGram);
                       localStorage.setItem('inBackgroundFetching', false);
-                      localStorage.setItem('profileFetch',0);
-                      localStorage.setItem('messageListFetch',0);
-                      localStorage.setItem('individualMessageFetch',0);
-                      UserLoggedInFacebook=request.options.insta_logged_id;
-                      BackGroundFetchingStatus  =false;
+                      let AutoResponderStatus = 0; 
+                      let DefaultMessageStatus =0;
+                      UserLoggedInInstaGram=UserLoggedInInstaGram;
+                      let BackGroundFetchingStatus  =false;
                       if(responsenewvalue.payload.UserSettings.default_message){
                         localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
                         DefaultMessageStatus=responsenewvalue.payload.UserSettings.default_message;
@@ -166,26 +97,18 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                         localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
                       }
                       localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
-                      // if( UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
-                      //   console.log("Open Message List  84848484");
-                      
-                      //   const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
-                      //   let CreateTab    =   chrome.tabs.create({
-                      //       url: myNewUrl,
-                      //       pinned: true,
-                      //       active: false
-                      //     });
-                      // }
-                      console.log("AutoResponderStatus",AutoResponderStatus);
-                      console.log("DefaultMessageStatus",DefaultMessageStatus);
-                      console.log("UserLoggedInFacebook",UserLoggedInFacebook);
-                      console.log("BackGroundFetchingStatus",BackGroundFetchingStatus);
-                      if((AutoResponderStatus == 1 || DefaultMessageStatus == 1) && UserLoggedInFacebook== true && BackGroundFetchingStatus==  false ){
+                      console.log("In ZeroOne",AutoResponderStatus);
+                      console.log("In ZeroTwo",DefaultMessageStatus);
+                      console.log("In ZeroThree",UserLoggedInInstaGram);
+                      console.log("In ZeroFour",BackGroundFetchingStatus);
+                      if((AutoResponderStatus == 1 || DefaultMessageStatus == 1) && UserLoggedInInstaGram== true && BackGroundFetchingStatus==  false ){
+                        console.log("In Zero");
                         if(localStorage.getItem('instamunread')){
+                          console.log("In ONE");
                           let newtab=parseInt(localStorage.getItem('instamunread'));
                           chrome.tabs.get(newtab, function(tab) {
                             if (!tab) { 
-                              console.log('tab does not exist'); 
+                              //console.log('tab does not exist'); 
                               const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
                               let CreateTab    =   chrome.tabs.create({
                                   url: myNewUrl,
@@ -194,6 +117,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                               },function(tab) { 
                                   let instamunread=tab.id;
                                   localStorage.setItem('instamunread', instamunread);
+                                  
                               });
                             }
                           })
@@ -206,357 +130,552 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                             },function(tab) { 
                                   let instamunread=tab.id;
                                   localStorage.setItem('instamunread', instamunread);
-                                  // chrome.tabs.executeScript(tab.id, {file: "testpub.js"}, function() { 
-                                  //   console.log("Its been called");
-                                  // });
+                                  
                             });
                         }
                       }
-            }).catch(error=>{
-              localStorage.setItem('profileFetch',0);
-              localStorage.setItem('messageListFetch',0);
-              localStorage.setItem('individualMessageFetch',0);
-              
-            } )
 
-          })
-          .fail(function() { 
-            // code for 404 error 
-            console.log('Username was not found!')
-          })
+      }).catch(error =>{
+        console.log("I already Got the Info But Its Error ====>",error);
+
+      })
+
+  }
+  if(request.type == "TrigerTheDeburger"){
+    console.log("This is inside deburger");
+    
+    if(request.options == "Listing" && sender.tab.id == parseInt(localStorage.getItem('instamunread'))){
+      console.log("I am Called sssssssssssssssssssssss",request);
+      console.log("I am Called sssssssssssssssssssssss",sender);
+      let ListingTabId=sender.tab.id;
+      chrome.debugger.attach({ tabId: ListingTabId }, "1.3", function () {
+        chrome.debugger.sendCommand(
+          { tabId: ListingTabId },
+          "Page.bringToFront",function () {
+            console.log("Hello Page Enabled +++++++")
+            chrome.tabs.sendMessage(ListingTabId,{type: "StartTheMutation", options: ListingTabId}); 
+            chrome.debugger.detach({ tabId: ListingTabId });  
+               
+
+          });
+      })
+    }
+    if(request.options == "Profile"){
+      console.log("I am Called",request.options);
+      let ProfileTabId=sender.tab.id;
+      chrome.debugger.attach({ tabId: ProfileTabId }, "1.3", function () {
+        chrome.debugger.sendCommand(
+          { tabId: ProfileTabId },
+          "Page.bringToFront",function () {
+            console.log("Hello Profile Page Enabled +++++++")
+            chrome.tabs.sendMessage(ProfileTabId,{type: "StartTheProfileGrabing", options: ProfileTabId}); 
+            chrome.debugger.detach({ tabId: ProfileTabId });           
+          });
+      })
+    }
+    
+  }
+  if(request.type == "TrigerTheDeburgerIndividual"){
+    if(request.potions !== "Individual"){
+      console.log("This is inside Individual");
+      console.log("This is for the message Individual 1",sender);
+      let instaIndividualMessage=localStorage.getItem('instaIndividualMessage');
+      console.log("This is for the message Individual 2",sender.tab.windowId);
+      console.log("This is a info from localstorage",instaIndividualMessage);
+      if(sender.tab.windowId == instaIndividualMessage){
+        if(localStorage.getItem('ListIdArray')){
+          let ListURL=localStorage.getItem('ListIdArray');
+          let ListURLArray = JSON.parse(ListURL);
+          if(ListURLArray.length===0){
+            localStorage.setItem('CheckMessageNReply',0);
+          }else{
+            let myMessageUrl  =   ListURLArray[0];  
+            chrome.tabs.sendMessage(sender.tab.id,{type: "StartTheRestGrabing", options: myMessageUrl});
+          }
+        }
         
-        } else {
-          console.log('The username is invalid!')
-        }
-
+      }
+       
     }
-    if (request.type == "checkingInstaLoggingStatus"){
-       console.log("Value during refreshing",request.options);
-       localStorage.setItem('insta_logged_id', request.options.insta_logged_id);
+  }
+  if(request.type == "TrigerReader"){
+    console.log("I am Inside Trigger Reader =========>",request.options);
+    chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+      chrome.debugger.sendCommand(
+        { tabId: sender.tab.id },
+        "Page.bringToFront",function () {
+          console.log("Hello Profile Page Enabled +++++++")
+          chrome.tabs.sendMessage(sender.tab.id,{type: "GrabMessageAndDetails", options: request.options});
+          chrome.debugger.detach({ tabId: sender.tab.id });           
+        });
+    })
+   
+  }
+  if(request.type == "CheckMessageAndResponse"){
+    console.log("I am Inside CheckMessageAndResponse =========>",request.options);
+    if(request.options.TotalMessageCount != 0){
+      let TotalMessageValuesCount=request.options.UseMessage.length - 1;
+      let InstaUserName=request.options.UserLink.split('/').join("");
+      InstaUserName=InstaUserName.split('/').join("");
+      let MessageType=0;
+      let InstaUser=request.options.UserId;
+      let InstaUserImage=request.options.UserImages;
+      let InstaUserLink=request.options.UserLink;
+      
+      console.log("This is the Message count Value",TotalMessageValuesCount);
+      console.log("This is the Message count Value",TotalMessageValuesCount);
+      let Message = "";
+      let CountrNum =0;
+      let ResponseTextArray=[];
+      for (var i = TotalMessageValuesCount; i >= 0; i--) {
+        console.log(i);
+        console.log("This is the Message Indvidual",request.options.UseMessage[i]);
+        if(request.options.UseMessage[i][0]===2){
+                let keywordToFind =request.options.UseMessage[i][1];
+                let IncomingMessage = keywordToFind.split(',').join(" , ");
+                IncomingMessage = IncomingMessage.split('.').join("  ");
+                IncomingMessage = IncomingMessage.split('?').join(" ");
+                IncomingMessage = IncomingMessage.split('<br>').join(" ");
+                IncomingMessage = IncomingMessage.split('`').join(" ");
+                IncomingMessage = IncomingMessage.split("'").join(" ");
+                IncomingMessage = IncomingMessage.split('"').join(" ");
+                IncomingMessage = IncomingMessage.split('*').join(" ");
+                IncomingMessage = IncomingMessage.split('’').join(" ");
+                IncomingMessage = IncomingMessage.split('“').join(" ");
+                IncomingMessage = IncomingMessage.split('”').join(" ");
+                IncomingMessage = IncomingMessage.split('!').join(" ");
+                IncomingMessage = IncomingMessage.split('@').join(" ");
+                IncomingMessage = IncomingMessage.split('#').join(" ");
+                IncomingMessage = IncomingMessage.split('%').join(" ");
+                IncomingMessage = IncomingMessage.split('&').join(" ");
+                IncomingMessage = IncomingMessage.split('*').join(" ");
+                IncomingMessage = IncomingMessage.split('^').join(" ");
+                IncomingMessage = IncomingMessage.trim();
+                IncomingMessage=" " + IncomingMessage.toLowerCase()+" ";
 
-    }
-})
-
-const urlParam = "instaExt";
-chrome.runtime.onConnect.addListener(function(port) {
-  //if (port.name === 'knockknock') {
-    port.onMessage.addListener(async function(msg) {
-    if (msg.ConFlag == "CheckMessageContent")
-      {
-              console.log('Reached Here');
-              messageId = msg.options.messageId;
-              console.log('Reached Here1');
-              
-              messageUserName = msg.options.userName;
-              console.log('Reached Here3');
-              console.log(msg.options.messageContent);
-              console.log('Before Calling the function');
-              getAutoResponseText(msg.options.messageContent,messageUserName,messageId);
-        }
-
-        function getAutoResponseText(message,userName,messageId)
-        {
-          console.log('Reached The Function');
-          console.log('User Message '+message.toLowerCase());
-          var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
-          var validation = regex.test(userName);
-          if(validation) {
-            $.get("https://www.instagram.com/"+userName+"/?__a=1")
-            .done(function(data) { 
-  
-              var userFullName = data["graphql"]["user"]["full_name"];
-              let autoResponderKeywords = JSON.parse(localStorage.getItem('keywordsTally'));
-              let responseMessage ='';
-                  for (var i = 0; i < autoResponderKeywords.length; i++) {
-                    let object = autoResponderKeywords[i];
-                        let userMessage = message.toLowerCase();
-                        let individualKeyword = object.keyword.toLowerCase();
-                        console.log(`${userMessage} is the usermessage`);
-                        console.log(`${individualKeyword} is the keyword`);
-                        if (userMessage.includes(individualKeyword)) {
-                            console.log('Condition Satisfied');
-                           
-                            let splitFullName = userFullName.split(" ");
-                            let firstName = (splitFullName[0]) ? splitFullName[0] :'';
-                            let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
-          
-                            let ResponseText = object.message;
-                            console.log(ResponseText);
-                            console.log(firstName);
-                            console.log(lastName);
-                            let NowTime=new Date().getTime();  
-                            let a = new Date(NowTime);
-                            let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                            let year = a.getFullYear();
-                            let month = months[a.getMonth()];
-                            let date = a.getDate();
-                          
-                            let OnlyDate = date + ' ' + month + ' ' + year ;
-                            let NewResponseText = ResponseText.replace('{first_name}',firstName);
-                            NewResponseText = NewResponseText.replace('{last_name}',lastName);
-                            NewResponseText = NewResponseText.replace('{Date}',OnlyDate);
-                            NewResponseText = NewResponseText.replace('{date}',OnlyDate);
-                            responseMessage += NewResponseText;
-                        } 
-                  }
-                  if(responseMessage)
-                  {
-                   
-                      chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-                      url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${responseMessage}&${urlParam}=true`,
-                      pinned: true, active: false}, function(tab) {
-                        tabId = tab.id;
-                      });
+                if(ResponseTextArray.length === 0){
+                  Message = Message + " " + IncomingMessage;
+                  ResponseTextArray[CountrNum] =IncomingMessage;
+                  CountrNum++;
+                }else{
+                  if (ResponseTextArray.indexOf(IncomingMessage)!=-1){
+                    console.log("Found")
+                  }else{
+                    ResponseTextArray[CountrNum] =IncomingMessage;
+                    Message = Message + " " + IncomingMessage;
+                    CountrNum++;
+                    console.log("Cant Found")
                     
                   }
-                  else
-                  {
-                    getDefaultMessage(userName,messageId);
-                    return localStorage.getItem('defaultMessageFromBackend');
-                  }
-              
-              
-              })
-            .fail(function() { 
-              // code for 404 error 
-              console.log('Username was not found!')
-            })
-          
-          } else {
-            console.log('The username is invalid!')
-          }
-           
-        }
-
-
-        function getDefaultMessage(userName,messageId)
-        {
-                var regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
-                var validation = regex.test(userName);
-                if(validation) {
-                  $.get("https://www.instagram.com/"+userName+"/?__a=1")
-                  .done(function(data) { 
-        
-                        var userImage = data["graphql"]["user"]["profile_pic_url_hd"];
-                        var userFullName = data["graphql"]["user"]["full_name"];
-                        var userId = data["graphql"]["user"]["id"];
-                        var userName = data["graphql"]["user"]["username"];
-                        
-                        let GrammyWammyId  = localStorage.getItem('user_id');
-                        let NowTime=new Date().getTime();  
-
-                        let splitFullName = userFullName.split(" ");
-                        let firstName = (splitFullName[0]) ? splitFullName[0] :'';
-                        let lastName = (splitFullName[1]) ? (splitFullName[1]) : '';
-                        let postedByUsername = userName;
-                        let profileLink = `https://www.instagram.com/${userName}`;
-                        let instagramFriendId = userId;
-
-                        let paramsToSend  =   {
-                          MfenevanId:GrammyWammyId,
-                          FacebookUserId:localStorage.getItem('instagramIdForTheLoggedInUser'),
-                          FriendFacebookId:instagramFriendId,
-                          FacebookFirstName:firstName,
-                          FacebookLastName:lastName,
-                          ProfileLink:profileLink,
-                          Username: postedByUsername,
-                          TimeNow:NowTime
-                        }
-
-                          console.log('Params To Send '+firstName);
-
-                          let response  =  handleRequest(
-                          "api/friend/checkFriendReadyToReciveDefaultMessage",
-                          method.POST,
-                          toJsonStr(paramsToSend)
-                          ).then(async response =>  {
-                            let responsenewvalue = await response.json();
-                            console.log("Hit For Default",paramsToSend);
-                            console.log("Hit For Default Now Get From Backend",responsenewvalue.payload.message);
-                            console.log("The whole payload",responsenewvalue);
-                           
-                                if(responsenewvalue.code === 2)
-                                {
-                                  var messageContent = '';
-                                  chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-                                  url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                                  pinned: true, active: false}, function(tab) {
-                                    tabId = tab.id;
-                                  });
-                                }
-                                if(responsenewvalue.code === 1)
-                                {
-                                  
-                                  port.postMessage({userInfoDetails: responsenewvalue.payload.message,ThreadParams:paramsToSend,ConFlagBack:"DEFAULTMESSAGEBACK" });
-                                  var messageContent = responsenewvalue.payload.message;
-                                  chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-                                  url: `https://www.instagram.com/direct/inbox/?id=${messageId}&message=${messageContent}&${urlParam}=true`,
-                                  pinned: true, active: false}, function(tab) {
-                                    tabId = tab.id;
-                                  });
-                                }
-                          
-
-                          }).catch(error=>{
-                          } )
-                        
-                  })
-                  .fail(function() { 
-                    // code for 404 error 
-                    console.log('Username was not found!')
-                  })
-                
-                } else {
-                  console.log('The username is invalid!')
                 }
-            }
-    
-           if(msg.ConFlag == "STOREANDCLOSE"){
-            let params  =   {
-            FacebookFirstName : msg.MessageDetails.FacebookFirstName,
-            FacebookLastName  :msg.MessageDetails.FacebookLastName,
-            FacebookUserId  :msg.MessageDetails.FacebookUserId,
-            FriendFacebookId  :msg.MessageDetails.FriendFacebookId,
-            MessageSenderType :msg.MessageDetails.MessageSenderType,
-            MfenevanId  :msg.MessageDetails.MfenevanId,
-            ProfileLink :msg.MessageDetails.ProfileLink,
-            ResponseMessage :msg.MessageDetails.ResponseMessage,
-            ResponseTime  :msg.MessageDetails.ResponseTime
-          }
-          let response = await handleRequest(
-            "api/friend/saveLastMessageOutForFriend",
-            method.POST,
-            toJsonStr(params)
-          );
-          let individualThreadList  = JSON.parse(localStorage.getItem('ListURLArray'));
-         // let indexthreadlink = individualThreadList.indexOf(msg.MessageDetails.LocationDetails);
-          // if (indexthreadlink !== -1) {
-          //   individualThreadList.splice(indexthreadlink, 1);
-          //   let NewListURLArray=JSON.stringify(individualThreadList);
-          //   localStorage.setItem('ListURLArray', NewListURLArray);
-          //   localStorage.setItem('CheckMessageNReply',0);
-          //   CheckLocalStoreAndHitIndividualMList();
-          // }
-          
-          console.log("Now  Again I am In BackGround 332",msg.MessageDetails);
-          console.log("Now  i have  to send this in db from BackGround 344",params);
-        }  
-
-        
-      if(msg.ConFlag   ==  "loadHomePage")
-        {
-         
-          chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-            url: `https://www.instagram.com/${localStorage.getItem("insta_username")}`,
-            pinned: true, active: false});
-            localStorage.setItem('CheckMessageNReply',0);
-
-            
-            console.log('Came From Content '+msg.options.messageId);
-            // splice(checkedTweetsArrayIndex, 1);
-            let ListId=JSON.parse(localStorage.getItem('ListIdArray'));
-            const listIdArrayIndex = ListId.indexOf(msg.options.messageId);
-
-            if (listIdArrayIndex > -1) {
-              ListId.splice(listIdArrayIndex, 1);
-            } 
-
-            localStorage.setItem("ListIdArray", JSON.stringify(ListId));
-            CheckLocalStoreAndHitIndividualMList();
-            // chrome.tabs.update( parseInt(localStorage.getItem("messageListId")), { 
-            //   url: `https://www.instagram.com/direct/inbox/`,
-            //   active: true});
+        }else{
+          break;
         }
-        if(msg.ConFlag   ==  "RefreshInbox")
-        {
-          console.log('Got Paste Error');
-          // chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-          //   url: `https://www.instagram.com/direct/inbox/`,
-          //   pinned: true, active: true});
-            localStorage.setItem('CheckMessageNReply',0);
-            CheckLocalStoreAndHitIndividualMList();
-        }
-        /// For Storing Message Id's To An Array ///
-        if(msg.ConFlag   ==  "mutation")
-        {
-            console.log(`Came Here ${msg.options}`);
-        }
-
-        if(msg.ConFlag   ==  "StoreMessageLinkInLocalStorage")
-        {
-              console.log('store here',msg.options);
-              recheckMessage();
-              let ListId=localStorage.getItem('ListIdArray');
-              let ListIdArray=JSON.parse(ListId);
-              if(ListIdArray.length  === 0)
-              {
-                  ListIdArray[ListIdArray.length]= msg.options;
-                  let NewListIdArray=JSON.stringify(ListIdArray);
-                  localStorage.setItem('ListIdArray', NewListIdArray);
-              }
-              else
-              {
-                  let check = ListIdArray.includes(msg.options);
-                  if(check){
-
-                  }else{
-                  ListIdArray[ListIdArray.length]=msg.options;
-                  let NewListIdArray=JSON.stringify(ListIdArray);
-                  localStorage.setItem('ListIdArray', NewListIdArray);
-                  }
-             }
-            CheckLocalStoreAndHitIndividualMList();
-        }
-        function recheckMessage(){
- 
-          // setInterval(function(){ 
-          //   //console.log('called1');
-          //   CheckLocalStoreAndHitIndividualMList();
-          // }, 25000);
-          
-        }
-        /// For Storing Message Id's To An Array ///
-
-       ///  For showing indivdual Message Thread ///
-
-       function CheckLocalStoreAndHitIndividualMList(){
-       
-        let ListId=localStorage.getItem('ListIdArray');
-        let CheckMessageNReply=localStorage.getItem('CheckMessageNReply');
-        let insta_logged_id=localStorage.getItem('insta_logged_id');
-        let default_message=localStorage.getItem('default_message');
-        let autoresponder=localStorage.getItem('autoresponder');
-        if(insta_logged_id == "true"){
-          if(default_message !=0  ||  autoresponder!=0){
-            if(CheckMessageNReply == 0){
-              
-              let ListIdArray = JSON.parse(ListId);
-              if(ListIdArray.length>0){
-              console.log("Trigger ===========7",ListIdArray[0]);
-              localStorage.setItem('CheckMessageNReply',1);
-              let statusMessage = 'Read Message';
-              chrome.tabs.update( parseInt(localStorage.getItem("profileTabId")), { 
-                  url: `https://www.instagram.com/direct/inbox/?id=${ListIdArray[0]}&message=${statusMessage}&${urlParam}=true`,
-                  pinned: true, active: false}, function(tab) {
-                    tabId = tab.id;
-                  });
-              }
-              
-            }
-          }
+      }
+     
+      console.log("This is the Message",ResponseTextArray);
+      let AutoResponderKeyword=localStorage.getItem('keywordsTally');
+      let keyObj = JSON.parse(AutoResponderKeyword);
+      let NowTime=new Date().getTime(); 
+      let totalkeyObj =keyObj.length;
+      if(totalkeyObj == 0){
+        console.log("Restart The Process ==========>")
+        let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
+        let indexthreadlink = individualThreadList.indexOf(InstaUser);
+        if (indexthreadlink !== -1) {
+          individualThreadList.splice(indexthreadlink, 1);
+          let NewListIdArray=JSON.stringify(individualThreadList);
+          localStorage.setItem('ListIdArray', NewListIdArray);
+        }else{
+          let NewListIdArray=JSON.stringify(individualThreadList);
+          localStorage.setItem('ListIdArray', NewListIdArray);
         }
       
-      }
-
-       ///  For showing indivdual Message Thread ///
-
-
-       if(msg.ConFlag   ==  "HitCheck"){
-         console.log(`I am Listing  ${msg.options}`);
-       }
+        chrome.tabs.remove(sender.tab.id);
+        localStorage.removeItem('instaIndividualMessage');
+        localStorage.setItem('CheckMessageNReply',0);
+        checkIndividualMessage();
+      }else{
+        if(ResponseTextArray.length == 0){
+          console.log("Restart The Process ==========>")
+          let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
+          let indexthreadlink = individualThreadList.indexOf(InstaUser);
+          if (indexthreadlink !== -1) {
+            individualThreadList.splice(indexthreadlink, 1);
+            let NewListIdArray=JSON.stringify(individualThreadList);
+            localStorage.setItem('ListIdArray', NewListIdArray);
+          }else{
+            let NewListIdArray=JSON.stringify(individualThreadList);
+            localStorage.setItem('ListIdArray', NewListIdArray);
+          }
         
-  });
-//}
-});
+         
+          chrome.tabs.remove(sender.tab.id);
+          localStorage.removeItem('instaIndividualMessage');
+          localStorage.setItem('CheckMessageNReply',0);
+          checkIndividualMessage();
+        }else{
+                  let ResponseMessagevalArray=[];
+                  let ResponseMessage="";
+                  await keyObj.map(function(eachval){
+                    let keywordToFind =eachval.keyword.toLowerCase();
+                        keywordToFind = " "+keywordToFind+" ";
+                        if (Message.indexOf(keywordToFind)!=-1)
+                        {
+                          //console.log("KEEEEEEEEEEEEE",keywordToFind);
+                              let PointIndex=Message.indexOf(keywordToFind);
+                              ResponseMessagevalArray[PointIndex] = eachval.message
+                              
+                        }
+                  });
+                  if(ResponseMessagevalArray.length === 0){
+                    console.log("Restart The Process ==========>")
+                    //Check For Default Message and Respond Accordingly 
+                    let Nowtime=$.now();
+                   
+                    let params  =   {
+                    user_id:localStorage.getItem('user_id'),
+                    kyubi_user_token:localStorage.getItem('kyubi_user_token'),
+                    instagram_user_id:InstaUser,
+                    instagram_username:InstaUserName,
+                    instagram_profile_link:InstaUserLink,
+                    instagram_image:InstaUserImage,
+                    last_contact_incoming:Nowtime,
+                    last_contact_outgoing:Nowtime,
+                    last_default_message_time:Nowtime,
+                    connection_type:1
+                    }
+                    let response = await handleRequest(
+                      "/api/friend/getDefaultMessage",
+                      method.POST,
+                      toJsonStr(params)
+                    ).then(async respon=>{
+                      let responsenewvalue = await respon.json();
+                        if(responsenewvalue.code == 1){
+                          if(responsenewvalue.payload.Type == 0){
+                            if(responsenewvalue.payload.SendMessage == 1){
+                              let param ={
+                                InstaUserName:InstaUserName,
+                                MessageType:1,
+                                InstaUser:InstaUser,
+                                InstaUserImage:InstaUserImage,
+                                InstaUserLink:InstaUserLink,
+                                ReplyMessage:responsenewvalue.payload.Message
+                              }
+                              chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+                                chrome.debugger.sendCommand(
+                                  { tabId: sender.tab.id },
+                                  "Page.bringToFront",function () {
+                                    console.log("Hello Profile Page Enabled +++++++")
+                                    chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
+                                    chrome.debugger.detach({ tabId: sender.tab.id });           
+                                  });
+                              })
+                            }else{
+                              console.log("Restart The Process ==========>");
+                              let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
+                              let indexthreadlink = individualThreadList.indexOf(InstaUser);
+                              if (indexthreadlink !== -1) {
+                              individualThreadList.splice(indexthreadlink, 1);
+                              let NewListIdArray=JSON.stringify(individualThreadList);
+                              localStorage.setItem('ListIdArray', NewListIdArray);
+                              }else{
+                              let NewListIdArray=JSON.stringify(individualThreadList);
+                              localStorage.setItem('ListIdArray', NewListIdArray);
+                              }
 
+                              chrome.tabs.remove(sender.tab.id);
+                              localStorage.removeItem('instaIndividualMessage');
+                              localStorage.setItem('CheckMessageNReply',0);
+                              checkIndividualMessage();
+                            }
+                          }else{
+                            if(responsenewvalue.payload.SendMessage == 1){
+                              let paramsGroup  =   {
+                                                    default_message_group: responsenewvalue.payload.Message,
+                                                      KeywordParams:{
+                                                        ChangeUserName:InstaUserName,
+                                                        ChangeDate:Nowtime
+                                                      }
+                                                    }
+                              let responseNew = await handleRequest(
+                                "/api/friend/getGroupMessageContents",
+                                method.POST,
+                                toJsonStr(paramsGroup)
+                              ).then(async responVal=>{
+                                let responseNewvalue = await responVal.json();
+                                if(responsenewvalue.code == 1){
+                                  let param ={
+                                    InstaUserName:InstaUserName,
+                                    MessageType:1,
+                                    InstaUser:InstaUser,
+                                    InstaUserImage:InstaUserImage,
+                                    InstaUserLink:InstaUserLink,
+                                    ReplyMessage:responseNewvalue.payload.message
+                                  }
+                                  chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+                                    chrome.debugger.sendCommand(
+                                      { tabId: sender.tab.id },
+                                      "Page.bringToFront",function () {
+                                        console.log("Hello Profile Page Enabled +++++++")
+                                        chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
+                                        chrome.debugger.detach({ tabId: sender.tab.id });           
+                                      });
+                                  })
+                                }else{
+                                  console.log("Restart The Process ==========>");
+                                  let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
+                                  let indexthreadlink = individualThreadList.indexOf(InstaUser);
+                                  if (indexthreadlink !== -1) {
+                                  individualThreadList.splice(indexthreadlink, 1);
+                                  let NewListIdArray=JSON.stringify(individualThreadList);
+                                  localStorage.setItem('ListIdArray', NewListIdArray);
+                                  }else{
+                                  let NewListIdArray=JSON.stringify(individualThreadList);
+                                  localStorage.setItem('ListIdArray', NewListIdArray);
+                                  }
 
+                                  chrome.tabs.remove(sender.tab.id);
+                                  localStorage.removeItem('instaIndividualMessage');
+                                  localStorage.setItem('CheckMessageNReply',0);
+                                  checkIndividualMessage();
+                                }
+                              });
+                            }else{
+                              console.log("Restart The Process ==========>");
+                              let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
+                              let indexthreadlink = individualThreadList.indexOf(InstaUser);
+                              if (indexthreadlink !== -1) {
+                              individualThreadList.splice(indexthreadlink, 1);
+                              let NewListIdArray=JSON.stringify(individualThreadList);
+                              localStorage.setItem('ListIdArray', NewListIdArray);
+                              }else{
+                              let NewListIdArray=JSON.stringify(individualThreadList);
+                              localStorage.setItem('ListIdArray', NewListIdArray);
+                              }
+
+                              chrome.tabs.remove(sender.tab.id);
+                              localStorage.removeItem('instaIndividualMessage');
+                              localStorage.setItem('CheckMessageNReply',0);
+                              checkIndividualMessage();
+                            }
+                          }
+                        }
+
+                    });
+                    
+                    
+                  }else{
+                    let myArray = ResponseMessagevalArray;
+                    let unique = myArray.filter((v, i, a) => a.indexOf(v) === i);
+                    let a = new Date(NowTime);
+                    let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                    let year = a.getFullYear();
+                    let month = months[a.getMonth()];
+                    let date = a.getDate();
+                    let hour = a.getHours();
+                    let min = a.getMinutes();
+                    let sec = a.getSeconds();
+                    let OnlyDate = date + ' ' + month + ' ' + year ;
+                    console.log("ThisissssssssssssssXXXXXXXXXXXXXXX Messahe array",unique); 
+                    let ResponseMessage ="";
+                    for (let count = 0; count < unique.length; count++) {
+                      BaseMessage = unique[count] ;
+                      BaseMessage = BaseMessage.split('{first_name}').join(InstaUserName);
+                      BaseMessage = BaseMessage.split('{last_name}').join(InstaUserName);
+                      BaseMessage = BaseMessage.split('{user_name}').join(InstaUserName);
+                      BaseMessage = BaseMessage.split('{date}').join(OnlyDate);
+                      ResponseMessage = ResponseMessage +" "+BaseMessage;
+                    }
+                    console.log("SendMessage to Popup -------",ResponseMessage);
+                    let param ={
+                      InstaUserName:InstaUserName,
+                      MessageType:0,
+                      InstaUser:InstaUser,
+                      InstaUserImage:InstaUserImage,
+                      InstaUserLink:InstaUserLink,
+                      ReplyMessage:ResponseMessage
+                    }
+                    chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+                      chrome.debugger.sendCommand(
+                        { tabId: sender.tab.id },
+                        "Page.bringToFront",function () {
+                          console.log("Hello Profile Page Enabled +++++++")
+                          chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
+                          chrome.debugger.detach({ tabId: sender.tab.id });           
+                        });
+                    })
+                    //chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
+
+                  }
+          
+        }
+      }
+    }else{
+      console.log("Restart The Process ==========>")
+        let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
+        let indexthreadlink = individualThreadList.indexOf(InstaUser);
+        if (indexthreadlink !== -1) {
+          individualThreadList.splice(indexthreadlink, 1);
+          let NewListIdArray=JSON.stringify(individualThreadList);
+          localStorage.setItem('ListIdArray', NewListIdArray);
+        }else{
+          let NewListIdArray=JSON.stringify(individualThreadList);
+          localStorage.setItem('ListIdArray', NewListIdArray);
+        }
+      
+        chrome.tabs.remove(sender.tab.id);
+        localStorage.removeItem('instaIndividualMessage');
+        localStorage.setItem('CheckMessageNReply',0);
+        checkIndividualMessage();
+    }
+
+  }
+  if(request.type ==  "StoreAndClose"){
+    console.log("I am Inside StoreAndClose =========>",request.options);
+    localStorage.getItem('user_id');
+    localStorage.getItem('kyubi_user_token');
+    let Nowtime=$.now();
+    let user_id=localStorage.getItem('user_id');
+    let kyubi_user_token=localStorage.getItem('kyubi_user_token');
+    let instagram_user_id=request.options.InstaUser;
+    let instagram_username=request.options.InstaUserName;
+    let instagram_profile_link=request.options.InstaUserLink;
+    let instagram_image=request.options.InstaUserImage;
+    let last_contact_incoming=Nowtime;
+    let last_contact_outgoing=Nowtime;
+    let last_message=request.options.ReplyMessage;
+    let last_default_message_time=Nowtime;
+    let connection_type=request.options.MessageType;
+    let params  =   {
+    user_id:user_id,
+    kyubi_user_token:kyubi_user_token,
+    instagram_user_id:instagram_user_id,
+    instagram_username:instagram_username,
+    instagram_profile_link:instagram_profile_link,
+    instagram_image:instagram_image,
+    last_contact_incoming:last_contact_incoming,
+    last_contact_outgoing:last_contact_outgoing,
+    last_message:last_message,
+    last_default_message_time:last_default_message_time,
+    connection_type:connection_type
+    }
+    let response = await handleRequest(
+      "/api/friend/saveLastMessageOutForFriend",
+      method.POST,
+      toJsonStr(params)
+    ).then(respon=>{
+        console.log("This Is The Response",respon)
+        let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
+        let indexthreadlink = individualThreadList.indexOf(request.options.InstaUser);
+        if (indexthreadlink !== -1) {
+          individualThreadList.splice(indexthreadlink, 1);
+          let NewListIdArray=JSON.stringify(individualThreadList);
+          localStorage.setItem('ListIdArray', NewListIdArray);
+        }else{
+          let NewListIdArray=JSON.stringify(individualThreadList);
+          localStorage.setItem('ListIdArray', NewListIdArray);
+        }
+      
+        chrome.tabs.remove(sender.tab.id);
+        localStorage.removeItem('instaIndividualMessage');
+        localStorage.setItem('CheckMessageNReply',0);
+        checkIndividualMessage();
+      
+    });
+
+  }
+})
+
+chrome.runtime.onConnect.addListener(function(port) {
+  port.onMessage.addListener(async function(msg) {
+    if(msg.ConFlag   ==  "StoreMessageLinkInLocalStorage")
+        {
+          console.log('store here',msg.options);
+          let InstauserListId=msg.options.trim();
+          let ListId=localStorage.getItem('ListIdArray');
+          if(localStorage.getItem('ListIdArray')){
+            let ListIdArray=JSON.parse(ListId);
+            if(ListIdArray.length  === 0){
+                    ListIdArray[ListIdArray.length]= msg.options;
+                    let NewListIdArray=JSON.stringify(ListIdArray);
+                    localStorage.setItem('ListIdArray', NewListIdArray);
+            }else{
+                    let check = ListIdArray.includes(msg.options);
+                    if(check){
+  
+                    }else{
+                    ListIdArray[ListIdArray.length]=msg.options;
+                    let NewListIdArray=JSON.stringify(ListIdArray);
+                    localStorage.setItem('ListIdArray', NewListIdArray);
+                    }
+            }
+          }else{
+            let ListIdArray=[];
+            ListIdArray[ListIdArray.length]= msg.options;
+            let NewListIdArray=JSON.stringify(ListIdArray);
+            localStorage.setItem('ListIdArray', NewListIdArray);
+          }
+          checkIndividualMessage();
+        }
+    if(msg.ConFlag  ==  "checker"){
+      console.log("I Reccccccccccccccccc",msg)
+    }
+  })
+})
+
+function checkIndividualMessage(){
+  console.log("inside checker");
+  let ListURL=localStorage.getItem('ListIdArray');
+  let CheckMessageNReply=localStorage.getItem('CheckMessageNReply');
+  let insta_logged_id=localStorage.getItem('insta_logged_id');
+  let inBackgroundFetching=localStorage.getItem('inBackgroundFetching');
+  let default_message=localStorage.getItem('default_message');
+  let autoresponder=localStorage.getItem('autoresponder');
+  let instamunread=parseInt(localStorage.getItem('instamunread'));
+  if(insta_logged_id == "true" && inBackgroundFetching== "false"){
+    console.log("inside checker1");
+    if(default_message !=0  ||  autoresponder!=0){
+      console.log("inside checker2");
+      if(CheckMessageNReply == 0){
+        console.log("inside checker3");
+        if(localStorage.getItem('ListIdArray')){
+          let ListURLArray = JSON.parse(ListURL);
+          //console.log("Trigger ===========77",ListURLArray);
+          if(ListURLArray.length===0){
+            localStorage.setItem('CheckMessageNReply',0);
+          }else{
+            let myMessageUrl  =   ListURLArray[0];   
+                 
+            if(instamunread){
+               let windowHeight= parseInt(window.screen.height);
+               let WindowWidth= parseInt(window.screen.width);
+               console.log("The Height",windowHeight);
+               console.log("The Width",WindowWidth);
+              chrome.windows.create({
+                url: 'https://www.instagram.com/direct/inbox/',
+                 type: "panel",
+                 top :windowHeight,
+                 left:WindowWidth,
+                 height:20,
+                 width:20
+                },function(tab) { 
+                let instaIndividualMessage=tab.id;
+                console.log("Prodipto Is sending to",instaIndividualMessage);
+                //chrome.tab.sendMessage(instaIndividualMessage,{type: "HitMessageIndividual", options: myMessageUrl}); 
+                localStorage.setItem('instaIndividualMessage', instaIndividualMessage);
+            });
+              // console.log("Prodipto Is sending this",myMessageUrl);
+              //let instaIndividualMessage = parseInt(localStorage.getItem('instaIndividualMessage'));
+              //console.log("Prodipto Is sending to Window",myMessageUrl);
+              //chrome.tabs.sendMessage(instaIndividualMessage,{type: "HitMessageIndividual", options: myMessageUrl}); 
+              localStorage.setItem('CheckMessageNReply',1);
+            }
+            
+          }
+        }
+
+      }
+    }
+  }
+}

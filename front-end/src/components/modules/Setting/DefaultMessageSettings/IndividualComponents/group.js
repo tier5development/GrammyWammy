@@ -536,8 +536,7 @@ class group extends Component {
                                         {this.state.openCreateOptionKeyWord ?
                                             <div class="insertdropdown inserthree">
                                                 <ul>
-                                                    <li><a onClick={(event) => this.insertBlockIntoTempStore(3,"","{first_name}",event)} href="#">[ First Name ]</a></li>
-                                                    <li><a onClick={(event) => this.insertBlockIntoTempStore(3,"","{last_name}",event)} href="#">[ Last Name ]</a></li>
+                                                    <li><a onClick={(event) => this.insertBlockIntoTempStore(3,"","{user_name}",event)} href="#">[ User Name ]</a></li>
                                                     <li><a onClick={(event) => this.insertBlockIntoTempStore(3,"","{date}",event)} href="#">[ Todays Date ]</a></li>
                                                 </ul>
                                             </div>
@@ -622,8 +621,7 @@ class group extends Component {
                                         {this.state.openEditOptionKeyWord ?
                                             <div class="insertdropdown inserthree">
                                                 <ul>
-                                                    <li><a onClick={(event) => this.insertBlockIntoTempStoreEdit(3,"","{first_name}",event)} href="#">[ First Name ]</a></li>
-                                                    <li><a onClick={(event) => this.insertBlockIntoTempStoreEdit(3,"","{last_name}",event)} href="#">[ Last Name ]</a></li>
+                                                    <li><a onClick={(event) => this.insertBlockIntoTempStoreEdit(3,"","{user_name}",event)} href="#">[ User Name ]</a></li>
                                                     <li><a onClick={(event) => this.insertBlockIntoTempStoreEdit(3,"","{date}",event)} href="#">[ Todays Date ]</a></li>
                                                 </ul>
                                             </div>
