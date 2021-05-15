@@ -112,7 +112,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                               const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
                               let CreateTab    =   chrome.tabs.create({
                                   url: myNewUrl,
-                                  active: false,
+                                  active: trueo,
                                   pinned:true
                               },function(tab) { 
                                   let instamunread=tab.id;
@@ -125,7 +125,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                             const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
                             let CreateTab    =   chrome.tabs.create({
                                   url: myNewUrl,
-                                  active: false,
+                                  active: true,
                                   pinned:true
                             },function(tab) { 
                                   let instamunread=tab.id;
@@ -148,30 +148,30 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
       console.log("I am Called sssssssssssssssssssssss",request);
       console.log("I am Called sssssssssssssssssssssss",sender);
       let ListingTabId=sender.tab.id;
-      chrome.debugger.attach({ tabId: ListingTabId }, "1.3", function () {
-        chrome.debugger.sendCommand(
-          { tabId: ListingTabId },
-          "Page.bringToFront",function () {
-            console.log("Hello Page Enabled +++++++")
+      // chrome.debugger.attach({ tabId: ListingTabId }, "1.3", function () {
+      //   chrome.debugger.sendCommand(
+      //     { tabId: ListingTabId },
+      //     "Page.bringToFront",function () {
+      //       console.log("Hello Page Enabled +++++++")
             chrome.tabs.sendMessage(ListingTabId,{type: "StartTheMutation", options: ListingTabId}); 
-            chrome.debugger.detach({ tabId: ListingTabId });  
+      //       chrome.debugger.detach({ tabId: ListingTabId });  
                
 
-          });
-      })
+      //     });
+      // })
     }
     if(request.options == "Profile"){
       console.log("I am Called",request.options);
       let ProfileTabId=sender.tab.id;
-      chrome.debugger.attach({ tabId: ProfileTabId }, "1.3", function () {
-        chrome.debugger.sendCommand(
-          { tabId: ProfileTabId },
-          "Page.bringToFront",function () {
-            console.log("Hello Profile Page Enabled +++++++")
+      // chrome.debugger.attach({ tabId: ProfileTabId }, "1.3", function () {
+      //   chrome.debugger.sendCommand(
+      //     { tabId: ProfileTabId },
+      //     "Page.bringToFront",function () {
+      //       console.log("Hello Profile Page Enabled +++++++")
             chrome.tabs.sendMessage(ProfileTabId,{type: "StartTheProfileGrabing", options: ProfileTabId}); 
-            chrome.debugger.detach({ tabId: ProfileTabId });           
-          });
-      })
+      //       chrome.debugger.detach({ tabId: ProfileTabId });           
+      //     });
+      // })
     }
     
   }
@@ -200,15 +200,15 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
   }
   if(request.type == "TrigerReader"){
     console.log("I am Inside Trigger Reader =========>",request.options);
-    chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
-      chrome.debugger.sendCommand(
-        { tabId: sender.tab.id },
-        "Page.bringToFront",function () {
-          console.log("Hello Profile Page Enabled +++++++")
+    // chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+    //   chrome.debugger.sendCommand(
+    //     { tabId: sender.tab.id },
+    //     "Page.bringToFront",function () {
+    //       console.log("Hello Profile Page Enabled +++++++")
           chrome.tabs.sendMessage(sender.tab.id,{type: "GrabMessageAndDetails", options: request.options});
-          chrome.debugger.detach({ tabId: sender.tab.id });           
-        });
-    })
+    //       chrome.debugger.detach({ tabId: sender.tab.id });           
+    //     });
+    // })
    
   }
   if(request.type == "CheckMessageAndResponse"){
@@ -362,15 +362,15 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                                 InstaUserLink:InstaUserLink,
                                 ReplyMessage:responsenewvalue.payload.Message
                               }
-                              chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
-                                chrome.debugger.sendCommand(
-                                  { tabId: sender.tab.id },
-                                  "Page.bringToFront",function () {
-                                    console.log("Hello Profile Page Enabled +++++++")
+                              // chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+                              //   chrome.debugger.sendCommand(
+                              //     { tabId: sender.tab.id },
+                              //     "Page.bringToFront",function () {
+                              //       console.log("Hello Profile Page Enabled +++++++")
                                     chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
-                                    chrome.debugger.detach({ tabId: sender.tab.id });           
-                                  });
-                              })
+                              //       chrome.debugger.detach({ tabId: sender.tab.id });           
+                              //     });
+                              // })
                             }else{
                               console.log("Restart The Process ==========>");
                               let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
@@ -413,15 +413,15 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                                     InstaUserLink:InstaUserLink,
                                     ReplyMessage:responseNewvalue.payload.message
                                   }
-                                  chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
-                                    chrome.debugger.sendCommand(
-                                      { tabId: sender.tab.id },
-                                      "Page.bringToFront",function () {
-                                        console.log("Hello Profile Page Enabled +++++++")
+                                  // chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+                                  //   chrome.debugger.sendCommand(
+                                  //     { tabId: sender.tab.id },
+                                  //     "Page.bringToFront",function () {
+                                  //       console.log("Hello Profile Page Enabled +++++++")
                                         chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
-                                        chrome.debugger.detach({ tabId: sender.tab.id });           
-                                      });
-                                  })
+                                  //       chrome.debugger.detach({ tabId: sender.tab.id });           
+                                  //     });
+                                  // })
                                 }else{
                                   console.log("Restart The Process ==========>");
                                   let individualThreadList  = JSON.parse(localStorage.getItem('ListIdArray'));
@@ -496,15 +496,15 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                       InstaUserLink:InstaUserLink,
                       ReplyMessage:ResponseMessage
                     }
-                    chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
-                      chrome.debugger.sendCommand(
-                        { tabId: sender.tab.id },
-                        "Page.bringToFront",function () {
-                          console.log("Hello Profile Page Enabled +++++++")
+                    // chrome.debugger.attach({ tabId: sender.tab.id }, "1.3", function () {
+                    //   chrome.debugger.sendCommand(
+                    //     { tabId: sender.tab.id },
+                    //     "Page.bringToFront",function () {
+                    //       console.log("Hello Profile Page Enabled +++++++")
                           chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
-                          chrome.debugger.detach({ tabId: sender.tab.id });           
-                        });
-                    })
+                    //       chrome.debugger.detach({ tabId: sender.tab.id });           
+                    //     });
+                    // })
                     //chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});
 
                   }

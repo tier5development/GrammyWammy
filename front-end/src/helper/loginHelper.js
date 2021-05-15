@@ -21,7 +21,7 @@ const loginHelper = {
             const myNewUrl  =   `https://www.instagram.com/`;
             let CreateTab    =   chrome.tabs.create({
                 url: myNewUrl,
-                active: false,
+                active: true,
                 pinned:true
             },function(tab) { 
                 let instaprofile=tab.id;
@@ -58,7 +58,6 @@ const loginHelper = {
                 localStorage.removeItem('instaIndividualMessage');
             });
         }
-        localStorage.removeItem('instaIndividualMessage');
         localStorage.removeItem('instathread');
         localStorage.removeItem("insta_id")
         localStorage.removeItem("token")
