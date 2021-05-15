@@ -222,7 +222,7 @@ GetAutoResponderKeywords: async (autoUserId) => {
 },
   /**
     * @DeleteAssociatedAutoResponderKeywords
-    * DiAssociate user from facebook pages
+    * DiAssociate user from instagram pages
   */
  DeleteAssociatedAutoResponderKeywords: async (AutoResponderId, UserId) => {
   try {
@@ -235,7 +235,7 @@ GetAutoResponderKeywords: async (autoUserId) => {
 },
   /**
     * @DeleteAutoResponder
-    * DiAssociate user from facebook pages
+    * DiAssociate user from instagram pages
   */
  DeleteAutoResponder: async (AutoResponderId, UserId) => {
   try {

@@ -7,31 +7,31 @@ const FriendsSchema = new Schema({
         ref: 'Users',
         default: null
     },
-    facebook_user_id: {
-        type: Number,
-        default: 0
-    },
-    facebook_id: {
-        type: Number,
-        default: 0
-    },
-    facebook_username: {
+    kyubi_user_token: {
         type: String,
         default: ''
     },
-    facebook_first_name: {
+    instagram_user_id: {
         type: String,
         default: ''
     },
-    facebook_last_name: {
+    instagram_username: {
         type: String,
         default: ''
     },
-    facebook_image: {
+    instagram_profile_link: {
         type: String,
         default: ''
     },
-    image_url: {
+    instagram_first_name: {
+        type: String,
+        default: ''
+    },
+    instagram_last_name: {
+        type: String,
+        default: ''
+    },
+    instagram_image: {
         type: String,
         default: ''
     },
@@ -43,7 +43,7 @@ const FriendsSchema = new Schema({
         type: Number,
         default: 0
     },
-    last_default_message: {
+    last_message: {
         type: String,
         default: ''
     },
@@ -51,7 +51,7 @@ const FriendsSchema = new Schema({
         type: Number,
         default: 0
     },
-    connection_status: {
+    connection_type: {
         type: Number,
         default: 0,
         enum: [0, 1]

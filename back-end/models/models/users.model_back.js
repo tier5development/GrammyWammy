@@ -6,23 +6,23 @@ const UsersSchema = new Schema({
         type: String,
         default: ''
     },
-    facebook_fbid: {
+    instagram_fbid: {
         type: Number,
         default: 0
     },
-    facebook_id: {
+    instagram_id: {
         type: Number,
         default: 0
     },
-    facebook_name: {
+    instagram_name: {
         type: String,
         default: ''
     },
-    facebook_profile_name: {
+    instagram_profile_name: {
         type: String,
         default: ''
     },
-    facebook_image: {
+    instagram_image: {
         type: String,
         default: ''
     },

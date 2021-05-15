@@ -32,12 +32,12 @@ const UsersRepository   =   {
     * @UpdateUser
     * update User Info
   */
- UpdateUser: async (userId, facebook_id,facebook_name,facebook_profile_name,facebook_image) => {
+ UpdateUser: async (userId, instagram_id,instagram_name,instagram_profile_name,instagram_image) => {
   try {
-    let UpdateUserInfo = await User.updateOne({ kyubi_user_token: userId }, {facebook_id: facebook_id,
-      facebook_name: facebook_name,
-      facebook_profile_name:facebook_profile_name,
-      facebook_image:facebook_image
+    let UpdateUserInfo = await User.updateOne({ kyubi_user_token: userId }, {instagram_id: instagram_id,
+      instagram_name: instagram_name,
+      instagram_profile_name:instagram_profile_name,
+      instagram_image:instagram_image
     }).exec();
     // console.log("Already Associated with", ChatRoomUpdated);
     return UpdateUserInfo;
@@ -87,17 +87,17 @@ const UsersRepository   =   {
               kyubi_user_token: {
                 $first: '$kyubi_user_token'
               },
-              facebook_id: {
-                $first: '$facebook_id'
+              instagram_id: {
+                $first: '$instagram_id'
               },
-              facebook_name: {
-                $first: '$facebook_name'
+              instagram_name: {
+                $first: '$instagram_name'
               },
-              facebook_profile_name: {
-                $first: '$facebook_profile_name'
+              instagram_profile_name: {
+                $first: '$instagram_profile_name'
               },
-              facebook_image: {
-                $first: '$facebook_image'
+              instagram_image: {
+                $first: '$instagram_image'
               },
               image_url: {
                 $first: '$image_url'
@@ -150,17 +150,17 @@ const UsersRepository   =   {
               kyubi_user_token: {
                 $first: '$kyubi_user_token'
               },
-              facebook_id: {
-                $first: '$facebook_id'
+              instagram_id: {
+                $first: '$instagram_id'
               },
-              facebook_name: {
-                $first: '$facebook_name'
+              instagram_name: {
+                $first: '$instagram_name'
               },
-              facebook_profile_name: {
-                $first: '$facebook_profile_name'
+              instagram_profile_name: {
+                $first: '$instagram_profile_name'
               },
-              facebook_image: {
-                $first: '$facebook_image'
+              instagram_image: {
+                $first: '$instagram_image'
               },
               image_url: {
                 $first: '$image_url'

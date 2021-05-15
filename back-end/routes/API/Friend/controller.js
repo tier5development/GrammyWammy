@@ -8,7 +8,7 @@ const cast = require('TypeCast');
 module.exports.FriendsCreateOrUpdate    =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent",req.body);
-        let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.user_id,req.body.facebook_id);
+        let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.user_id,req.body.instagram_id);
         console.log("PrevData",FriendsInfo);
         if(FriendsInfo){
             console.log("Have Friends");
@@ -20,7 +20,7 @@ module.exports.FriendsCreateOrUpdate    =   async   (req,   res)    =>  {
             console.log("No Friends");
             let FriendsInfoPayload= {
                 user_id: req.body.user_id,
-                facebook_id: req.body.facebook_id,
+                instagram_id: req.body.instagram_id,
                 last_contact_incoming:req.body.last_contact_incoming
               };
             let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
@@ -42,23 +42,23 @@ module.exports.FriendsCreateOrUpdate    =   async   (req,   res)    =>  {
 module.exports.FriendsUpdate    =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent",req.body);
-        let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.user_id,req.body.facebook_id);
+        let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.user_id,req.body.instagram_id);
         if(FriendsInfo){
             console.log("Have Friends");
             let FriendsInfoPayload= {
                 last_contact_outgoing:req.body.last_contact_outgoing,
-                facebook_username:req.body.facebook_username,
-                facebook_name:req.body.facebook_name
+                instagram_username:req.body.instagram_username,
+                instagram_name:req.body.instagram_name
               };
               let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
         }else{
             console.log("No Friends");
             let FriendsInfoPayload= {
                 user_id: req.body.user_id,
-                facebook_id: req.body.facebook_id,
+                instagram_id: req.body.instagram_id,
                 last_contact_outgoing:req.body.last_contact_outgoing,
-                facebook_username:req.body.facebook_username,
-                facebook_name:req.body.facebook_name
+                instagram_username:req.body.instagram_username,
+                instagram_name:req.body.instagram_name
               };
             let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
             
@@ -93,21 +93,21 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
         let OnlyDate = date + ' ' + month + ' ' + year ;
         let KeywordParams={
             ChangeDate:OnlyDate,
-            ChangeFirstName:req.body.FacebookFirstName,
-            ChangeLastName:req.body.FacebookLastName
+            ChangeFirstName:req.body.instagramFirstName,
+            ChangeLastName:req.body.instagramLastName
         }
         let getUserSettings= await UserSettingRepository.GetUserSettingById(req.body.MfenevanId);
         let sendOption = 0;
         console.log('Having Get Settings'+ getUserSettings);
         if(getUserSettings){
-            let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId,req.body.FacebookUserId);
-            console.log('Facebook Friends'+ FriendsInfo);
+            let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.MfenevanId,req.body.FriendinstagramId,req.body.instagramUserId);
+            console.log('instagram Friends'+ FriendsInfo);
             if(FriendsInfo){
                 
                   let FriendsInfoPayload= {
-                    facebook_username:req.body.ProfileLink,
-                    facebook_first_name:req.body.FacebookFirstName,
-                    facebook_last_name:req.body.FacebookLastName
+                    instagram_username:req.body.ProfileLink,
+                    instagram_first_name:req.body.instagramFirstName,
+                    instagram_last_name:req.body.instagramLastName
                   };
                 let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
                 if(FriendsInfo.last_default_message_time==0){
@@ -130,13 +130,13 @@ module.exports.CheckFriendReadyToReciveDefaultMessage   =   async   (req,   res)
             }else{
                 let FriendsInfoPayload= {
                     user_id: req.body.MfenevanId,
-                    facebook_id: req.body.FriendFacebookId,
-                    facebook_user_id:req.body.FacebookUserId,
-                    facebook_username:req.body.ProfileLink,
-                    facebook_first_name:req.body.FacebookFirstName,
-                    facebook_last_name:req.body.FacebookLastName
+                    instagram_id: req.body.FriendinstagramId,
+                    instagram_user_id:req.body.instagramUserId,
+                    instagram_username:req.body.ProfileLink,
+                    instagram_first_name:req.body.instagramFirstName,
+                    instagram_last_name:req.body.instagramLastName
                 };
-                console.log('Facebook Info Payload '+FriendsInfoPayload);
+                console.log('instagram Info Payload '+FriendsInfoPayload);
                 let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
                 sendOption = 1;
             }
@@ -215,14 +215,14 @@ module.exports.friendsDefaultMessageCheck   =   async   (req,   res)    =>  {
 
         let codex  =  2;
         let  mess =  "Dont Send";
-        let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId);
+        let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.MfenevanId,req.body.FriendinstagramId);
         if(FriendsInfo){
         //     console.log(req.body.last_contact_outgoing);
         //     console.log(FriendsInfo.last_default_message_time);
         //     console.log("Have Friends");
             let FriendsInfoPayload= {
-                facebook_username:req.body.facebook_username,
-                facebook_name:req.body.facebook_name
+                instagram_username:req.body.instagram_username,
+                instagram_name:req.body.instagram_name
               };
               let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
               if(FriendsInfo.last_default_message_time==0){
@@ -242,9 +242,9 @@ module.exports.friendsDefaultMessageCheck   =   async   (req,   res)    =>  {
         //     console.log("No Friends");
             let FriendsInfoPayload= {
                 user_id: req.body.MfenevanId,
-                facebook_id: req.body.FriendFacebookId,
-                facebook_username:req.body.ProfileLink,
-                facebook_name:req.body.ProfileName
+                instagram_id: req.body.FriendinstagramId,
+                instagram_username:req.body.ProfileLink,
+                instagram_name:req.body.ProfileName
               };
             let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
             if(saveFriendsInfo.last_default_message_time==0){
@@ -268,23 +268,23 @@ module.exports.friendsDefaultMessageCheck   =   async   (req,   res)    =>  {
 module.exports.friendsUpdateDefaut    =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent",req.body);
-        let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.user_id,req.body.facebook_id);
+        let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.user_id,req.body.instagram_id);
         if(FriendsInfo){
             console.log("Have Friends");
             let FriendsInfoPayload= {
                 last_default_message_time:req.body.last_contact_outgoing,
-                facebook_username:req.body.facebook_username,
-                facebook_name:req.body.facebook_name
+                instagram_username:req.body.instagram_username,
+                instagram_name:req.body.instagram_name
               };
               let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
         }else{
             console.log("No Friends");
             let FriendsInfoPayload= {
                 user_id: req.body.user_id,
-                facebook_id: req.body.facebook_id,
+                instagram_id: req.body.instagram_id,
                 last_default_message_time:req.body.last_contact_outgoing,
-                facebook_username:req.body.facebook_username,
-                facebook_name:req.body.facebook_name
+                instagram_username:req.body.instagram_username,
+                instagram_name:req.body.instagram_name
               };
             let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
             
@@ -304,63 +304,54 @@ module.exports.friendsUpdateDefaut    =   async   (req,   res)    =>  {
 }
 module.exports.SaveLastMessageOutForFriend  =   async   (req,   res)    =>  {
     try{
-        console.log("This is my sent",req.body);
-        let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId,req.body.FacebookUserId);
-        let Checkuser_id= req.body.MfenevanId;
-        let Checkfacebook_id= req.body.FriendFacebookId;
-        let Checkfacebook_user_id=req.body.FacebookUserId;
-        let Checkfacebook_username=req.body.ProfileLink;
-        let Checkfacebook_first_name=req.body.FacebookFirstName;
-        let Checkfacebook_last_name=req.body.FacebookLastName;
-        let Checklast_contact_outgoing=0;
-        let Checklast_default_message=req.body.ResponseMessage;
-        let Checklast_default_message_time=0;
-        let Checkconnection_status=1;
-        let FriendsInfoPayloadUpdate  = {};
-        if(req.body.MessageSenderType =="last_default_message_time"){
-            Checklast_default_message_time=req.body.ResponseTime;
-            FriendsInfoPayloadUpdate  =   {
-                user_id: Checkuser_id,
-                facebook_id: Checkfacebook_id,
-                facebook_user_id:Checkfacebook_user_id,
-                facebook_username:Checkfacebook_username,
-                facebook_first_name:Checkfacebook_first_name,
-                facebook_last_name:Checkfacebook_last_name,
-                last_default_message: Checklast_default_message,
-                last_default_message_time:Checklast_default_message_time,
-                connection_status: Checkconnection_status
-            };
+        console.log("This is my sent From Instagram",req.body);
+        let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.instagram_user_id);
+        let user_id= req.body.user_id;
+        let kyubi_user_token= req.body.kyubi_user_token;
+        let instagram_user_id= req.body.instagram_user_id;
+        let instagram_username= req.body.instagram_username;
+        let instagram_profile_link= req.body.instagram_profile_link;
+        let instagram_image= req.body.instagram_image;
+        let last_contact_incoming= req.body.last_contact_incoming;
+        let last_contact_outgoing= req.body.last_contact_outgoing;
+        let last_message= req.body.last_message;
+        let last_default_message_time= 0;
+        if(req.body.connection_type == 0){
+            last_default_message_time= 0;
         }else{
-            Checklast_contact_outgoing=req.body.ResponseTime;
-            FriendsInfoPayloadUpdate  =   {
-                user_id: Checkuser_id,
-                facebook_id: Checkfacebook_id,
-                facebook_user_id:Checkfacebook_user_id,
-                facebook_username:Checkfacebook_username,
-                facebook_first_name:Checkfacebook_first_name,
-                facebook_last_name:Checkfacebook_last_name,
-                last_contact_outgoing: Checklast_contact_outgoing,
-                last_default_message: Checklast_default_message,
-                connection_status: Checkconnection_status
-            };
+            last_default_message_time= req.body.last_default_message_time;
         }
+        
+        let connection_type= req.body.connection_type;
         if(FriendsInfo){
-            let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayloadUpdate,FriendsInfo._id);
+            let FriendsInfoPayload= {
+                instagram_username:instagram_username,
+                instagram_profile_link:instagram_profile_link,
+                instagram_image:instagram_image,
+                last_contact_incoming: last_contact_incoming,
+                last_contact_outgoing: last_contact_outgoing,
+                last_message:last_message,
+                last_default_message_time: last_default_message_time,
+                connection_type:connection_type
+            };
+            let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
         }else{
             let FriendsInfoPayload= {
-                user_id: Checkuser_id,
-                facebook_id: Checkfacebook_id,
-                facebook_user_id:Checkfacebook_user_id,
-                facebook_username:Checkfacebook_username,
-                facebook_first_name:Checkfacebook_first_name,
-                facebook_last_name:Checkfacebook_last_name,
-                last_contact_outgoing: Checklast_contact_outgoing,
-                last_default_message: Checklast_default_message,
-                last_default_message_time:Checklast_default_message_time,
-                connection_status: Checkconnection_status
+                user_id: user_id,
+                kyubi_user_token:kyubi_user_token,
+                instagram_user_id:instagram_user_id,
+                instagram_username:instagram_username,
+                instagram_profile_link:instagram_profile_link,
+                instagram_image:instagram_image,
+                last_contact_incoming: last_contact_incoming,
+                last_contact_outgoing: last_contact_outgoing,
+                last_message:last_message,
+                last_default_message_time: last_default_message_time,
+                connection_type:connection_type
             };
             let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
         }
+        
         res.send({
             code: 1,
             message: "Successfull",
@@ -378,18 +369,18 @@ module.exports.SaveLastMessageOutForFriend  =   async   (req,   res)    =>  {
 module.exports.friendsSaveLastMessageOut    =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent",req.body);
-        let FriendsInfo = await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId);
+        let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.MfenevanId,req.body.FriendinstagramId);
         if(FriendsInfo){
             if(req.body.DefaultMessageLastTime == 0){
                 let FriendsInfoPayload= {
                     
-                    facebook_id: req.body.FriendFacebookId,
-                    facebook_username:req.body.ProfileLink,
-                    facebook_name:req.body.ProfileName,
+                    instagram_id: req.body.FriendinstagramId,
+                    instagram_username:req.body.ProfileLink,
+                    instagram_name:req.body.ProfileName,
                     last_contact_outgoing:req.body.LastContactOutGoing
                   };
                   let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
-                  let NewFriendInfo=await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId);
+                  let NewFriendInfo=await FriendsRepo.GetUserByUserinstagramID(req.body.MfenevanId,req.body.FriendinstagramId);
                     if(updateFriendsInfo){
                         res.send({
                             code: 1,
@@ -406,15 +397,15 @@ module.exports.friendsSaveLastMessageOut    =   async   (req,   res)    =>  {
                 }else{
                 let FriendsInfoPayload= {
                     
-                    facebook_id: req.body.FriendFacebookId,
-                    facebook_username:req.body.ProfileLink,
-                    facebook_name:req.body.ProfileName,
+                    instagram_id: req.body.FriendinstagramId,
+                    instagram_username:req.body.ProfileLink,
+                    instagram_name:req.body.ProfileName,
                     last_contact_outgoing:req.body.LastContactOutGoing,
                     last_default_message_time:req.body.DefaultMessageLastTime
     
                   };
                   let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
-                  let NewFriendInfo=await FriendsRepo.GetUserByUserFacebookID(req.body.MfenevanId,req.body.FriendFacebookId);
+                  let NewFriendInfo=await FriendsRepo.GetUserByUserinstagramID(req.body.MfenevanId,req.body.FriendinstagramId);
                   if(updateFriendsInfo){
                     res.send({
                         code: 1,
@@ -435,9 +426,9 @@ module.exports.friendsSaveLastMessageOut    =   async   (req,   res)    =>  {
         }else{
             let FriendsInfoPayload= {
                 user_id: req.body.MfenevanId,
-                facebook_id: req.body.FriendFacebookId,
-                facebook_username:req.body.ProfileLink,
-                facebook_name:req.body.ProfileName,
+                instagram_id: req.body.FriendinstagramId,
+                instagram_username:req.body.ProfileLink,
+                instagram_name:req.body.ProfileName,
                 last_contact_outgoing:req.body.LastContactOutGoing,
                 last_default_message_time:req.body.DefaultMessageLastTime
 
@@ -511,8 +502,145 @@ module.exports.fetchMessageGroupAndContents =   async   (req,   res)    =>  {
         })
     }
 }
-
+module.exports.GetDefaultMessage = async (req,  res)    => {
+    try{
+        console.log("This is my sent",req.body);
+        let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.instagram_user_id);
+        let getUserSettings= await UserSettingRepository.GetUserSettingById(req.body.user_id);
+        console.log("This isUser Details",getUserSettings);
+        console.log("This isFriend Details",FriendsInfo);
+        let Message="";
+        let Type=0;
+        let SendMessage=0;
+            let a = new Date(req.body.last_contact_outgoing);
+            let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            let year = a.getFullYear();
+            let month = months[a.getMonth()];
+            let date = a.getDate();
+            let hour = a.getHours();
+            let min = a.getMinutes();
+            let sec = a.getSeconds();
+            let OnlyDate = date + ' ' + month + ' ' + year ;
+        if(getUserSettings.default_message_type == 0){
+            if(FriendsInfo.last_default_message_time == "0"){
+                Message=getUserSettings.default_message_text;
+                Message=Message.replace('{first_name}'," "+req.body.instagram_username);
+                Message=Message.replace('{last_name}'," "+req.body.instagram_username);
+                Message=Message.replace('{user_name}'," "+req.body.instagram_username);
+                Message=Message.replace('{date}'," "+OnlyDate);
+                Message=Message.replace('{Date}'," "+OnlyDate);
+                
+                Type=0;
+                SendMessage=1;
+            }else{
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Now before  casting",req.body.last_default_message_time);
+                    let TimeNow=cast.number(req.body.last_default_message_time)
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Now after  casting",TimeNow);
+                    let timediff=(TimeNow - FriendsInfo.last_default_message_time)/ (60*60*1000);
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Difference",timediff);
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Delay",getUserSettings.default_time_delay);
+                    if(timediff>getUserSettings.default_time_delay){
+                        console.log("Increaessssssssssssssss")
+                        Message=getUserSettings.default_message_text;
+                        Message=Message.replace('{first_name}'," "+req.body.instagram_username);
+                        Message=Message.replace('{last_name}'," "+req.body.instagram_username);
+                        Message=Message.replace('{user_name}'," "+req.body.instagram_username);
+                        Message=Message.replace('{date}'," "+OnlyDate);
+                        Message=Message.replace('{Date}'," "+OnlyDate);
+                        Type=0;
+                        SendMessage=1;
+                    }else{
+                        console.log("ZZZZZZZZZZZZZZZZZZZZZ")
+                        Message="";
+                        Type=0;
+                        SendMessage=0;
+                    }
+            }
+        }else{
+            if(FriendsInfo.last_default_message_time == 0){
+                Message=getUserSettings.default_message_group;
+                Type=1;
+                SendMessage=1;
+            }else{
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Now before  casting",req.body.last_default_message_time);
+                    let TimeNow=cast.number(req.body.last_default_message_time)
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Now after  casting",TimeNow);
+                    let timediff=(TimeNow - FriendsInfo.last_default_message_time)/ (60*60*1000);
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Difference",timediff);
+                    console.log("This Is the timeeeeeeeeeeeeeeeeeee Delay",getUserSettings.default_time_delay);
+                    if(timediff>getUserSettings.default_time_delay){
+                        console.log("Increaessssssssssssssss")
+                        Message=getUserSettings.default_message_group;
+                        Type=1;
+                        SendMessage=1;
+                    }else{
+                        console.log("ZZZZZZZZZZZZZZZZZZZZZ")
+                        Message="";
+                        Type=1;
+                        SendMessage=0;
+                    }
+            }
+        }
+        res.send({
+            code: 1,
+            message: "Success",
+            payload: {
+                Message: Message,
+                Type: Type,
+                SendMessage: SendMessage
+            }
+        })
+    }catch(error){
+        res.send({
+            code: 3,
+            message: error.message,
+            payload: error
+        })
+    }
+}
+module.exports.GetGroupMessageContents =    async   (req, res)  => {
+    try{
+        console.log("This is send",req.body);
+        await MessageGroup.GetMessageGroup(req.body.default_message_group).then(async resultGroup=>{
+            let TotalNumberofBlocks=resultGroup.associate_blocks.length;
+            let CointNum=Math.floor(Math.random() * TotalNumberofBlocks);
+            let randomBlock = resultGroup.associate_blocks[CointNum];
+            console.log("This is Random MessageGroup=====",randomBlock);
+            if(randomBlock.length>0){
+                let i = 0
+                let finalMessage = []
+                sendResponse = (data) =>{
+                res.status(200).send({
+                    code: 1,
+                    message: "Succefully fetched random message from the selected group",
+                    payload: {
+                    message: data
+                    // data: randomSegment.segment_id.message_blocks[getRandomInt(0,randomSegment.segment_id.message_blocks.length -1)]
+                    }
+                })
+                }
+                constructMessage(i,randomBlock,finalMessage,sendResponse,req.body.KeywordParams);
+                
+            }
+        });
+    }catch(error){
+        res.send({
+            code: 31,
+            message: error.message,
+            payload: error
+        })
+    }
+}
 async function constructMessage(i,messageBlock,finalMessage,__callback,KeywordParams){
+    let a = new Date(KeywordParams.ChangeDate);
+    let months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    let year = a.getFullYear();
+    let month = months[a.getMonth()];
+    let date = a.getDate();
+    let hour = a.getHours();
+    let min = a.getMinutes();
+    let sec = a.getSeconds();
+    let OnlyDate = date + ' ' + month + ' ' + year ;
     if(messageBlock[i].type == "id"){
                 let MessageSegmentDetails=await MessageSegment.GetMessageSegment(messageBlock[i].value);
                 //         console.log("This is XXXXXXXXXXXXXXXX =====",MessageSegmentDetails);
@@ -521,17 +649,19 @@ async function constructMessage(i,messageBlock,finalMessage,__callback,KeywordPa
                 let CointBlock =Math.floor(Math.random() * TotalNumberofSegment);
                 //         console.log("This is XXXXXXXXXXXXXXXX =====",CointBlock);
                 let randomSegments = MessageSegmentDetails.message_blocks[CointBlock];
-                let newText=randomSegments.replace('{first_name}'," "+KeywordParams.ChangeFirstName);
-                newText=newText.replace('{last_name}'," "+KeywordParams.ChangeLastName);
-                newText=newText.replace('{date}'," "+KeywordParams.ChangeDate);
-                newText=newText.replace('{Date}'," "+KeywordParams.ChangeDate);
+                let newText=randomSegments.replace('{first_name}'," "+KeywordParams.ChangeUserName);
+                newText=newText.replace('{last_name}'," "+KeywordParams.ChangeUserName);
+                newText=newText.replace('{user_name}'," "+KeywordParams.ChangeUserName);
+                newText=newText.replace('{date}'," "+OnlyDate);
+                newText=newText.replace('{Date}'," "+OnlyDate);
                 
         finalMessage.push(newText)
       }else{
-        let newText=messageBlock[i].value.replace('{first_name}', KeywordParams.ChangeFirstName);
-        newText=newText.replace('{last_name}'," "+KeywordParams.ChangeLastName);
-        newText=newText.replace('{date}'," "+KeywordParams.ChangeDate);
-        newText=newText.replace('{Date}'," "+KeywordParams.ChangeDate);
+        let newText=messageBlock[i].value.replace('{first_name}', KeywordParams.ChangeUserName);
+        newText=newText.replace('{last_name}'," "+KeywordParams.ChangeUserName);
+        newText=newText.replace('{user_name}'," "+KeywordParams.ChangeUserName);
+        newText=newText.replace('{date}'," "+OnlyDate);
+        newText=newText.replace('{Date}'," "+OnlyDate);
         finalMessage.push(newText)
       }
       i++

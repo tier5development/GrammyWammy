@@ -3,12 +3,12 @@ const Friends = require('../models/friends.model');
 
 const FriendsRepository   =   {
   /**
-    * @GetUserByUserFacebookID
-    * Get user As Per user_id  and Facebook ID
+    * @GetUserByUserinstagramID
+    * Get user As Per user_id  and instagram ID
   */
- GetUserByUserFacebookID: async (UserId,FacebookID,FacebookUserId) => {
+ GetUserByUserinstagramID: async (instagramUserId) => {
     try {
-      let FriendsInfo = await Friends.findOne({ 'user_id': mongoose.Types.ObjectId(UserId),'facebook_id': FacebookID,'facebook_user_id': FacebookUserId}).exec();
+      let FriendsInfo = await Friends.findOne({ 'instagram_user_id': instagramUserId}).exec();
       return FriendsInfo;
     } catch (e) {
       throw e;

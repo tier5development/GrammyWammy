@@ -3,8 +3,8 @@ const controller  = require('./controller')
 
 
 
-router.post('/userfacebook',
-controller.userFacebook  
+router.post('/userinstagram',
+controller.userinstagram  
 )
 
 router.post('/getUserDetails',

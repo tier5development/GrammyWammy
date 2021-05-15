@@ -33,4 +33,10 @@ router.post('/fetchMessageGroupAndContents',
 controller.fetchMessageGroupAndContents
 )
 
+router.post('/getDefaultMessage',
+controller.GetDefaultMessage)
+
+router.post('/getGroupMessageContents',
+controller.GetGroupMessageContents)
+
 module.exports = router
