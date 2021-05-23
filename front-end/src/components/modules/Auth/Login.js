@@ -5,6 +5,8 @@ import {kyubiExtensionId}  from "../../../config";
 import "./login.css";
 import AuthServices from "../../../services/authService";
 import loginHelper from "../../../helper/loginHelper";
+import  {OpenPoweredBy,OpenTier5Partnership,OpenFacebookLink,OpenMessengerLink,OpenSignupLink} from  '../../../helper/helper';
+
 //import logo from "../../../images/logo1.svg";
 import logo from "../../../images/Logo_White.svg";
 import biglogo from "../../../images/biglogo.svg";
@@ -141,7 +143,24 @@ class Login extends Component {
         }
         //this.setState({ loader: false });
     }
-
+    LinkHandler(option,event){
+        event.preventDefault();
+        if(option == "optOne"){
+            OpenSignupLink();
+        }
+        if(option == "optTwo"){
+            OpenPoweredBy();
+        }
+        if(option == "optThree"){
+            OpenTier5Partnership();
+        }
+        if(option == "optFour"){
+            OpenFacebookLink();
+        }
+        if(option == "optFive"){
+            OpenMessengerLink();
+        }
+    }
     callFrameHandler    =   async   (event) =>{
         loginHelper.framecaller();
     }
@@ -214,16 +233,17 @@ class Login extends Component {
                                 </div>
                                 <button type="button" className="blue_btn" onClick={this.loginHandler} >LOGIN</button>
                                 <div className="login_signup">
-                                    Don’t have an account? <a href="#">Sign up</a>
+                                    Don’t have an account? <a href="#" onClick={(event) => this.OpenSignupLink("optOne",event)} >Sign up</a>
                                 </div>
                                 {this.state.error && (   
                                     <div className="error"> {this.state.errorMessage} *</div>
                                 )}
                             </form>
                     </div>  
+                    
                     <div className="footer">
-                        <p>Powered by <a href="#">Tier5</a> and the <a href="#">Tier5 Partnership</a></p>
-                        <a href="#"><img src={path}/></a> <a href="#"><img src={messanger}/></a>
+                        <p>Powered by <a  onClick={(event) => this.LinkHandler("optTwo",event)} href="#">GrammyWammy</a> and the <a  onClick={(event) => this.LinkHandler("optThree",event)}  href="#">GrammyWammy Partnership</a></p>
+                        <a  onClick={(event) => this.LinkHandler("optFour",event)}  href="#"><img src={path}/></a> <a  onClick={(event) => this.LinkHandler("optFive",event)} href="#"><img src={messanger}/></a>
                     </div>
                 </div>
             </div>

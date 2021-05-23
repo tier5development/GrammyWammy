@@ -12,7 +12,7 @@
       "default_popup": "popup.html"
   },
   "web_accessible_resources": [
-    "images/128X128.png"
+    "128X128.png"
   ],
   "background": {
     "scripts": ["inject-helper/js/jquery-3.1.0.min.js", "background.js"],
@@ -23,6 +23,7 @@
     "storage",
     "clipboardRead",
     "https://www.instagram.com/*",
+    "https://instagram.*",
     "notifications",
     "webRequest",
     "webRequestBlocking",
@@ -48,7 +49,7 @@
         "persistent": true,
         "js": [
             "vendor.js",
-            "messageListGetter.js"
+            "ListingMessageChecker.js"
         ],
         "matches": [
             "https://www.instagram.com/direct/inbox/"
@@ -60,7 +61,7 @@
         "persistent": true,
         "js": [
             "vendor.js",
-            "messageIndividual.js"
+            "IndividualMessageChecker.js"
         ],
         "matches": [
             "https://www.instagram.com/direct/t/*"

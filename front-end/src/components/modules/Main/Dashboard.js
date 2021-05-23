@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
-import  {OpenFacebookInTab,CheckUserInfoFromFaccebook,OpenFacebookProfileInTab} from  '../../../helper/helper'
+import  {OpenFacebookInTab,CheckUserInfoFromFaccebook,OpenFacebookProfileInTab,refreshMessaging} from  '../../../helper/helper'
 import Header from "../Common/header";
 import Footer from "../Common/footer";
 import settingService from "../../../services/setting";
@@ -41,27 +41,28 @@ class Dashboard extends Component {
   }
   refreshHandler  = async (event) =>  {
     event.preventDefault();
-    this.setState({
-      loader:true
-    })
-   // CheckUserInfoFromFaccebook();
-    setTimeout(() => {
+    refreshMessaging();
+  //   this.setState({
+  //     loader:true
+  //   })
+  //  // CheckUserInfoFromFaccebook();
+  //   setTimeout(() => {
 
-      let fb_image=localStorage.getItem('insta_image');
-      let fb_username=localStorage.getItem('insta_username');
-      let fb_name=localStorage.getItem('insta_name');
-      let fb_id=localStorage.getItem('insta_id');
+  //     let fb_image=localStorage.getItem('insta_image');
+  //     let fb_username=localStorage.getItem('insta_username');
+  //     let fb_name=localStorage.getItem('insta_name');
+  //     let fb_id=localStorage.getItem('insta_id');
       
-      this.setState({
-        fb_image:fb_image,
-        fb_username:fb_username,
-        fb_name:fb_name,
-        fb_id:fb_id,
-        is_user_logged_in_facebook:localStorage.getItem('insta_logged_id'),
-        loader:false
-      })
+  //     this.setState({
+  //       fb_image:fb_image,
+  //       fb_username:fb_username,
+  //       fb_name:fb_name,
+  //       fb_id:fb_id,
+  //       is_user_logged_in_facebook:localStorage.getItem('insta_logged_id'),
+  //       loader:false
+  //     })
 
-    }, 4000);
+  //   }, 4000);
   }
   componentDidMount(){
     let  params ={
@@ -139,7 +140,8 @@ class Dashboard extends Component {
                 "" 
                 :
                 <div className="login_caution">
-                  <img src={IconLogo} alt=""/>
+                  <img crossorigin="anonymous" data-testid="user-avatar" src={IconLogo} alt=""  />
+                  https://instagram.fgau1-1.fna.fbcdn.net/v/t51.2885-19/s150x150/186258319_114563707451502_7627581072515575616_n.jpg?tp=1&_nc_ht=instagram.fgau1-1.fna.fbcdn.net&_nc_ohc=QPg-t1dowBgAX_eOajU&edm=AIQHJ4wBAAAA&ccb=7-4&oh=b06f72a024da1bd8bdbdadeb135cb1bd&oe=60C682BA&_nc_sid=7b02f1
                   Please login to your Instagram profile and click the refresh button below to proceed further.
                 </div>
                 }

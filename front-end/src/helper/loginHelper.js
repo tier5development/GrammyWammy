@@ -3,31 +3,31 @@ const loginHelper = {
     
     login: function () {
         try{
-            if(localStorage.getItem('instaprofile')){
-                let newtab=parseInt(localStorage.getItem('instaprofile'));
-                chrome.tabs.remove(newtab, function() { 
+            // if(localStorage.getItem('instaprofile')){
+            //     let newtab=parseInt(localStorage.getItem('instaprofile'));
+            //     chrome.tabs.remove(newtab, function() { 
 
-                    localStorage.removeItem('instaprofile');
-                });
-            }
-            if(localStorage.getItem('instamunread')){
-                let newtabx=parseInt(localStorage.getItem('instamunread'));
-                chrome.tabs.remove(newtabx, function() { 
+            //         localStorage.removeItem('instaprofile');
+            //     });
+            // }
+            // if(localStorage.getItem('instamunread')){
+            //     let newtabx=parseInt(localStorage.getItem('instamunread'));
+            //     chrome.tabs.remove(newtabx, function() { 
 
-                    localStorage.removeItem('instamunread');
-                });
-            }
-            localStorage.removeItem('instathread');
-            const myNewUrl  =   `https://www.instagram.com/`;
-            let CreateTab    =   chrome.tabs.create({
-                url: myNewUrl,
-                active: true,
-                pinned:true
-            },function(tab) { 
-                let instaprofile=tab.id;
-                localStorage.setItem('instaprofile', instaprofile);
-            });
-            console.log("This is a ",CreateTab);
+            //         localStorage.removeItem('instamunread');
+            //     });
+            // }
+            // localStorage.removeItem('instathread');
+            // const myNewUrl  =   `https://www.instagram.com/`;
+            // let CreateTab    =   chrome.tabs.create({
+            //     url: myNewUrl,
+            //     active: true,
+            //     pinned:true
+            // },function(tab) { 
+            //     let instaprofile=tab.id;
+            //     localStorage.setItem('instaprofile', instaprofile);
+            // });
+            // console.log("This is a ",CreateTab);
             return CreateTab;
         }catch(error){
             return error
@@ -89,6 +89,29 @@ const loginHelper = {
     }catch(error){
         return error
     }
+    },
+    refreshMessaging:   function    ()  {
+        try{
+            let CreateInstagramMessageListTab    =   chrome.tabs.create({
+                url: myNewUrl,
+                active: true,
+                pinned:true
+            },function(tab) { 
+                let InstagramMessageList=tab.id;
+                localStorage.setItem('InstagramMessageList', InstagramMessageList);
+            });
+
+            let CreateInstagramMessageIndividualTab    =   chrome.tabs.create({
+                url: myNewUrl,
+                active: true,
+                pinned:true
+            },function(tab) { 
+                let InstagramMessageIndividual=tab.id;
+                localStorage.setItem('InstagramMessageIndividual', InstagramMessageIndividual);
+            });
+        }catch(error){
+            return error
+        }
     }
     
 }
