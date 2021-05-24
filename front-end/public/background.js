@@ -286,9 +286,12 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                       ReplyMessage:ResponseMessage
                     }
                     console.log("This are the param278",param);
-                    chrome.windows.update(sender.tab.windowId ,{ focused: true});
-                    chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});    
-                      
+                    if(request.options.UseMessage[conttex][0]===2){
+                      chrome.windows.update(sender.tab.windowId ,{ focused: true});
+                      chrome.tabs.sendMessage(sender.tab.id,{type: "ReplyInstaUser", options: param});    
+                    }else{
+                      ClearListTabIdAndCheckMessageNReply(sender.tab.id,request.options.UserId);
+                    }     
         }
       }
     }else{
@@ -393,14 +396,16 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                         localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
                       }
                       localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
-                      if( AutoResponderStatus== 0 && DefaultMessageStatus== 0 && UserLoggedInFacebook== true && BackGroundFetchingStatus==  false){
+                      //console.log("Open Message List  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                      
+                      if( AutoResponderStatus=== 1 && DefaultMessageStatus=== 1 && UserLoggedInFacebook=== true && BackGroundFetchingStatus===  false){
                         console.log("Open Message List  84848484");
 
-                        if(localStorage.getItem('instaIndividualMessage')){
-                          let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
-                          chrome.tabs.remove(instaIndividualMessage, function() { 
+                        if(localStorage.getItem('InstagramMessageList')){
+                          let InstagramMessageList=parseInt(localStorage.getItem('InstagramMessageList'));
+                          chrome.tabs.remove(InstagramMessageList, function() { 
               
-                              localStorage.removeItem('instaIndividualMessage');
+                              localStorage.removeItem('InstagramMessageList');
                           });
                         }
                         const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
@@ -441,8 +446,8 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
 */
 async function CheckOrCreateTab(){
   console.log("-------iii-------");
-  let windowHeight= parseInt(window.screen.height)-100;
-  let WindowWidth= parseInt(window.screen.width)-100;
+  let windowHeight= parseInt(window.screen.height)+20;
+  let WindowWidth= parseInt(window.screen.width)+20;
   if(localStorage.getItem('InstagramMessageIndividual')){
     let newtab=parseInt(localStorage.getItem('InstagramMessageIndividual'));
     chrome.tabs.get(newtab, function(tab) {
@@ -450,9 +455,10 @@ async function CheckOrCreateTab(){
           let CreateInstagramMessageIndividualTab    =   chrome.windows.create({
               url: `https://www.instagram.com/direct/inbox/`,
               type: "panel",
-              
-              height:200,
-              width:200
+              top:windowHeight,
+              left:WindowWidth,
+              height:1,
+              width:1
           },function(tab) { 
           //let Tab = JSON.parse(tab.tabs);
           //console.log("Crrrrrrr",tab.tabs[0]);
@@ -468,9 +474,10 @@ async function CheckOrCreateTab(){
     let CreateInstagramMessageIndividualTab    =   chrome.windows.create({
         url: `https://www.instagram.com/direct/inbox/`,
         type: "panel",
-        
-        height:200,
-        width:200
+        top:windowHeight,
+        left:WindowWidth,
+        height:1,
+        width:1
     },function(tab) { 
       //let Tab = JSON.parse(tab.tabs);
       //console.log("Crrrrrrr",tab.tabs[0].id);
@@ -516,6 +523,17 @@ function SenDInfoToMessageTabToOpenIndividual(tabId){
                   chrome.tabs.sendMessage(tabId,{type: "StartTheSelection", MessageId:myMessageID}); 
               }else{
                 console.log("I am In 0202");
+                chrome.tabs.get(tabId, async (tab) => {
+                  
+                  console.log('This is the TTTTTTTTTTTTTTTTTTTTTAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBB',tab);
+                  if(tab.url=="https://www.instagram.com/direct/inbox/"){
+
+                  }else{
+                    chrome.tabs.update( tab.id, { 
+                      url: "https://www.instagram.com/direct/inbox/"});
+                    chrome.windows.update(tab.windowId ,{ focused: true});
+                  }
+                });
                 //Close The MessageIndividualTab
               }
             }else{
@@ -533,7 +551,9 @@ function SenDInfoToMessageTabToOpenIndividual(tabId){
                   chrome.tabs.sendMessage(tabId,{type: "StartTheSelection", MessageId:myMessageID}); 
               }else{
                 console.log("I am In 0202");
-                //Close The MessageIndividualTab
+                chrome.tabs.update( tab.id, { url: "https://www.instagram.com/direct/inbox/"});
+                chrome.windows.update(tab.windowId ,{ focused: true});
+              
               }
           }
         }else{

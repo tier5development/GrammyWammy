@@ -30,14 +30,14 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
             img.style.top= "50%";
             img.style.left= "50%";
             img.style.transform= "translate(-50%, -50%)";
-            textDiv.innerHTML="MeFn Evan Is Using This Tab Please Don`t Close It";
+            textDiv.innerHTML="GrammyWammy Is Using This Tab Please Don`t Close It";
             textDiv.style.top= "70%";
             textDiv.style.left= "27%";
             textDiv.style.position = 'fixed';
             textDiv.style.width= "100%";
             textDiv.style.fontSize="41px";
             textDiv.style.color= "#057ed9";
-            // div.appendChild(img);
+            div.appendChild(img);
             div.appendChild(textDiv);
             document.body.appendChild(div);
         }

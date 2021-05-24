@@ -38,25 +38,19 @@ const loginHelper = {
         const myNewUrl  =   `https://www.instagram.com/`;
         let CreateWindow    = chrome.runtime.sendMessage({type: "CloseAllForResponse", options: myNewUrl});
         if(localStorage.getItem('instaprofile')){
-            let newtab=parseInt(localStorage.getItem('instaprofile'));
-            chrome.tabs.remove(newtab, function() { 
-
-                localStorage.removeItem('instaprofile');
-            });
+            let instaprofile=parseInt(localStorage.getItem('instaprofile'));
+            chrome.tabs.remove(instaprofile);
+            localStorage.removeItem('instaprofile');
         }
         if(localStorage.getItem('InstagramMessageList')){
-            let newtabx=parseInt(localStorage.getItem('InstagramMessageList'));
-            chrome.tabs.remove(newtabx, function() { 
-
-                localStorage.removeItem('InstagramMessageList');
-            });
+            let InstagramMessageList=parseInt(localStorage.getItem('InstagramMessageList'));
+            chrome.tabs.remove(InstagramMessageList);
+            localStorage.removeItem('InstagramMessageList');
         }
         if(localStorage.getItem('InstagramMessageIndividual')){
-            let instaIndividualMessage=parseInt(localStorage.getItem('InstagramMessageIndividual'));
-            chrome.tabs.remove(instaIndividualMessage, function() { 
-
-                localStorage.removeItem('InstagramMessageIndividual');
-            });
+            let InstagramMessageIndividual=parseInt(localStorage.getItem('InstagramMessageIndividual'));
+            chrome.tabs.remove(InstagramMessageIndividual);
+            localStorage.removeItem('InstagramMessageIndividual');
         }
         localStorage.removeItem('instathread');
         localStorage.removeItem("insta_id")
@@ -82,7 +76,9 @@ const loginHelper = {
         localStorage.removeItem('messageListFetch');
         localStorage.removeItem('individualMessageFetch');
         localStorage.removeItem('instaprofile');
-        localStorage.removeItem('CheckMessageNReply');
+        let NewListIdArray=[];
+        localStorage.setItem('CheckMessageNReply',0);
+        localStorage.setItem('ListIdArray', NewListIdArray);
         localStorage.removeItem('instamunread');
        
         return CreateWindow;

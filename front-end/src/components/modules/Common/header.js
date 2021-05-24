@@ -87,10 +87,10 @@ class header extends Component {
                     default_message:localStorage.getItem('default_message')
                   })
                   if(localStorage.getItem('autoresponder') ==1 && localStorage.getItem('default_message')==1 && localStorage.getItem('inBackgroundFetching') =="false" && localStorage.getItem('insta_logged_id')=="true"){
-                    if(localStorage.getItem('instaIndividualMessage')){
-                      let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
-                      chrome.tabs.remove(instaIndividualMessage);
-                      localStorage.removeItem('instaIndividualMessage');
+                    if(localStorage.getItem('InstagramMessageList')){
+                      let InstagramMessageList=parseInt(localStorage.getItem('InstagramMessageList'));
+                      chrome.tabs.remove(InstagramMessageList);
+                      localStorage.removeItem('InstagramMessageList');
                     }
                     if(localStorage.getItem('InstagramMessageIndividual')){
                       let InstagramMessageIndividual=parseInt(localStorage.getItem('InstagramMessageIndividual'));
@@ -109,10 +109,10 @@ class header extends Component {
                         localStorage.setItem('InstagramMessageList', InstagramMessageList);
                     });
                   }else{
-                    if(localStorage.getItem('instaIndividualMessage')){
-                      let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
-                      chrome.tabs.remove(instaIndividualMessage);
-                      localStorage.removeItem('instaIndividualMessage');
+                    if(localStorage.getItem('InstagramMessageList')){
+                      let InstagramMessageList=parseInt(localStorage.getItem('InstagramMessageList'));
+                      chrome.tabs.remove(InstagramMessageList);
+                      localStorage.removeItem('InstagramMessageList');
                     }
                     if(localStorage.getItem('InstagramMessageIndividual')){
                       let InstagramMessageIndividual=parseInt(localStorage.getItem('InstagramMessageIndividual'));

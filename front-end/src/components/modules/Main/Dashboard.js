@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router-dom'
 import  {OpenFacebookInTab,CheckUserInfoFromFaccebook,OpenFacebookProfileInTab,refreshMessaging} from  '../../../helper/helper'
@@ -105,7 +106,8 @@ class Dashboard extends Component {
                         fb_name:localStorage.getItem('insta_name'),
                         fb_username:localStorage.getItem('insta_username'),
                         is_user_logged_in_facebook:localStorage.getItem('insta_logged_id')
-                  })
+                  });
+                  
         }else{
           this.setState({
             fb_image:localStorage.getItem('insta_image'),
