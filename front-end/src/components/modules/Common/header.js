@@ -43,8 +43,8 @@ class header extends Component {
               kyubi_user_token:localStorage.getItem('kyubi_user_token')
             }
             //let LC=loginHelper.login();
-            }
-            else{
+
+        }else{
             this.setState({meven_status:0})
             payload = {
               update_load_status:0,
@@ -53,16 +53,15 @@ class header extends Component {
             //let LO = loginHelper.logout();
         }
         await SettingServices.updateLoadStatus(payload).then(async result=>{
+          console.log("This -s what -----------------------------",result)
           if(result.data.code==1){
                   let responsenewvalue =result.data;
-
                   localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
                   localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
                   localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.instagram_id);
                   localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.instagram_profile_name);
                   localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.instagram_name);
                   localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.instagram_image);
-                  
                   if(responsenewvalue.payload.UserSettings.default_message){
                     localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
                   }else{
@@ -75,77 +74,178 @@ class header extends Component {
                   }
                   if(responsenewvalue.payload.UserSettings.autoresponder){
                     localStorage.setItem('autoresponder', responsenewvalue.payload.UserSettings.autoresponder);
-                    
+
                   }else{
                     localStorage.setItem('autoresponder', 0);
                   }
                   if(responsenewvalue.payload.UserSettings.default_time_delay){
                     localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
                   }
-                  
                   localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
                   this.setState({
                     autoresponder_status:localStorage.getItem('autoresponder'),
                     default_message:localStorage.getItem('default_message')
                   })
-                  if(localStorage.getItem('autoresponder') ==0 && localStorage.getItem('default_message')==0){
-                    if(localStorage.getItem('instaprofile')){
-                      let newtab=parseInt(localStorage.getItem('instaprofile'));
-                      chrome.tabs.remove(newtab);
-                      localStorage.removeItem('instaprofile');
-                    }
-                    if(localStorage.getItem('instamunread')){
-                        let newtabx=parseInt(localStorage.getItem('instamunread'));
-                        chrome.tabs.remove(newtabx);
-                        localStorage.removeItem('instamunread');
-                    }
-                    if(localStorage.getItem('instaIndividualMessage')){
-                        let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
-                        chrome.tabs.remove(instaIndividualMessage);
-                        localStorage.removeItem('instaIndividualMessage');
-                    }
-                    
-                  }
                   if(localStorage.getItem('autoresponder') ==1 && localStorage.getItem('default_message')==1 && localStorage.getItem('inBackgroundFetching') =="false" && localStorage.getItem('insta_logged_id')=="true"){
-                    if(localStorage.getItem('instamunread')){
-                      console.log("In ONE");
-                      let newtab=parseInt(localStorage.getItem('instamunread'));
-                      chrome.tabs.get(newtab, function(tab) {
-                        if (!tab) { 
-                          //console.log('tab does not exist'); 
-                          const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
-                          let CreateTab    =   chrome.tabs.create({
-                              url: myNewUrl,
-                              active: false,
-                              pinned:true
-                          },function(tab) { 
-                              let instamunread=tab.id;
-                              localStorage.setItem('instamunread', instamunread);
-                              
-                          });
-                        }
-                      })
-                    }else{
-                        const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
-                        let CreateTab    =   chrome.tabs.create({
-                              url: myNewUrl,
-                              active: false,
-                              pinned:true
-                        },function(tab) { 
-                              let instamunread=tab.id;
-                              localStorage.setItem('instamunread', instamunread);
-                              
-                        });
+                    if(localStorage.getItem('instaIndividualMessage')){
+                      let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
+                      chrome.tabs.remove(instaIndividualMessage);
+                      localStorage.removeItem('instaIndividualMessage');
                     }
+                    if(localStorage.getItem('InstagramMessageIndividual')){
+                      let InstagramMessageIndividual=parseInt(localStorage.getItem('InstagramMessageIndividual'));
+                      chrome.tabs.remove(InstagramMessageIndividual);
+                      localStorage.removeItem('InstagramMessageIndividual');
+                    }
+                    let NewListIdArray=[];
+                    localStorage.setItem('CheckMessageNReply',0);
+                    localStorage.setItem('ListIdArray', NewListIdArray);
+                    let CreateInstagramMessageListTab    =   chrome.tabs.create({
+                      url: `https://www.instagram.com/direct/inbox/`,
+                      active: true,
+                      pinned:true
+                    },function(tab) { 
+                        let InstagramMessageList=tab.id;
+                        localStorage.setItem('InstagramMessageList', InstagramMessageList);
+                    });
+                  }else{
+                    if(localStorage.getItem('instaIndividualMessage')){
+                      let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
+                      chrome.tabs.remove(instaIndividualMessage);
+                      localStorage.removeItem('instaIndividualMessage');
+                    }
+                    if(localStorage.getItem('InstagramMessageIndividual')){
+                      let InstagramMessageIndividual=parseInt(localStorage.getItem('InstagramMessageIndividual'));
+                      chrome.tabs.remove(InstagramMessageIndividual);
+                      localStorage.removeItem('InstagramMessageIndividual');
+                    }
+                    let NewListIdArray=[];
+                    localStorage.setItem('CheckMessageNReply',0);
+                    localStorage.setItem('ListIdArray', NewListIdArray);
                   }
-
                   this.setState({loader:false});
+          }else{
+            this.setState({loader:false});
           }
-        }).catch(error=>{
+        }).catch(error =>{
           this.setState({loader:false});
-        });
-
+        })
       }
+      // autoSetting = async (event) => {
+      //   this.setState({loader:true});
+      //   let payload = {
+      //   }
+      //   console.log("hiyy",this.state.meven_status )
+      //   if(this.state.meven_status === 0){
+      //       this.setState({meven_status:1})
+      //       payload = {
+      //         update_load_status:1,
+      //         kyubi_user_token:localStorage.getItem('kyubi_user_token')
+      //       }
+      //       //let LC=loginHelper.login();
+      //       }
+      //       else{
+      //       this.setState({meven_status:0})
+      //       payload = {
+      //         update_load_status:0,
+      //         kyubi_user_token:localStorage.getItem('kyubi_user_token')
+      //       }
+      //       //let LO = loginHelper.logout();
+      //   }
+      //   await SettingServices.updateLoadStatus(payload).then(async result=>{
+      //     if(result.data.code==1){
+      //             let responsenewvalue =result.data;
+
+      //             localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
+      //             localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
+      //             localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.instagram_id);
+      //             localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.instagram_profile_name);
+      //             localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.instagram_name);
+      //             localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.instagram_image);
+                  
+      //             if(responsenewvalue.payload.UserSettings.default_message){
+      //               localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
+      //             }else{
+      //               localStorage.setItem('default_message', 0);
+      //             }
+      //             if(responsenewvalue.payload.UserSettings.default_message_text){
+      //               localStorage.setItem('default_message_text', responsenewvalue.payload.UserSettings.default_message_text);
+      //             }else{
+      //               localStorage.setItem('default_message_text',"");
+      //             }
+      //             if(responsenewvalue.payload.UserSettings.autoresponder){
+      //               localStorage.setItem('autoresponder', responsenewvalue.payload.UserSettings.autoresponder);
+                    
+      //             }else{
+      //               localStorage.setItem('autoresponder', 0);
+      //             }
+      //             if(responsenewvalue.payload.UserSettings.default_time_delay){
+      //               localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
+      //             }
+                  
+      //             localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
+      //             this.setState({
+      //               autoresponder_status:localStorage.getItem('autoresponder'),
+      //               default_message:localStorage.getItem('default_message')
+      //             })
+      //             if(localStorage.getItem('autoresponder') ==0 && localStorage.getItem('default_message')==0){
+      //               if(localStorage.getItem('instaprofile')){
+      //                 let newtab=parseInt(localStorage.getItem('instaprofile'));
+      //                 chrome.tabs.remove(newtab);
+      //                 localStorage.removeItem('instaprofile');
+      //               }
+      //               if(localStorage.getItem('instamunread')){
+      //                   let newtabx=parseInt(localStorage.getItem('instamunread'));
+      //                   chrome.tabs.remove(newtabx);
+      //                   localStorage.removeItem('instamunread');
+      //               }
+      //               if(localStorage.getItem('instaIndividualMessage')){
+      //                   let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
+      //                   chrome.tabs.remove(instaIndividualMessage);
+      //                   localStorage.removeItem('instaIndividualMessage');
+      //               }
+                    
+      //             }
+      //             if(localStorage.getItem('autoresponder') ==1 && localStorage.getItem('default_message')==1 && localStorage.getItem('inBackgroundFetching') =="false" && localStorage.getItem('insta_logged_id')=="true"){
+      //               if(localStorage.getItem('instamunread')){
+      //                 console.log("In ONE");
+      //                 let newtab=parseInt(localStorage.getItem('instamunread'));
+      //                 chrome.tabs.get(newtab, function(tab) {
+      //                   if (!tab) { 
+      //                     //console.log('tab does not exist'); 
+      //                     const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+      //                     let CreateTab    =   chrome.tabs.create({
+      //                         url: myNewUrl,
+      //                         active: false,
+      //                         pinned:true
+      //                     },function(tab) { 
+      //                         let instamunread=tab.id;
+      //                         localStorage.setItem('instamunread', instamunread);
+                              
+      //                     });
+      //                   }
+      //                 })
+      //               }else{
+      //                   const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+      //                   let CreateTab    =   chrome.tabs.create({
+      //                         url: myNewUrl,
+      //                         active: false,
+      //                         pinned:true
+      //                   },function(tab) { 
+      //                         let instamunread=tab.id;
+      //                         localStorage.setItem('instamunread', instamunread);
+                              
+      //                   });
+      //               }
+      //             }
+
+      //             this.setState({loader:false});
+      //     }
+      //   }).catch(error=>{
+      //     this.setState({loader:false});
+      //   });
+
+      // }
       ShowMenu = (event) => {
         event.preventDefault();
         //console.log(this.props.shownav);
@@ -262,7 +362,7 @@ class header extends Component {
                   <div className={this.state.openNavBar ?"slider_menu active":"slider_menu"}>
                       <a href="#" onClick={this.HideMenu} className="cross">X</a>
                       <div className="after_log_profile">
-                        <img src={this.state.user_image} alt=""/>
+                        <img src={plog} alt=""/>
                         <p>Welcome</p>
                         <h3>{this.state.user_name}</h3>
                       </div>

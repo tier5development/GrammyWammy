@@ -177,6 +177,7 @@ class responseSetting extends Component {
                     console.log("This is what i Got",responsex.data.payload);
                     if(responsex.data.payload.autokey.length>0){
                         console.log("This is what i Got",responsex.data.payload.autokey);
+                        localStorage.setItem('keywordsTally', JSON.stringify(responsex.data.payload.listkey));
                         this.setState({
                                         autoresponderListValue:responsex.data.payload.autokey,
                                         autoResponsederList:1,
@@ -215,10 +216,13 @@ class responseSetting extends Component {
             let payloadNew ={
                 user_id:UserTokenNew
             }
+            //localStorage.setItem('keywordsTally', JSON.stringify(response.data.payload.auto_responder_keywords));
+
             AutoResponderService.listAutoResponder(payloadNew).then(async responsex =>{
                 if(responsex.data.payload !=  "" ){
                     console.log("This is what i Got",responsex.data.payload);
                     if(responsex.data.payload.autokey.length>0){
+                        localStorage.setItem('keywordsTally', JSON.stringify(responsex.data.payload.listkey));
                         console.log("This is what i Got",responsex.data.payload.autokey);
                         this.setState({
                                         autoresponderListValue:responsex.data.payload.autokey,
@@ -326,7 +330,9 @@ class responseSetting extends Component {
                 user_id:UserTokenNew
             }
             AutoResponderService.listAutoResponder(payloadNew).then(async responsex =>{
+                
                 if(responsex.data.payload !=  "" ){
+                    localStorage.setItem('keywordsTally', JSON.stringify(responsex.data.payload.listkey));
                         this.setState({
                                         autoresponderListValue:responsex.data.payload.autokey,
                                         autoResponsederList:1,
@@ -471,7 +477,7 @@ class responseSetting extends Component {
                             value={this.state.auto_responder_message}
                             onChange={this.inputChangeHandller}
                             ></textarea>
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message', '{user_name}')} className="formtag">[ First Name ]</button> 
+                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message', '{user_name}')} className="formtag">[ User Name ]</button> 
                             <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message', '{date}')} class="formtag">[ Todays Date ]</button>
 
 
@@ -532,7 +538,7 @@ class responseSetting extends Component {
                             value={this.state.auto_responder_message_edit}
                             onChange={this.inputChangeHandller}
                             ></textarea>
-                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message_edit', '{user_name}')} className="formtag">[ First Name ]</button> 
+                            <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message_edit', '{user_name}')} className="formtag">[ User Name ]</button> 
                             <button type="button" onClick={() => this.insertTagAtMessageSegments('auto_responder_message_edit', '{date}')} class="formtag">[ Todays Date ]</button>
 
                         <label>

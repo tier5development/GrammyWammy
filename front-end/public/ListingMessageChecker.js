@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
             console.log("Please Create The Layout ============");
             var div=document.createElement("div");
             var textDiv =document.createElement("div");
-           
+            var imgURL = chrome.extension.getURL('128X128.png');
             div.style.width= "100%";
             div.style.height= "100%";
             div.style.position= "absolute";
@@ -24,12 +24,12 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
             div.style.position = 'fixed';
             div.style.top = '0';
             div.style.left = '0';
-            // var img = document.createElement("IMG");
-            // img.src = imgURL;
-            // img.style.position= "fixed";
-            // img.style.top= "50%";
-            // img.style.left= "50%";
-            // img.style.transform= "translate(-50%, -50%)";
+            var img = document.createElement("IMG");
+            img.src = imgURL;
+            img.style.position= "fixed";
+            img.style.top= "50%";
+            img.style.left= "50%";
+            img.style.transform= "translate(-50%, -50%)";
             textDiv.innerHTML="MeFn Evan Is Using This Tab Please Don`t Close It";
             textDiv.style.top= "70%";
             textDiv.style.left= "27%";

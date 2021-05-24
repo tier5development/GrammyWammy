@@ -18,15 +18,15 @@ const loginHelper = {
             //     });
             // }
             // localStorage.removeItem('instathread');
-            // const myNewUrl  =   `https://www.instagram.com/`;
-            // let CreateTab    =   chrome.tabs.create({
-            //     url: myNewUrl,
-            //     active: true,
-            //     pinned:true
-            // },function(tab) { 
-            //     let instaprofile=tab.id;
-            //     localStorage.setItem('instaprofile', instaprofile);
-            // });
+            const myNewUrl  =   `https://www.instagram.com/`;
+            let CreateTab    =   chrome.tabs.create({
+                url: myNewUrl,
+                active: true,
+                pinned:true
+            },function(tab) { 
+                let instaprofile=tab.id;
+                localStorage.setItem('instaprofile', instaprofile);
+            });
             // console.log("This is a ",CreateTab);
             return CreateTab;
         }catch(error){
@@ -44,18 +44,18 @@ const loginHelper = {
                 localStorage.removeItem('instaprofile');
             });
         }
-        if(localStorage.getItem('instamunread')){
-            let newtabx=parseInt(localStorage.getItem('instamunread'));
+        if(localStorage.getItem('InstagramMessageList')){
+            let newtabx=parseInt(localStorage.getItem('InstagramMessageList'));
             chrome.tabs.remove(newtabx, function() { 
 
-                localStorage.removeItem('instamunread');
+                localStorage.removeItem('InstagramMessageList');
             });
         }
-        if(localStorage.getItem('instaIndividualMessage')){
-            let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
+        if(localStorage.getItem('InstagramMessageIndividual')){
+            let instaIndividualMessage=parseInt(localStorage.getItem('InstagramMessageIndividual'));
             chrome.tabs.remove(instaIndividualMessage, function() { 
 
-                localStorage.removeItem('instaIndividualMessage');
+                localStorage.removeItem('InstagramMessageIndividual');
             });
         }
         localStorage.removeItem('instathread');

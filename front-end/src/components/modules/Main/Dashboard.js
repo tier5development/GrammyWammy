@@ -131,7 +131,7 @@ class Dashboard extends Component {
             <div className="dashboard">
               <Header selectedtab="dashboard"></Header>
               <div className="after_log_profile">
-                <img src={this.state.fb_image != "" ? this.state.fb_image : AvatarLogo} alt=""/>
+                <img src={AvatarLogo} alt=""/>
                 <p>Welcome</p>
                 <h3>{this.state.fb_name}</h3>
               </div>
@@ -141,7 +141,6 @@ class Dashboard extends Component {
                 :
                 <div className="login_caution">
                   <img crossorigin="anonymous" data-testid="user-avatar" src={IconLogo} alt=""  />
-                  https://instagram.fgau1-1.fna.fbcdn.net/v/t51.2885-19/s150x150/186258319_114563707451502_7627581072515575616_n.jpg?tp=1&_nc_ht=instagram.fgau1-1.fna.fbcdn.net&_nc_ohc=QPg-t1dowBgAX_eOajU&edm=AIQHJ4wBAAAA&ccb=7-4&oh=b06f72a024da1bd8bdbdadeb135cb1bd&oe=60C682BA&_nc_sid=7b02f1
                   Please login to your Instagram profile and click the refresh button below to proceed further.
                 </div>
                 }

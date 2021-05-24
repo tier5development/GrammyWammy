@@ -72,8 +72,8 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
   console.log("This is the Request 1111 =========>  dfdfghfdgfdgdfgdfgdfg",request);
   console.log("This is the Sender 111111=========>  dfdfghfdgfdgdfgdfgdfg",sender)
   let InstagramMessageList=parseInt(localStorage.getItem('InstagramMessageList'));
-  console.log("This is the Sender Id1",sender.tab.id);
-    console.log("This is the Local Id1",InstagramMessageList);
+  // console.log("This is the Sender Id1",sender.tab.id);
+  //   console.log("This is the Local Id1",InstagramMessageList);
   if (request.type == "Trigger" && sender.tab.id ==InstagramMessageList){
     console.log("This is the Sender Id2",sender.tab.id);
     console.log("This is the Local Id2",InstagramMessageList);
@@ -333,6 +333,104 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
       console.log("Remove the UserId From Message Listnad Change the Value of CheckMessageNReply to 0 the call CheckOrCreateTab and SenDInfoToMessageTabToOpenIndividual201");
       ClearListTabIdAndCheckMessageNReply(sender.tab.id,instagram_user_id);
     });
+  }
+  if (request.type == "storeUserInfoOrQueryThenStore"){
+    console.log("This I Got In Background",request.options);
+    let userName = request.options.UserInstaGramUsername;
+    let regex = new RegExp(/^(?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29}$/);
+    let validation = regex.test(userName);
+    if(validation) {
+    $.get("https://www.instagram.com/"+userName+"/?__a=1")
+    .done(function(data) {
+
+    let  params ={
+    kyubi_user_token    :   localStorage.getItem('kyubi_user_token'),
+    instagram_id       :   data["graphql"]["user"]["id"],
+    instagram_profile_name :   request.options.UserInstaGramUsername,
+    instagram_name     :   request.options.UserInstaGramName,
+    UserInstaGramImage    :  request.options.UserInstaGramImage
+    };
+    console.log("This are the data we Have to send",params);
+        handleRequest(
+        "/api/user/userinstagram",
+        method.POST,
+        toJsonStr(params)
+        ).then(async response =>  {
+          let responsenewvalue = await response.json();
+                  let  urlArray="[]";
+                  console.log("This from DB",responsenewvalue);
+                  localStorage.setItem('CheckMessageNReply', 0);
+                      // localStorage.setItem('ListURLArray', urlArray);
+                      localStorage.setItem('kyubi_user_token', responsenewvalue.payload.UserInfo.kyubi_user_token);
+                      localStorage.setItem('user_id', responsenewvalue.payload.UserInfo.user_id);
+                      localStorage.setItem('insta_id', responsenewvalue.payload.UserInfo.instagram_id);
+                      localStorage.setItem('insta_username', responsenewvalue.payload.UserInfo.instagram_profile_name);
+                      localStorage.setItem('insta_name', responsenewvalue.payload.UserInfo.instagram_name);
+                      localStorage.setItem('insta_image', responsenewvalue.payload.UserInfo.instagram_image);
+                      localStorage.setItem('insta_logged_id', request.options.UserLoggedInInstaGram);
+                      localStorage.setItem('inBackgroundFetching', false);
+                      
+                      UserLoggedInFacebook=request.options.UserLoggedInInstaGram;
+                      BackGroundFetchingStatus  =false;
+                      if(responsenewvalue.payload.UserSettings.default_message){
+                        localStorage.setItem('default_message', responsenewvalue.payload.UserSettings.default_message);
+                        DefaultMessageStatus=responsenewvalue.payload.UserSettings.default_message;
+                      }else{
+                        localStorage.setItem('default_message', 0);
+                      }
+                      if(responsenewvalue.payload.UserSettings.default_message_text){
+                        localStorage.setItem('default_message_text', responsenewvalue.payload.UserSettings.default_message_text);
+                      }else{
+                        localStorage.setItem('default_message_text',"");
+                      }
+                      if(responsenewvalue.payload.UserSettings.autoresponder){
+                        localStorage.setItem('autoresponder', responsenewvalue.payload.UserSettings.autoresponder);
+                        AutoResponderStatus=responsenewvalue.payload.UserSettings.autoresponder;
+                      }else{
+                        localStorage.setItem('autoresponder', 0);
+                      }
+                      if(responsenewvalue.payload.UserSettings.default_time_delay){
+                        localStorage.setItem('default_time_delay', responsenewvalue.payload.UserSettings.default_time_delay);
+                      }
+                      localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
+                      if( AutoResponderStatus== 0 && DefaultMessageStatus== 0 && UserLoggedInFacebook== true && BackGroundFetchingStatus==  false){
+                        console.log("Open Message List  84848484");
+
+                        if(localStorage.getItem('instaIndividualMessage')){
+                          let instaIndividualMessage=parseInt(localStorage.getItem('instaIndividualMessage'));
+                          chrome.tabs.remove(instaIndividualMessage, function() { 
+              
+                              localStorage.removeItem('instaIndividualMessage');
+                          });
+                        }
+                        const myNewUrl  =   `https://www.instagram.com/direct/inbox/`;
+                        let CreateInstagramMessageListTab    =   chrome.tabs.create({
+                          url: `https://www.instagram.com/direct/inbox/`,
+                          active: true,
+                          pinned:true
+                        },function(tab) { 
+                          let InstagramMessageList=tab.id;
+                          localStorage.setItem('InstagramMessageList', InstagramMessageList);
+                        });
+                      }  
+                  
+        }).catch(error=>{
+          console.log("This Error",error);
+          
+        } )
+
+    })
+    .fail(function() { 
+        // code for 404 error 
+        console.log('Username was not found!')
+    })
+    
+    } else {
+      console.log('The username is invalid!')
+    }
+  } 
+  if (request.type == "TrigerTheDeburger" && sender.tab.id ==parseInt(localStorage.getItem('instaprofile'))){
+    chrome.tabs.sendMessage(sender.tab.id,{type: "StartTheProfileGrabing", TriggerLayout: "CreateLayout",TriggerScrapping:"GetInfoProfile"});
   }
 })
 
