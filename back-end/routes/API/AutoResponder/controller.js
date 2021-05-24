@@ -55,10 +55,22 @@ module.exports.AutoResponderList    =   async   (req,   res)    =>  {
         if(getUserInfo._id){
             let getUserSettings= await UserSettingRepository.GetUserSettingById(getUserInfo._id);
             let AutoResponderDetails= await AutoResponderRepo.GetAutoResponderResponder(getUserInfo._id);
+            let statusArray = [];
+            await AutoResponderRepo.GetAutoResponderKeywords(getUserInfo._id).then(async result=>{
+                if(result.length>0){
+                    await result.map(async individual => {
+                        if(individual.autoresponders[0].status===1){
+                            statusArray.push({keyword:individual.keywords, message:individual.autoresponders[0].message});
+                        }                                    
+                    })
+                    console.log("this are=======================",statusArray);
+
+                }
+            });
             res.send({
                             code: 1,
                             message: "Successfull",
-                            payload:{setting:getUserSettings,autokey:AutoResponderDetails}
+                            payload:{setting:getUserSettings,autokey:AutoResponderDetails,listkey:statusArray}
                     });
             
             

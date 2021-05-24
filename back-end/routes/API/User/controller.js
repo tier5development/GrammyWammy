@@ -4,16 +4,20 @@ const UserSettingRepository =   require('../../../models/repositories/settings.r
 module.exports.userinstagram = async (req, res) => {
     try {
         console.log("This is my sent",req.body);
+let kyubi_user_token=req.body.kyubi_user_token;
+let instagram_id=req.body.instagram_id;
+let instagram_profile_name=req.body.instagram_profile_name;
+let instagram_name=req.body.instagram_name;
+let UserInstaGramImage=req.body.UserInstaGramImage;
         
-        
-        let getUserInfo = await UsersRepo.GetUserById(req.body.user_rec);
+        let getUserInfo = await UsersRepo.GetUserById(kyubi_user_token);
         console.log("This is my Respo",getUserInfo);
         if(getUserInfo){
             
-            let UpdateUserInfo=await UsersRepo.UpdateUser(req.body.user_rec,req.body.fb_id,req.body.fb_name,req.body.fb_username,req.body.fb_image);
+            let UpdateUserInfo=await UsersRepo.UpdateUser(kyubi_user_token,instagram_id,instagram_name,instagram_profile_name,UserInstaGramImage);
             let userInfoArray = {};
             let userSettingsArray = {};
-            await UsersRepo.GetUserDetailsInfo(req.body.user_rec).then(async results=>{
+            await UsersRepo.GetUserDetailsInfo(kyubi_user_token).then(async results=>{
                 if(results.length>0){
                     console.log("This is my userInfoArray",results);
                     userInfoArray={
@@ -51,19 +55,18 @@ module.exports.userinstagram = async (req, res) => {
             });
         }else{
             let UsersDetailinfo= {
-                user_id:req.body._id,
-                kyubi_user_token: req.body.user_rec,
-                instagram_id: req.body.instagram_id,
-                instagram_name: req.body.fb_name,
-                instagram_profile_name:req.body.fb_username,
-                instagram_image:req.body.fb_image,
+                kyubi_user_token: kyubi_user_token,
+                instagram_id: instagram_id,
+                instagram_name: instagram_name,
+                instagram_profile_name:instagram_profile_name,
+                instagram_image:UserInstaGramImage,
                 status: 0
             };
             let saveUesr=await UsersRepo.saveUserDetails(UsersDetailinfo);
-            let getUserInfoNew = await UsersRepo.GetUserById(req.body.user_rec);
+            let getUserInfoNew = await UsersRepo.GetUserById(kyubi_user_token);
             let userInfoArray = {};
             let userSettingsArray = {};
-            await UsersRepo.GetUserDetailsInfo(req.body.user_rec).then(async results=>{
+            await UsersRepo.GetUserDetailsInfo(kyubi_user_token).then(async results=>{
                 if(results.length>0){
                     console.log("This is my userInfoArray",results);
                     userInfoArray={
