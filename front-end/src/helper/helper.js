@@ -156,14 +156,58 @@ export function OpenSignupLink() {
   }
 export function refreshMessaging()  {
       try{
-          let CreateInstagramMessageListTab    =   chrome.tabs.create({
-              url: `https://www.instagram.com/direct/inbox/`,
-              active: true,
-              pinned:true
-          },function(tab) { 
-              let InstagramMessageList=tab.id;
-              localStorage.setItem('InstagramMessageList', InstagramMessageList);
-          });
+        if(localStorage.getItem('instaprofile')){
+            let instaprofile=parseInt(localStorage.getItem('instaprofile'));
+            chrome.tabs.remove(instaprofile);
+            localStorage.removeItem('instaprofile');
+        }
+        if(localStorage.getItem('InstagramMessageList')){
+            let InstagramMessageList=parseInt(localStorage.getItem('InstagramMessageList'));
+            chrome.tabs.remove(InstagramMessageList);
+            localStorage.removeItem('InstagramMessageList');
+        }
+        if(localStorage.getItem('InstagramMessageIndividual')){
+            let InstagramMessageIndividual=parseInt(localStorage.getItem('InstagramMessageIndividual'));
+            chrome.tabs.remove(InstagramMessageIndividual);
+            localStorage.removeItem('InstagramMessageIndividual');
+        }
+        let  ListIdArray=[];
+        let NewListIdArray=JSON.stringify(ListIdArray);
+        localStorage.setItem('CheckMessageNReply', 0);
+        localStorage.setItem('ListIdArray', NewListIdArray);
+        if(localStorage.getItem('instaprofile')){
+            let instaprofile=parseInt(localStorage.getItem('instaprofile'));
+            chrome.tabs.remove(instaprofile);
+            localStorage.removeItem('instaprofile');
+        }
+        if(localStorage.getItem('InstagramMessageList')){
+            let InstagramMessageList=parseInt(localStorage.getItem('InstagramMessageList'));
+            chrome.tabs.remove(InstagramMessageList);
+            localStorage.removeItem('InstagramMessageList');
+        }
+        if(localStorage.getItem('InstagramMessageIndividual')){
+            let InstagramMessageIndividual=parseInt(localStorage.getItem('InstagramMessageIndividual'));
+            chrome.tabs.remove(InstagramMessageIndividual);
+            localStorage.removeItem('InstagramMessageIndividual');
+        }
+        const myNewUrl  =   `https://www.instagram.com/`;
+        let CreateTab    =   chrome.tabs.create({
+            url: myNewUrl,
+            active: true,
+            pinned:true
+        },function(tab) { 
+            let instaprofile=tab.id;
+            localStorage.setItem('instaprofile', instaprofile);
+        });
+
+        //   let CreateInstagramMessageListTab    =   chrome.tabs.create({
+        //       url: `https://www.instagram.com/direct/inbox/`,
+        //       active: true,
+        //       pinned:true
+        //   },function(tab) { 
+        //       let InstagramMessageList=tab.id;
+        //       localStorage.setItem('InstagramMessageList', InstagramMessageList);
+        //   });
 
         //   let CreateInstagramMessageIndividualTab    =   chrome.tabs.create({
         //       url: `https://www.instagram.com/direct/inbox/`,

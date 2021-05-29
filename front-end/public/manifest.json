@@ -2,7 +2,7 @@
   "name": "Grammy Wammy",
   "version": "1.0.1",
   "manifest_version": 2,
-  "description": "Grammy Wammy",
+  "description": "Automate and scale your Instagram engagement and relationship management on the fly",
   "icons": {
       "48": "48X48.png",
       "128": "128X128.png"
@@ -19,15 +19,12 @@
     "persistent": true
   },
   "permissions": [
-    "tabs",
     "storage",
     "clipboardRead",
     "https://www.instagram.com/*",
-    "https://instagram.fccu3-1.fna.fbcdn.net/*",
     "notifications",
     "webRequest",
-    "webRequestBlocking",
-    "debugger"
+    "webRequestBlocking"
     
 ],
 

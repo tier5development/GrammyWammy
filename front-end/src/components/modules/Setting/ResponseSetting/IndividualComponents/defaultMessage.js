@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import AuthServices from "../../../../../services/authService";
 import GroupServices from "../../../../../services/groupServices";
 import SettingServices from "../../../../../services/setting";
+import LoaderLogo from "../../../../../images/Loader.gif";
+
 import Select from 'react-select';
 const options = [
   {value:0,label:"Text  Message"},
@@ -19,7 +21,10 @@ class defaultMessage extends Component {
           default_message_group:"",
           default_message_text:"",
           default_time_delay:0,
-          loader:false
+          loader:false,
+          notifier:false,
+          notifier_head:"",
+          notifier_message:""
         }
       }
       handleChange = selectedOption => {
@@ -93,6 +98,7 @@ class defaultMessage extends Component {
       
       submitAddDefaultMessage   =    async   (event) =>  {
         event.preventDefault();
+        this.setState({loader:true})
         let payload =   {
             default_message_type:this.state.default_message_type,
             default_message_group:this.state.default_message_group,
@@ -132,9 +138,36 @@ class defaultMessage extends Component {
                       }
                       
                       localStorage.setItem('keywordsTally', JSON.stringify(responsenewvalue.payload.AutoResponderKeywords));
+                      this.setState({
+                        loader:false,
+                        notifier:true,
+                        notifier_head:"Well Done !",
+                        notifier_message:"Awesome, you successfully Updated the Default Settings"
+                      });
+                      setInterval(() => {
+                        this.setState({
+                                notifier:false,
+                                notifier_head:"",
+                                notifier_message:""
+                        });
+                      },2000);
           }else{
-
+            this.setState({
+              loader:false,
+              notifier:true,
+              notifier_head:"OOhh Snap !",
+              notifier_message:"Something went Wrong  Please try again after sometime"
+            });
+            setInterval(() => {
+              this.setState({
+                      loader:false,
+                      notifier:false,
+                      notifier_head:"",
+                      notifier_message:""
+              });
+            },2000);
           }
+          
         })
       }
       componentDidMount(){
@@ -213,7 +246,17 @@ class defaultMessage extends Component {
 
         return (
             <div id="tabdefaultMessage" className="subtabcontent">
-              
+              {this.state.loader && (   
+                <div className="after_login_refresh"><img src={LoaderLogo} alt=""/></div>
+               )}
+               {this.state.notifier  && (
+                        <div className="group_delete_sreen">
+                            <div className="group_delete_popup">
+                                <h3>{this.state.notifier_head}</h3>
+                                <p>{this.state.notifier_message}</p>
+                            </div>
+                        </div>
+                )}
             <form>
               <div className="selectbox">
               <Select
@@ -255,7 +298,7 @@ class defaultMessage extends Component {
 
                 <button onClick={this.submitAddDefaultMessage} className="blue_btn" type="submit">Save Message</button>
             </form>
-
+            
           </div>
         )
       }

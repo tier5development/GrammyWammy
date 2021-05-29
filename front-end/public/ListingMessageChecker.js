@@ -1,14 +1,11 @@
-console.log("Listing Message Reader");
 $(document).ready(function(){
 
 chrome.runtime.sendMessage({type: "Trigger", options: "MessageListing"});
 chrome.runtime.sendMessage({type: "TriggerReaderParam", options: "MessageListing"});
 chrome.runtime.onMessage.addListener(async function(request, sender) {
-    console.log("Please Check the Request Hi ============",request);
     
     if(request.type =="StartTheMutation"){
         if(request.TriggerLayout == "CreateLayout"){
-            console.log("Please Create The Layout ============");
             var div=document.createElement("div");
             var textDiv =document.createElement("div");
             var imgURL = chrome.extension.getURL('128X128.png');
@@ -42,45 +39,39 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
             document.body.appendChild(div);
         }
         if(request.TriggerMutation == "StartTheMutation"){
-            console.log("Please Start The Mutation ============");
-                
+                console.log("I am here");
                 setInterval(function(){
-                    
                     $(".N9abW").find(' > div:nth-child('+1+')').find(" > div").each(async function(){
                         let NewHtml=$(this).html();
-                       // console.log("Inside Each Data -----------",NewHtml);
                         let CountChildrenDiv=$(this).find('a').find("> div").children('div').length;
                         let ChildrenURL=$(this).find('a').attr("href");
                         
                         if(CountChildrenDiv === 3){
+                            //Typing...
                             let messageId =  ChildrenURL.replace('/direct/t/',"");
-                            console.log("I will Send This Link XXXXXXXXXXXXXXXXXX--------------------",ChildrenURL);
-                            let port = chrome.runtime.connect({name: "ListKnock"});
-                            port.postMessage({options: messageId,ConFlag:"StoreUrlInStoreAndRetriveDate"});
-                            port.disconnect();
+                            let InsideHtml =$(this).find('a').find("> div").find(' > div:nth-child('+2+')').find(' > div:nth-child('+2+')').find("> div").children('div').children('span').children('span').html();
+                            if(InsideHtml !="Typing..."){
+                                console.log("I am here",InsideHtml);
+                                let port = chrome.runtime.connect({name: "ListKnock"});
+                                port.postMessage({options: messageId,ConFlag:"StoreUrlInStoreAndRetriveDate"});
+                                port.disconnect();
+                            }                            
                         }
-
                     })
-                },3000)
-                
-
+                },2000)
         }
     }
     if(request.type =="StartTheSelection"){
-        console.log("Please Select the following Message",request.MessageId);
         let SendMessageId =request.MessageId.trim();
-        let WindowURL=window.location.search;
-        let LocationDetails =window.location;
-        console.log("This is Window URL========",WindowURL.pathname)
+        // let WindowURL=window.location.search;
+        // let LocationDetails =window.location;
        
-        console.log("This is Window Location Details URL=======",LocationDetails)
-        let Windowpath=LocationDetails.pathname.replace('/direct/t/',"");
-        if(Windowpath==SendMessageId){
-            await grabMessageInfoAndSend(SendMessageId);  
-        }
+        // let Windowpath=LocationDetails.pathname.replace('/direct/t/',"");
+        // if(Windowpath==SendMessageId){
+        //     await grabMessageInfoAndSend(SendMessageId);  
+        // }
         setTimeout(async function() {
             let CheckHtml=$("#react-root").find(' > section').find('> div').find(' > div:nth-child(2)').find('> div').find('> div').find(' > div:nth-child(1)').find(' > div:nth-child(2)').find(' > div').find(' > div').find(' > div:nth-child('+1+')').find(' > div:nth-child('+1+')').html();
-            //console.log("Now I am Getting this Html",CheckHtml);
             await $("#react-root").find(' > section').find('> div').find(' > div:nth-child(2)').find('> div').find('> div').find(' > div:nth-child(1)').find(' > div:nth-child(2)').find(' > div').find(' > div').find(' > div:nth-child('+1+')').find(' > div:nth-child('+1+')').each( async function() {
                 await $(this).find('> div').each( async function(key,laa) {
                     let messagelinkId= $(laa).find('a').attr('href');
@@ -89,7 +80,6 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                         let messageId =  messagelinkId.replace('/direct/t/',"");
                         messageId=messageId.trim();
                         
-                        console.log("Please hit the link---------------",messageId,"------",request.options);
                         if(messageId == SendMessageId){
                             
                            anchor[0].click();
@@ -102,7 +92,8 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
                 }) 
             })
             await grabMessageInfoAndSend(request.MessageId);
-            }, 3000);
+            //chrome.runtime.sendMessage({type: "ThreadSelected", options: "MessageListing"});
+            }, 1000);
     }
     if(request.type =="ReplyInstaUser"){
         $(`textarea`).focus();
@@ -111,7 +102,6 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
         await navigator.clipboard.write(cpData).then(
             function() {
                 $(`textarea`).focus();
-                console.log('came here');
                 document.execCommand("paste");
                 $('button:contains("Send")').trigger('click');
             })
@@ -131,7 +121,6 @@ chrome.runtime.onMessage.addListener(async function(request, sender) {
 
 async function grabMessageInfoAndSend(MessageId){
     await setTimeout(async function() {
-    console.log("Please Grab the Last Message",MessageId);
     //let CheckHtml=$("#react-root").find(' > section').find('> div').find(' > div:nth-child(2)').find('> div').find('> div').find(' > div:nth-child(2)').find(' > div:nth-child(2)').find(' > div:nth-child(1)').find('>div').find('>div').html();
     let UserName="";
     let UserLink="";
@@ -146,18 +135,15 @@ async function grabMessageInfoAndSend(MessageId){
                 let mc =$(valy).find(' > div:nth-child(2)').find(' > div').find('> div').find('> div').find('> div').find('> div').find('> div').find('> div').find('> div').find('span').html();
                 if($(valy).find(' > div:nth-child(2)').find(' > div').find('.VdURK ').length === 1){
                     if(mc !=null){
-                        console.log("Outgoing",mc);
                         Thread.push([1,mc]);
                     }    
                 }else{
                     if(mc !=null){
-                    console.log("Incoming",mc);
                     Thread.push([2,mc]);
                     }
                 }
                 if($(valy).find(' > div').find(' > div:nth-child(1)').length !==1){
                     let acount=$(valy).find(' > div').find(' > div:nth-child(1)').find("a").length;
-                    console.log("This is ithe value sir",acount);
                     if($(valy).find(' > div').find(' > div:nth-child(1)').find("a").length === 1){
                         UserLink= $(valy).find(' > div').find(' > div:nth-child(1)').find("a").attr("href");
                         UserImages= $(valy).find(' > div').find(' > div:nth-child(1)').find("a").find("img").attr("src");
@@ -165,7 +151,6 @@ async function grabMessageInfoAndSend(MessageId){
                         UserName=UserName.trim();
                     }
                     TotalMessageCount=county;
-                    //console.log("This are the User Info ======================",UserInfo);
                 }
             })
 
@@ -180,7 +165,6 @@ async function grabMessageInfoAndSend(MessageId){
         UseMessage:Thread,
         UserId:MessageId
         }
-    console.log("Tis is the User Details",responseMessageDetails);
     chrome.runtime.sendMessage({type: "CheckMessageAndResponse", options: responseMessageDetails});
     },3000);
 }
