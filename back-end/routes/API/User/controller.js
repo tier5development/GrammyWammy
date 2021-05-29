@@ -63,6 +63,13 @@ let UserInstaGramImage=req.body.UserInstaGramImage;
                 status: 0
             };
             let saveUesr=await UsersRepo.saveUserDetails(UsersDetailinfo);
+            let UsersSettingsDetailinfo= {
+                user_id: saveUesr._id,
+                default_message: 0,
+                default_message_text: "",
+                autoresponder: 0
+              };
+            let getUserSettingsNew=await UserSettingRepository.saveUserSettingsDetails(UsersSettingsDetailinfo);
             let getUserInfoNew = await UsersRepo.GetUserById(kyubi_user_token);
             let userInfoArray = {};
             let userSettingsArray = {};
@@ -70,8 +77,9 @@ let UserInstaGramImage=req.body.UserInstaGramImage;
                 if(results.length>0){
                     console.log("This is my userInfoArray",results);
                     userInfoArray={
+                    user_id:results[0]._id,
                     kyubi_user_token: results[0].kyubi_user_token,
-                    instagram_fbid: results[0].instagram_id,
+                    instagram_id: results[0].instagram_id,
                     instagram_name: results[0].instagram_name,
                     instagram_profile_name: results[0].instagram_profile_name,
                     instagram_image: results[0].instagram_image,

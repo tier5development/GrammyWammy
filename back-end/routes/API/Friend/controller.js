@@ -306,49 +306,65 @@ module.exports.SaveLastMessageOutForFriend  =   async   (req,   res)    =>  {
     try{
         console.log("This is my sent From Instagram",req.body);
         let FriendsInfo = await FriendsRepo.GetUserByUserinstagramID(req.body.instagram_user_id);
+        let FriendsInfoPayload= {};
         let user_id= req.body.user_id;
         let kyubi_user_token= req.body.kyubi_user_token;
         let instagram_user_id= req.body.instagram_user_id;
-        let instagram_username= req.body.instagram_username;
-        let instagram_profile_link= req.body.instagram_profile_link;
-        let instagram_image= req.body.instagram_image;
-        let last_contact_incoming= req.body.last_contact_incoming;
-        let last_contact_outgoing= req.body.last_contact_outgoing;
-        let last_message= req.body.last_message;
-        let last_default_message_time= 0;
-        if(req.body.connection_type == 0){
-            last_default_message_time= 0;
-        }else{
-            last_default_message_time= req.body.last_default_message_time;
-        }
         
-        let connection_type= req.body.connection_type;
         if(FriendsInfo){
-            let FriendsInfoPayload= {
-                instagram_username:instagram_username,
-                instagram_profile_link:instagram_profile_link,
-                instagram_image:instagram_image,
-                last_contact_incoming: last_contact_incoming,
-                last_contact_outgoing: last_contact_outgoing,
-                last_message:last_message,
-                last_default_message_time: last_default_message_time,
-                connection_type:connection_type
-            };
+            if(req.body.connection_type == 0){
+                FriendsInfoPayload= {
+                    instagram_username:req.body.instagram_username,
+                    instagram_profile_link:req.body.instagram_profile_link,
+                    instagram_image:req.body.instagram_image,
+                    last_contact_incoming: req.body.last_contact_incoming,
+                    last_contact_outgoing: req.body.last_contact_outgoing,
+                    last_message:req.body.last_message,
+                    connection_type:req.body.connection_type
+                };
+            }else{
+                FriendsInfoPayload= {
+                    instagram_username:req.body.instagram_username,
+                    instagram_profile_link:req.body.instagram_profile_link,
+                    instagram_image:req.body.instagram_image,
+                    last_contact_incoming: req.body.last_contact_incoming,
+                    last_contact_outgoing: req.body.last_contact_outgoing,
+                    last_message:req.body.last_message,
+                    last_default_message_time: req.body.last_contact_outgoing,
+                    connection_type:req.body.connection_type
+                };
+            }
             let updateFriendsInfo=await FriendsRepo.updateFriendsInfoById(FriendsInfoPayload,FriendsInfo._id);
         }else{
-            let FriendsInfoPayload= {
-                user_id: user_id,
-                kyubi_user_token:kyubi_user_token,
-                instagram_user_id:instagram_user_id,
-                instagram_username:instagram_username,
-                instagram_profile_link:instagram_profile_link,
-                instagram_image:instagram_image,
-                last_contact_incoming: last_contact_incoming,
-                last_contact_outgoing: last_contact_outgoing,
-                last_message:last_message,
-                last_default_message_time: last_default_message_time,
-                connection_type:connection_type
-            };
+            
+            if(req.body.connection_type == 0){
+                FriendsInfoPayload= {
+                    user_id: user_id,
+                    kyubi_user_token:kyubi_user_token,
+                    instagram_user_id:instagram_user_id,
+                    instagram_username:req.body.instagram_username,
+                    instagram_profile_link:req.body.instagram_profile_link,
+                    instagram_image:req.body.instagram_image,
+                    last_contact_incoming: req.body.last_contact_incoming,
+                    last_contact_outgoing: req.body.last_contact_outgoing,
+                    last_message:req.body.last_message,
+                    connection_type:req.body.connection_type
+                };
+            }else{
+                FriendsInfoPayload= {
+                    user_id: user_id,
+                    kyubi_user_token:kyubi_user_token,
+                    instagram_user_id:instagram_user_id,
+                    instagram_username:req.body.instagram_username,
+                    instagram_profile_link:req.body.instagram_profile_link,
+                    instagram_image:req.body.instagram_image,
+                    last_contact_incoming: req.body.last_contact_incoming,
+                    last_contact_outgoing: req.body.last_contact_outgoing,
+                    last_message:req.body.last_message,
+                    last_default_message_time: req.body.last_contact_outgoing,
+                    connection_type:req.body.connection_type
+                };
+            }
             let saveFriendsInfo=await FriendsRepo.CreateFriendsInfo(FriendsInfoPayload);
         }
         
@@ -522,7 +538,7 @@ module.exports.GetDefaultMessage = async (req,  res)    => {
             let sec = a.getSeconds();
             let OnlyDate = date + ' ' + month + ' ' + year ;
         if(getUserSettings.default_message_type == 0){
-            if(FriendsInfo.last_default_message_time == "0"){
+            if(FriendsInfo.last_default_message_time == 0){
                 Message=getUserSettings.default_message_text;
                 Message=Message.replace('{first_name}'," "+req.body.instagram_username);
                 Message=Message.replace('{last_name}'," "+req.body.instagram_username);
