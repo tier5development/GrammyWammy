@@ -11,6 +11,7 @@ import logo from "../../../images/Logo_White.svg";
 import mail from "../../../images/mail.svg";
 import messanger from "../../../images/Messanger.svg";
 import path from "../../../images/Path3.svg";
+import  {OpenPoweredBy,OpenTier5Partnership,OpenFacebookLink,OpenMessengerLink,OpenSignupLink} from  '../../../helper/helper';
 class ForgotPassword extends Component {
     constructor(props) {
         super(props)
@@ -47,6 +48,30 @@ class ForgotPassword extends Component {
             //     }
             // },2000);
         }
+
+        LinkHandler(option,event){
+            event.preventDefault();
+            if(option == "optOne"){
+                OpenSignupLink();
+            }
+            if(option == "optTwo"){
+                OpenPoweredBy();
+            }
+            if(option == "optThree"){
+                OpenTier5Partnership();
+            }
+            if(option == "optFour"){
+                OpenFacebookLink();
+            }
+            if(option == "optFive"){
+                OpenMessengerLink();
+            }
+        }
+
+
+
+
+
     /**
     * @handleLoginFormValidation 
     * email and password field blank validation
@@ -195,8 +220,8 @@ class ForgotPassword extends Component {
                         </form>
                 </div>  
                 <div className="footer">
-                    <p>Powered by <a href="#">Tier5</a> and the <a href="#">Tier5 Partnership</a></p>
-                    <a href="#"><img src={path}/></a> <a href="#"><img src={messanger}/></a>
+                    <p>Powered by <a  onClick={(event) => this.LinkHandler("optTwo",event)} href="#">GrammyWammy</a> and the <a  onClick={(event) => this.LinkHandler("optThree",event)}  href="#">GrammyWammy Partnership</a></p>
+                    <a  onClick={(event) => this.LinkHandler("optFour",event)}  href="#"><img src={path}/></a> <a  onClick={(event) => this.LinkHandler("optFive",event)} href="#"><img src={messanger}/></a>
                 </div>
             </div>
         </div>

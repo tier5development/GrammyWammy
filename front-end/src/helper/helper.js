@@ -89,7 +89,8 @@ export function OpenPoweredBy() {
 */
 export function OpenTier5Partnership() {
     try{
-        const myNewUrl  =   'https://go.grammywammy.net/partners';
+       // const myNewUrl  =   'https://go.grammywammy.net/partners';
+       const myNewUrl  =   'https://partner.tier5.us/jrpartnership666?utm_source=GrammyWammy';
         let CreateTab    =   chrome.tabs.create({
             url: myNewUrl,
             active: true

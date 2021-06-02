@@ -1,4 +1,4 @@
-const getApiUrl = "http://localhost:8008"; //"https://api.grammywammy.com" ;
+const getApiUrl = "https://api.grammywammy.com"; //"http://localhost:8008" ;
 const method = { POST: "post", GET: "get", PUT: "put", DELETE: "delete" };
 const toJsonStr = (val) => JSON.stringify(val);
 /** 
