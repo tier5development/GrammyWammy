@@ -540,11 +540,11 @@ module.exports.GetDefaultMessage = async (req,  res)    => {
         if(getUserSettings.default_message_type == 0){
             if(FriendsInfo.last_default_message_time == 0){
                 Message=getUserSettings.default_message_text;
-                Message=Message.replace('{first_name}'," "+req.body.instagram_username);
-                Message=Message.replace('{last_name}'," "+req.body.instagram_username);
-                Message=Message.replace('{user_name}'," "+req.body.instagram_username);
-                Message=Message.replace('{date}'," "+OnlyDate);
-                Message=Message.replace('{Date}'," "+OnlyDate);
+                Message=Message.replace(/{first_name}/g," "+req.body.instagram_username);
+                Message=Message.replace(/{last_name}/g," "+req.body.instagram_username);
+                Message=Message.replace(/{user_name}/g," "+req.body.instagram_username);
+                Message=Message.replace(/{date}/g," "+OnlyDate);
+                Message=Message.replace(/{Date}/g," "+OnlyDate);
                 
                 Type=0;
                 SendMessage=1;
@@ -558,11 +558,11 @@ module.exports.GetDefaultMessage = async (req,  res)    => {
                     if(timediff>getUserSettings.default_time_delay){
                         console.log("Increaessssssssssssssss")
                         Message=getUserSettings.default_message_text;
-                        Message=Message.replace('{first_name}'," "+req.body.instagram_username);
-                        Message=Message.replace('{last_name}'," "+req.body.instagram_username);
-                        Message=Message.replace('{user_name}'," "+req.body.instagram_username);
-                        Message=Message.replace('{date}'," "+OnlyDate);
-                        Message=Message.replace('{Date}'," "+OnlyDate);
+                        Message=Message.replace(/{first_name}/g," "+req.body.instagram_username);
+                        Message=Message.replace(/{last_name}/g," "+req.body.instagram_username);
+                        Message=Message.replace(/{user_name}/g," "+req.body.instagram_username);
+                        Message=Message.replace(/{date}/g," "+OnlyDate);
+                        Message=Message.replace(/{Date}/g," "+OnlyDate);
                         Type=0;
                         SendMessage=1;
                     }else{
